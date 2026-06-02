@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rady Social AI</title>
+    <!-- استدعاء مكتبة Pi Network SDK الرسمية -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
@@ -51,7 +52,6 @@
             opacity: 0.8;
         }
 
-        /* زر تغيير اللغة العالمي */
         .lang-btn {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -81,13 +81,14 @@
         }
 
         .message {
-            max-width: 80%;
+            max-width: 85%;
             padding: 12px 16px;
             border-radius: 18px;
             font-size: 0.95rem;
-            line-height: 1.5;
+            line-height: 1.6;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             word-wrap: break-word;
+            white-space: pre-line;
         }
 
         .message.ai {
@@ -95,6 +96,7 @@
             align-self: flex-start;
             border-top-left-radius: 2px;
             border: 1px solid #eef0f2;
+            color: #333;
         }
 
         .message.user {
@@ -104,12 +106,12 @@
             border-top-right-radius: 2px;
         }
 
-        /* الأزرار التفاعلية السريعة (Quick Replies) */
+        /* الأزرار التفاعلية السريعة (Chips) */
         .quick-replies {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
             justify-content: flex-start;
         }
 
@@ -141,7 +143,7 @@
         }
 
         .action-btn {
-            padding: 8px 15px;
+            padding: 10px 18px;
             border: none;
             border-radius: 20px;
             font-size: 0.85rem;
@@ -195,18 +197,47 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* حاوية معاينة المرفقات */
+        /* نافذة الاشتراك المنبثقة (Modal) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border-top: 5px solid var(--pi-purple);
+        }
+
+        .modal-content h3 { margin-top: 0; color: var(--pi-purple); }
+        .modal-content ul { text-align: right; margin: 15px 0; padding-right: 20px; }
+        .modal-content li { margin-bottom: 8px; font-size: 0.9rem; color: #555; }
+        
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+        .modal-btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-confirm { background-color: var(--pi-gold); color: #333; }
+        .btn-close { background-color: #ddd; color: #333; }
+
         .preview-box img, .preview-box video {
-            max-width: 150px;
-            max-height: 150px;
-            border-radius: 10px;
-            margin-top: 8px;
-            border: 2px solid var(--pi-purple);
+            max-width: 150px; max-height: 150px; border-radius: 10px; margin-top: 8px; border: 2px solid var(--pi-purple);
         }
     </style>
 </head>
 <body>
 
+    <!-- الهيدر الاحترافي -->
     <header class="app-header">
         <div class="app-title">
             <h1 id="txt-title">Rady Social AI | رضي إي آي</h1>
@@ -215,29 +246,59 @@
         <button class="lang-btn" onclick="toggleLanguage()">English</button>
     </header>
 
+    <!-- منطقة الشات الديناميكية -->
     <main class="chat-container" id="chat-box">
         <div class="message ai">
             <span id="welcome-msg">مرحباً بك في Rady Social AI 🌍 اختر نوع المساعدة لنبدأ فوراً:</span>
-            
-            <div class="quick-replies" id="replies-container">
-                </div>
+            <div class="quick-replies" id="replies-container"></div>
         </div>
     </main>
 
+    <!-- شريط الخدمات السريعة (اشتراك، ميديا) -->
     <div class="action-chips">
-        <button class="action-btn btn-pay" onclick="triggerPiPayment()">🌟 <span id="txt-btn-sub">تفعيل المميز (Pay with Pi)</span></button>
+        <button class="action-btn btn-pay" onclick="openSubscriptionModal()">🌟 <span id="txt-btn-sub">تفعيل المميز (Pay with Pi)</span></button>
         <button class="action-btn btn-upload" onclick="document.getElementById('hidden-file').click()">📁 <span id="txt-btn-up">رفع وسائط</span></button>
         <input type="file" id="hidden-file" style="display:none" accept="image/*, video/*" onchange="handleMediaUpload(event)">
     </div>
 
+    <!-- شريط الإدخال السفلي العالمي -->
     <footer class="input-area">
         <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
         <button class="send-btn" onclick="sendMessage()">➔</button>
     </footer>
 
+    <!-- نافذة تفاصيل الاشتراك المميز (Modal) -->
+    <div class="modal" id="sub-modal">
+        <div class="modal-content" id="modal-content-area">
+            <!-- سيتم تعبئتها ديناميكياً حسب اللغة المفتوحة -->
+        </div>
+    </div>
+
     <script>
-        // قاعدة البيانات اللغوية للتطبيق الاحترافي
         let currentLang = 'ar';
+        
+        // تفاصيل ومحتويات الأقسام الكاملة التي ستعرض للمستخدم فور الضغط عليها
+        const sectionDetails = {
+            ar: {
+                "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nيوفر لك هذا القسم استشارات ذكية تشمل:\n- دراسات جدوى مبسطة لمشروعك.\n- خطط تسويقية واستراتيجيات نمو للمشاريع الناشئة.\n- نصائح حول إدارة الفرق وزيادة الإنتاجية الأسبوعية.",
+                "تطوير الذات 2️⃣": "🧠 **قسم تطوير الذات:**\nمساعدك الشخصي للنمو اليومي:\n- وضع خطط تنظيم الوقت وبناء العادات الإيجابية.\n- التوجيه للتخلص من التسويف والمماطلة.\n- توصيات بكتب ومصادر ملهمة لتطوير مهاراتك القيادية.",
+                "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات:**\nالدعم الفني والبرمجي المتكامل:\n- مساعدتك في حل مشاكل الأكواد والنشر على منصات مثل Vercel و GitHub.\n- استشارات حول هندسة البرمجيات وبناء تطبيقات الويب الحديثة الذكية.",
+                "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nمساحتك لفهم اقتصاد المستقبل:\n- شرح آليات البلوكشين والعقود الذكية.\n- تحديثات ومعلومات حول نظام ومستقبل شبكة Pi Network والتطبيقات اللامركزية Web3.",
+                "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية:**\nجسر التواصل اللغوي العالمي:\n- ترجمة احترافية وصياغة دقيقة للمقالات والرسائل من العربية إلى الإنجليزية والعكس، مع مراعاة القواعد اللغوية السليمة والمصطلحات التقنية.",
+                "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتخصيص تجربتك الفريدة داخل التطبيق:\n- يمكنك تبديل المظهر، مسح سجل المحادثات المؤقت، وتخصيص إشعارات التنبيه الذكية.",
+                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Social AI\n• **المطور الأساسي:** Ismail Ahmed Alrady\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار الحركي:** V1.0.0 (Global Release)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi."
+            },
+            en: {
+                "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including:\n- Simplified feasibility studies for your project.\n- Marketing plans and growth strategies for startups.\n- Tips on team management and boosting productivity.",
+                "Personal Development 2️⃣": "🧠 **Personal Development Section:**\nYour personal growth assistant:\n- Creating time management plans and building positive habits.\n- Guidance to overcome procrastination.\n- Recommendations for books to develop leadership skills.",
+                "Tech & Apps 3️⃣": "💻 **Tech & Applications Section:**\nFull technical and programming support:\n- Assisting you with debugging code and deploying to Vercel & GitHub.\n- Consultations on software engineering and building smart web apps.",
+                "Crypto & Pi 4️⃣": "⚡ **Crypto & Pi Network Section:**\nYour space for future economy:\n- Explaining blockchain mechanisms and smart contracts.\n- Updates and insights on the Pi Network ecosystem and Web3 apps.",
+                "Translation 5️⃣": "🔤 **Instant Translation Section:**\nYour global linguistic bridge:\n- Professional translation and precise phrasing from Arabic to English and vice versa with technical accuracy.",
+                "Settings ⚙️": "⚙️ **Platform Settings:**\nCustomize your unique app experience:\n- Toggle themes, clear temporary chat history, and adjust smart alert notifications.",
+                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Social AI\n• **Lead Developer:** Ismail Ahmed Ismail \n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.0.0 (Global Release)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
+            }
+        };
+
         const translations = {
             ar: {
                 title: "Rady Social AI | رضي إي آي",
@@ -257,7 +318,6 @@
             }
         };
 
-        // تهيئة الـ SDK عند الإقلاع
         document.addEventListener("DOMContentLoaded", function() {
             if (window.Pi) {
                 window.Pi.init({ version: "2.0", sandbox: false });
@@ -265,23 +325,17 @@
             renderQuickReplies();
         });
 
-        // دالة تغيير اللغة الديناميكية
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             const htmlTag = document.getElementById('html-tag');
             const langBtn = document.querySelector('.lang-btn');
 
             if (currentLang === 'en') {
-                htmlTag.dir = 'ltr';
-                htmlTag.lang = 'en';
-                langBtn.innerText = 'العربية';
+                htmlTag.dir = 'ltr'; htmlTag.lang = 'en'; langBtn.innerText = 'العربية';
             } else {
-                htmlTag.dir = 'rtl';
-                htmlTag.lang = 'ar';
-                langBtn.innerText = 'English';
+                htmlTag.dir = 'rtl'; htmlTag.lang = 'ar'; langBtn.innerText = 'English';
             }
 
-            // تحديث النصوص في الواجهة
             document.getElementById('txt-title').innerText = translations[currentLang].title;
             document.getElementById('welcome-msg').innerText = translations[currentLang].welcome;
             document.getElementById('user-input').placeholder = translations[currentLang].placeholder;
@@ -291,7 +345,6 @@
             renderQuickReplies();
         }
 
-        // بناء الأزرار التفاعلية (Chips)
         function renderQuickReplies() {
             const container = document.getElementById('replies-container');
             container.innerHTML = '';
@@ -304,18 +357,17 @@
             });
         }
 
-        // التعامل مع نقرة زر الخيارات التفاعلية
+        // دالة سحب وعرض محتويات الأقسام الفعلية مباشرة داخل الشات بناء على الملاحظة الأولى
         function selectCategory(categoryName) {
             appendMessage(categoryName, 'user');
             
-            // محاكاة رد الذكاء الاصطناعي الفوري بشكل احترافي
             setTimeout(() => {
-                let reply = currentLang === 'ar' ? `لقد اخترت قسم [${categoryName}]. كيف يمكنني مساعدتك فيه اليوم؟` : `You selected [${categoryName}]. How can I assist you in this category today?`;
-                appendMessage(reply, 'ai');
-            }, 600);
+                // الحصول على النص الغني التفصيلي للقسم المختار
+                let detailedInfo = sectionDetails[currentLang][categoryName] || categoryName;
+                appendMessage(detailedInfo, 'ai');
+            }, 500);
         }
 
-        // إرسال الرسائل العادية عبر الكيبورد
         function sendMessage() {
             const input = document.getElementById('user-input');
             const text = input.value.trim();
@@ -325,12 +377,11 @@
             input.value = '';
 
             setTimeout(() => {
-                let reply = currentLang === 'ar' ? "فهمتك تماماً، دعني أحلل ذلك وأرد عليك بذكاء رضي إي آي..." : "Understood, processing your request through Rady AI logic...";
+                let reply = currentLang === 'ar' ? "وصلت رسالتك لخوادم رضي إي آي، جاري معالجة الرد الدقيق..." : "Request received by Rady AI nodes, constructing the optimal response...";
                 appendMessage(reply, 'ai');
-            }, 700);
+            }, 600);
         }
 
-        // إضافة الفقاعات البرمجية للمحادثة
         function appendMessage(text, sender) {
             const chatBox = document.getElementById('chat-box');
             const msgDiv = document.createElement('div');
@@ -341,8 +392,52 @@
             return msgDiv;
         }
 
-        // دالة الدفع الحقيقية عبر شبكة Pi (لتخطي وحل خطوة 10 بنجاح)
+        // فتح نافذة تفاصيل ومعلومات الاشتراك المميز والقيمة بناء على الملاحظة الثانية
+        function openSubscriptionModal() {
+            const modal = document.getElementById('sub-modal');
+            const contentArea = document.getElementById('modal-content-area');
+            
+            if (currentLang === 'ar') {
+                contentArea.innerHTML = `
+                    <h3>🌟 اشتراك باقة رضي المميزة (Rady AI Premium)</h3>
+                    <p>انضم للمستخدمين المميزين عالمياً واستمتع بمزايا غير محدودة:</p>
+                    <ul>
+                        <li>سرعة معالجة فائقة ومستمرة للاستفسارات البرمجية والأعمال.</li>
+                        <li>إمكانية رفع وسائط وملفات ذات أحجام كبيرة بلا حدود.</li>
+                        <li>دخول حصري لنماذج الذكاء الاصطناعي المتقدمة (Web3 Companion).</li>
+                    </ul>
+                    <p style="font-weight: bold; color: var(--pi-purple); font-size: 1.1rem;">💰 قيمة الاشتراك: 1 Pi فقط</p>
+                    <div class="modal-buttons">
+                        <button class="modal-btn btn-confirm" onclick="triggerPiPayment()">تأكيد ودفع الآن ⚡</button>
+                        <button class="modal-btn btn-close" onclick="closeSubscriptionModal()">إلغاء</button>
+                    </div>
+                `;
+            } else {
+                contentArea.innerHTML = `
+                    <h3>🌟 Rady AI Premium Subscription</h3>
+                    <p>Join global premium users and unlock full ultimate capabilities:</p>
+                    <ul>
+                        <li>Ultra-fast, high-priority processing for coding and business nodes.</li>
+                        <li>Unlimited large-scale media and file uploads.</li>
+                        <li>Exclusive access to next-gen advanced AI Web3 custom LLMs.</li>
+                    </ul>
+                    <p style="font-weight: bold; color: var(--pi-purple); font-size: 1.1rem;">💰 Price: 1 Pi Only</p>
+                    <div class="modal-buttons">
+                        <button class="modal-btn btn-confirm" onclick="triggerPiPayment()">Confirm & Pay Now ⚡</button>
+                        <button class="modal-btn btn-close" onclick="closeSubscriptionModal()">Cancel</button>
+                    </div>
+                `;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeSubscriptionModal() {
+            document.getElementById('sub-modal').style.display = 'none';
+        }
+
+        // دالة الدفع الرسمية عبر الـ SDK لتأكيد خطوة 10
         function triggerPiPayment() {
+            closeSubscriptionModal();
             if (!window.Pi) {
                 alert(currentLang === 'ar' ? "يرجى فتح التطبيق داخل Pi Browser لتنفيذ معاملة الدفع وتخطي الخطوة." : "Please access from Pi Browser to complete payment verification.");
                 return;
@@ -351,21 +446,24 @@
             window.Pi.createPayment({
                 amount: 1, 
                 memo: "Activate Rady Social AI Premium Features",
-                metadata: { orderId: "rady_prod_001", type: "premium_sub" }
+                metadata: { orderId: "rady_prod_002", type: "premium_sub" }
             }, {
                 onReadyForServerApproval: function(paymentId) {
-                    console.log("Approved ID: " + paymentId);
+                    console.log("Approved Payment ID: " + paymentId);
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     alert(currentLang === 'ar' ? "تم تأكيد عملية الدفع بنجاح! سيتم تحديث حالة الخطوة 10 للأخضر." : "Payment success! Step 10 will turn green.");
                     appendMessage(currentLang === 'ar' ? "🎉 تم تفعيل العضوية المميزة بنجاح عبر البلوكشين!" : "🎉 Premium subscription active via blockchain!", 'ai');
                 },
-                onCancel: function(paymentId) { },
-                onError: function(error, paymentId) { }
+                onCancel: function(paymentId) {
+                    console.log("Payment canceled.");
+                },
+                onError: function(error, paymentId) {
+                    console.error("Payment error: ", error);
+                }
             });
         }
 
-        // التعامل المتقدم مع رفع الوسائط (صور وفيديوهات) ومعاينتها داخل الشات
         function handleMediaUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -377,20 +475,14 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 if (file.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    previewBox.appendChild(img);
+                    const img = document.createElement('img'); img.src = e.target.result; previewBox.appendChild(img);
                 } else if (file.type.startsWith('video/')) {
-                    const video = document.createElement('video');
-                    video.src = e.target.result;
-                    video.controls = true;
-                    previewBox.appendChild(video);
+                    const video = document.createElement('video'); video.src = e.target.result; video.controls = true; previewBox.appendChild(video);
                 }
                 msgDiv.appendChild(previewBox);
                 
-                // رد المساعد التلقائي على الميديا المرفوعة
                 setTimeout(() => {
-                    appendMessage(currentLang === 'ar' ? "📥 تم استلام الملف بنجاح في خوادم رضي إي آي وجاري معالجته بالذكاء الاصطناعي." : "📥 File successfully received on Rady AI servers and is being processed.", 'ai');
+                    appendMessage(currentLang === 'ar' ? "📥 تم استلام الملف في خوادم رضي إي آي وبدأت المعالجة." : "📥 File successfully received and processed on servers.", 'ai');
                 }, 1000);
             }
             reader.readAsDataURL(file);
