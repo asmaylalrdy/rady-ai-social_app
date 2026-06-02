@@ -138,7 +138,8 @@
             border: 1.5px solid #dc3545;
             color: #dc3545;
             font-weight: bold;
-            margin-top: 8px;
+            margin-top: 12px;
+            display: block;
         }
 
         .chip.back-btn:hover {
@@ -319,7 +320,7 @@
         </div>
     </main>
 
-    <!-- منطقة انتظار المرفقات قبل الضغط على إرسال (الملاحظة الثانية) -->
+    <!-- منطقة انتظار المرفقات قبل الضغط على إرسال -->
     <div class="upload-staging-area" id="staging-area">
         <div class="staging-preview" id="staging-preview-container"></div>
         <div class="staging-text" id="staging-status-text">تم تحميل الملف وجاهز للصياغة...</div>
@@ -345,27 +346,30 @@
 
     <script>
         let currentLang = 'ar';
-        let stagedMediaData = null; // يحفظ المرفق مؤقتاً لحين كتابة النص
+        let stagedMediaData = null; 
         let stagedMediaType = null;
 
+        // تفاصيل الأقسام بما فيها قسم تعليم اللغات الجديد
         const sectionDetails = {
             ar: {
-                "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nيوفر لك هذا القسم استشارات ذكية تشمل:\n- دراسات جدوى مبسطة لمشروعك.\n- خطط تسويقية واستراتيجيات نمو للمشاريع الناشئة.\n- نصائح حول إدارة الفرق وزيادة الإنتاجية الأسبوعية.",
-                "تطوير الذات 2️⃣": "🧠 **قسم تطوير الذات:**\nمساعدك الشخصي للنمو اليومي:\n- وضع خطط تنظيم الوقت وبناء العادات الإيجابية.\n- التوجيه للتخلص من التسويف والمماطلة.\n- توصيات بكتب ومصادر ملهمة لتطوير مهاراتك القيادية.",
-                "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات:**\nالدعم الفني والبرمجي المتكامل:\n- مساعدتك في حل مشاكل الأكواد والنشر على منصات مثل Vercel و GitHub.\n- استشارات حول هندسة البرمجيات وبناء تطبيقات الويب الحديثة الذكية.",
-                "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nمساحتك لفهم اقتصاد المستقبل:\n- شرح آليات البلوكشين والعقود الذكية.\n- تحديثات ومعلومات حول نظام ومستقبل شبكة Pi Network والتطبيقات اللامركزية Web3.",
-                "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية:**\nجسر التواصل اللغوي العالمي:\n- ترجمة احترافية وصياغة دقيقة للمقالات والرسائل من العربية إلى الإنجليزية والعكس، مع مراعاة القواعد اللغوية السليمة والمصطلحات التقنية.",
+                "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nيوفر لك هذا القسم استشارات ذكية تشمل:\n- دراسات جدوى مبسطة لمشروعك.\n- خطط تسويقية واستراتيجيات نمو للمشاريع الناشئة.",
+                "تطوير الذات 2️⃣": "🧠 **قسم تطوير الذات:**\nمساعدك الشخصي للنمو اليومي:\n- وضع خطط تنظيم الوقت وبناء العادات الإيجابية.\n- التوجيه للتخلص من التسويف والمماطلة.",
+                "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات:**\nالدعم الفني والبرمجي المتكامل:\n- مساعدتك في حل مشاكل الأكواد والنشر على منصات مثل Vercel و GitHub.",
+                "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nمساحتك لفهم اقتصاد المستقبل:\n- شرح آليات البلوكشين وتحديثات مستقبل شبكة Pi Network والتطبيقات اللامركزية Web3.",
+                "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية:**\nجسر التواصل اللغوي العالمي:\n- ترجمة احترافية وصياغة دقيقة للمقالات والرسائل من العربية إلى الإنجليزية والعكس.",
+                "تعليم اللغات 🔤": "🎓 **مرحباً بك في مركز تعليم اللغات الذكي لـ Rady Social AI!**\nتحتوي المنصة على نظام مرن لتعليم اللغات الآن ومستقبلاً. اختر أو اكتب ما تريد:\n- **الإنجليزية (English):** لممارسة التحدث أو تعلم القواعد.\n- **الفرنسية (Français):** لتعلم أساسيات النطق والكلمات.\n- **الألمانية (Deutsch):** لبناء الجمل اليومية.\n\n*اكتب للمساعد الآن اللعبة التي تريدها أو العبارة التي تود تصحيحها (مثال: 'علمني جمل إنجليزية مفيدة' أو 'صحح لي هذه الجملة').*",
                 "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتخصيص تجربتك الفريدة داخل التطبيق:\n- يمكنك تبديل المظهر، مسح سجل المحادثات المؤقت، وتخصيص إشعارات التنبيه الذكية.",
-                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Social AI\n• **المطور الأساسي:** Ismail Ahmed Alrady\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار الحركي:** V1.0.0 (Global Release)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi."
+                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Social AI\n• **المطور الأساسي:** Ismail Ahmed Alrady\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار الحركي:** V1.1.0 (Language Update)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi."
             },
             en: {
-                "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including:\n- Simplified feasibility studies for your project.\n- Marketing plans and growth strategies for startups.\n- Tips on team management and boosting productivity.",
-                "Personal Development 2️⃣": "🧠 **Personal Development Section:**\nYour personal growth assistant:\n- Creating time management plans and building positive habits.\n- Guidance to overcome procrastination.\n- Recommendations for books to develop leadership skills.",
-                "Tech & Apps 3️⃣": "💻 **Tech & Applications Section:**\nFull technical and programming support:\n- Assisting you with debugging code and deploying to Vercel & GitHub.\n- Consultations on software engineering and building smart web apps.",
-                "Crypto & Pi 4️⃣": "⚡ **Crypto & Pi Network Section:**\nYour space for future economy:\n- Explaining blockchain mechanisms and smart contracts.\n- Updates and insights on the Pi Network ecosystem and Web3 apps.",
-                "Translation 5️⃣": "🔤 **Instant Translation Section:**\nYour global linguistic bridge:\n- Professional translation and precise phrasing from Arabic to English and vice versa with technical accuracy.",
-                "Settings ⚙️": "⚙️ **Platform Settings:**\nCustomize your unique app experience:\n- Toggle themes, clear temporary chat history, and adjust smart alert notifications.",
-                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Social AI\n• **Lead Developer:** Ismail Ahmed Alrady\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.0.0 (Global Release)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
+                "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including feasibility studies and marketing growth strategies.",
+                "Personal Development 2️⃣": "🧠 **Personal Development Section:**\nYour personal growth assistant for time management and building positive habits.",
+                "Tech & Apps 3️⃣": "💻 **Tech & Applications Section:**\nAssisting you with debugging code and deploying to Vercel & GitHub.",
+                "Crypto & Pi 4️⃣": "⚡ **Crypto & Pi Network Section:**\nUpdates and insights on the Pi Network ecosystem and Web3 decentralization.",
+                "Translation 5️⃣": "🔤 **Instant Translation Section:**\nProfessional translation and precise phrasing from Arabic to English and vice versa.",
+                "Languages Hub 🔤": "🎓 **Welcome to Rady Social AI Language Learning Node!**\nOur platform structures language acquisition natively. Choose your path:\n- **English Track:** Practice fluent conversation or fix grammar.\n- **French Track:** Master essential vocabulary.\n- **German Track:** Learn daily interaction phrases.\n\n*Type your objective now (e.g., 'Give me common English idioms' or 'Check my German grammar').*",
+                "Settings ⚙️": "⚙️ **Platform Settings:**\nToggle themes, clear temporary chat history, and adjust smart alert notifications.",
+                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Social AI\n• **Lead Developer:** Ismail Ahmed Alrady\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.1.0 (Language Update)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
             }
         };
 
@@ -378,7 +382,7 @@
                 upBtn: "رفع وسائط",
                 backBtn: "🔙 العودة للقائمة الرئيسية",
                 statingText: "الملف جاهز، اكتب سؤالك واضغط إرسال...",
-                options: ["أعمال ومشاريع 1️⃣", "تطوير الذات 2️⃣", "تقنية وتطبيقات 3️⃣", "العملات الرقمية 4️⃣", "ترجمة عربي ↔ إنجليزي 5️⃣", "الإعدادات ⚙️", "حول المنصة ℹ️"]
+                options: ["أعمال ومشاريع 1️⃣", "تطوير الذات 2️⃣", "تقنية وتطبيقات 3️⃣", "العملات الرقمية 4️⃣", "ترجمة عربي ↔ إنجليزي 5️⃣", "تعليم اللغات 🔤", "الإعدادات ⚙️", "حول المنصة ℹ️"]
             },
             en: {
                 title: "Rady Social AI",
@@ -388,7 +392,7 @@
                 upBtn: "Upload Media",
                 backBtn: "🔙 Back to Main Menu",
                 statingText: "Media is staged. Type your prompt and click send...",
-                options: ["Business & Projects 1️⃣", "Personal Development 2️⃣", "Tech & Apps 3️⃣", "Crypto & Pi 4️⃣", "Translation 5️⃣", "Settings ⚙️", "About Platform ℹ️"]
+                options: ["Business & Projects 1️⃣", "Personal Development 2️⃣", "Tech & Apps 3️⃣", "Crypto & Pi 4️⃣", "Translation 5️⃣", "Languages Hub 🔤", "Settings ⚙️", "About Platform ℹ️"]
             }
         };
 
@@ -431,14 +435,12 @@
             });
         }
 
-        // عند اختيار قسم، يتم طباعته ووضع خيار التراجع (الملاحظة الأولى)
         function selectCategory(categoryName) {
             appendMessage(categoryName, 'user');
             
             setTimeout(() => {
                 let detailedInfo = sectionDetails[currentLang][categoryName] || categoryName;
                 
-                // إنشاء فقاعة الرد وبداخلها زر التراجع للعودة للقائمة الرئيسية دون الخروج من التطبيق
                 const chatBox = document.getElementById('chat-box');
                 const msgDiv = document.createElement('div');
                 msgDiv.className = "message ai";
@@ -452,7 +454,6 @@
                     setTimeout(() => {
                         appendMessage(translations[currentLang].welcome, 'ai');
                         renderQuickReplies();
-                        // نقل أزرار الاختيارات السريعة للفقاعة الجديدة
                         document.getElementById('replies-container').remove();
                         const newRepliesContainer = document.createElement('div');
                         newRepliesContainer.className = 'quick-replies';
@@ -468,7 +469,6 @@
             }, 500);
         }
 
-        // وضع المرفق في منطقة الانتظار بدلاً من الإرسال الفوري (الملاحظة الثانية)
         function stageMediaFile(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -495,7 +495,6 @@
                     previewContainer.appendChild(video);
                 }
 
-                // إضافة زر الحذف الإلغائي
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'remove-staging-btn';
                 removeBtn.innerText = 'X';
@@ -514,14 +513,12 @@
             document.getElementById('hidden-file').value = '';
         }
 
-        // إرسال النص مع المرفق المنتظر معاً وتوليد رد برمي تفاعلي (الملاحظة الثالثة)
         function sendMessage() {
             const input = document.getElementById('user-input');
             const text = input.value.trim();
             
             if (!text && !stagedMediaData) return;
 
-            // 1. بناء رسالة المستخدم وبها الصورة المرفقة إن وجدت
             const chatBox = document.getElementById('chat-box');
             const msgDiv = document.createElement('div');
             msgDiv.className = "message user";
@@ -542,7 +539,6 @@
                 } else if (stagedMediaType.startsWith('video/')) {
                     const video = document.createElement('video');
                     video.src = stagedMediaData;
-                    video.controls = true;
                     mediaContainer.appendChild(video);
                 }
                 msgDiv.appendChild(mediaContainer);
@@ -551,19 +547,20 @@
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // حفظ النص للتحليل قبل تنظيف الحقل
             const lowerText = text.toLowerCase();
-            
-            // تنظيف المدخلات ومنطقة الانتظار فوراً
             input.value = '';
             clearStagedMedia();
 
-            // 2. محاكي تفاعلي وذكي لردود المساعد بناء على سؤال المستخدم (الملاحظة الثالثة)
+            // ردود تفاعلية تشمل سيناريوهات تعليم اللغات الجديد
             setTimeout(() => {
                 let aiReply = "";
                 
                 if (currentLang === 'ar') {
-                    if (lowerText.includes('كود') || lowerText.includes('برمجة') || lowerText.includes('تطبيق')) {
+                    if (lowerText.includes('علمني') || lowerText.includes('انجليزي') || lowerText.includes('لغة') || lowerText.includes('english') || lowerText.includes('جمل')) {
+                        aiReply = "🔤 مرحباً بك في ركن اللغات المطور! إليك عبارة اليوم بالإنجليزية:\n" +
+                                  "💡 *'Actions speak louder than words'* (الأفعال أبلغ من الأقوال).\n\n" +
+                                  "هل تود التدرب على محادثة معينة؟ اكتب لي أي جملة وسأقوم بتدقيقها لك فوراً!";
+                    } else if (lowerText.includes('كود') || lowerText.includes('برمجة') || lowerText.includes('تطبيق')) {
                         aiReply = "💻 أهلاً بك في الدعم التقني البرمجي! تحليل طلبك يوضح أنك تعمل على بناء ميزة ذكية. تأكد دائماً من تهيئة البيئة البرمجية بشكل سليم ومراجعة ملفات الـ Console لحصر الخطأ.";
                     } else if (lowerText.includes('تسويق') || lowerText.includes('مشروع') || lowerText.includes('فلوس')) {
                         aiReply = "💼 مستشارك الاستثماري هنا! لضمان نجاح مشروعك، ابدأ دائماً بتحديد الشريحة المستهدفة بدقة واهتم بالقيمة المضافة الفردية التي تقدمها منصتك مقارنة بالمنافسين.";
@@ -577,7 +574,11 @@
                         aiReply = `🤖 أنا هنا للتفاعل معك! لقد استلمت رسالتك بخصوص "${text}" وجاري تشغيل منطق رضي إي آي الذكي لتقديم أفضل مساعدة مخصصة لك في هذا القسم.`;
                     }
                 } else {
-                    if (lowerText.includes('code') || lowerText.includes('program') || lowerText.includes('app')) {
+                    if (lowerText.includes('learn') || lowerText.includes('english') || lowerText.includes('language') || lowerText.includes('phrase')) {
+                        aiReply = "🔤 Welcome to the Language learning block! Here is your daily English idiom:\n" +
+                                  "💡 *'Break a leg'* (Means: Good luck!).\n\n" +
+                                  "Type any phrase you want to evaluate or practice, and I will act as your interactive tutor!";
+                    } else if (lowerText.includes('code') || lowerText.includes('program') || lowerText.includes('app')) {
                         aiReply = "💻 Technical Support Node active! Ensure your dependencies are correctly bundled and check the Vercel logs to avoid runtime execution crashes.";
                     } else if (lowerText.includes('business') || lowerText.includes('market') || lowerText.includes('project')) {
                         aiReply = "💼 Strategy Node active! To scale your project globally, map your user persona constraints and focus on iterative organic user onboarding pipelines.";
@@ -615,7 +616,7 @@
                     <ul>
                         <li>سرعة معالجة فائقة ومستمرة للاستفسارات البرمجية والأعمال.</li>
                         <li>إمكانية رفع وسائط وملفات ذات أحجام كبيرة بلا حدود.</li>
-                        <li>دخول حصري لنماذج الذكاء الاصطناعي المتقدمة (Web3 Companion).</li>
+                        <li>دخول حصري لنماذج الذكاء الاصطناعي المتقدمة ودروس اللغات الموسعة.</li>
                     </ul>
                     <p style="font-weight: bold; color: var(--pi-purple); font-size: 1.1rem;">💰 قيمة الاشتراك: 1 Pi فقط</p>
                     <div class="modal-buttons">
@@ -630,7 +631,7 @@
                     <ul>
                         <li>Ultra-fast, high-priority processing for coding and business nodes.</li>
                         <li>Unlimited large-scale media and file uploads.</li>
-                        <li>Exclusive access to next-gen advanced AI Web3 custom LLMs.</li>
+                        <li>Exclusive access to next-gen advanced AI and extensive language tracks.</li>
                     </ul>
                     <p style="font-weight: bold; color: var(--pi-purple); font-size: 1.1rem;">💰 Price: 1 Pi Only</p>
                     <div class="modal-buttons">
@@ -662,7 +663,7 @@
                     console.log("Approved Payment ID: " + paymentId);
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
-                    alert(currentLang === 'ar' ? "تم تأكيد عملية الدفع بنجاح! سيتم تحديث حالة الخطوة 10 للأخضر." : "Payment success! Step 10 will turn green.");
+                    alert(currentLang === 'ar' ? "تم تأكيد عملية الدفع بنجاح!" : "Payment success!");
                     appendMessage(currentLang === 'ar' ? "🎉 تم تفعيل العضوية المميزة بنجاح عبر البلوكشين!" : "🎉 Premium subscription active via blockchain!", 'ai');
                 },
                 onCancel: function(paymentId) { },
