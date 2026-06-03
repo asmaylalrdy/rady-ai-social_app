@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" id="html-tag">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Rady Social AI</title>
     <!-- استدعاء مكتبة Pi Network SDK الرسمية -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
@@ -16,6 +16,10 @@
             --user-msg: linear-gradient(135deg, #6a11cb, #2575fc);
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
@@ -24,31 +28,31 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* يمنع الصفحة كاملة من الانهيار */
         }
 
         /* الهيدر العلوي للمنصة */
         .app-header {
             background: linear-gradient(135deg, var(--pi-purple), var(--pi-dark-purple));
             color: white;
-            padding: 12px 15px;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             border-bottom: 2px solid var(--pi-gold);
-            z-index: 10;
+            flex-shrink: 0; /* يمنع الهيدر من الانضغاط */
         }
 
         .app-title h1 {
             margin: 0;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
         }
 
         .app-title p {
             margin: 2px 0 0 0;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             opacity: 0.8;
         }
 
@@ -56,27 +60,20 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 5px 10px;
+            padding: 4px 10px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: bold;
-            transition: all 0.3s;
         }
 
-        .lang-btn:hover {
-            background: var(--pi-gold);
-            color: var(--pi-dark-purple);
-        }
-
-        /* منطقة العرض الرئيسية السلسة */
+        /* منطقة العرض الرئيسية - قابلة للتمرير بشكل مستقل */
         .main-content {
             flex: 1;
+            overflow-y: auto; /* يسمح بالتمرير هنا فقط إذا زادت الأزرار */
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            padding: 15px;
-            gap: 15px;
         }
 
         /* حاوية القائمة الرئيسية النظيفة */
@@ -85,23 +82,24 @@
             flex-direction: column;
             gap: 12px;
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .menu-welcome {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             color: #333;
             margin-bottom: 5px;
             text-align: center;
+            line-height: 1.4;
         }
 
         .quick-replies {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            grid-template-columns: repeat(2, 1fr); /* ترتيب ثنائي متناسق جداً مثل الصورة */
             gap: 10px;
         }
 
@@ -109,27 +107,21 @@
             background-color: #fff;
             border: 1.5px solid var(--pi-purple);
             color: var(--pi-purple);
-            padding: 10px 12px;
+            padding: 12px 8px;
             border-radius: 12px;
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-        }
-
-        .chip:hover {
-            background-color: var(--pi-purple);
-            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
 
         /* واجهة الدردشة والمحادثة النشطة */
         .chat-view {
-            display: none; /* مخفية افتراضياً وتظهر عند اختيار قسم */
+            display: none;
             flex-direction: column;
-            gap: 15px;
-            flex: 1;
+            height: 100%;
         }
 
         .chat-box {
@@ -143,11 +135,10 @@
 
         .message {
             max-width: 85%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-radius: 16px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            font-size: 0.9rem;
+            line-height: 1.4;
             word-wrap: break-word;
             white-space: pre-line;
         }
@@ -167,65 +158,40 @@
             border-top-right-radius: 2px;
         }
 
-        /* زر التراجع الاحترافي المثبت أسفل نافذة القسم */
         .back-navigation {
             display: flex;
             justify-content: center;
-            padding: 5px 0;
+            padding: 8px 0 0 0;
         }
 
         .back-btn {
             background-color: #fff;
             border: 1.5px solid #dc3545;
             color: #dc3545;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.15);
-        }
-
-        .back-btn:hover {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        /* شريط الخدمات الإضافية السفلي */
-        .action-chips {
-            display: flex;
-            gap: 10px;
-            padding: 10px 15px;
-            background-color: #f0f2f5;
-            overflow-x: auto;
-            border-top: 1px solid #eef0f2;
-        }
-
-        .action-btn {
-            padding: 9px 15px;
-            border: none;
+            padding: 6px 16px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
         }
 
-        .btn-pay { background-color: var(--pi-gold); color: #333; }
-        .btn-upload { background-color: #007bff; color: white; }
+        /* الجزء السفلي المثبت بالكامل (Fixed Bottom Controls) */
+        .fixed-bottom-controls {
+            flex-shrink: 0; /* يمنع هذا الجزء من الاختفاء أو الانضغاط */
+            background-color: white;
+            border-top: 1px solid #eef0f2;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
 
         /* منطقة انتظار المرفقات قبل الإرسال */
         .upload-staging-area {
             display: none;
-            background-color: #ffffff;
+            background-color: #fdfcfb;
             padding: 8px 15px;
-            border-top: 1px solid #eef0f2;
+            border-bottom: 1px solid #eef0f2;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
         }
 
         .staging-preview {
@@ -234,10 +200,11 @@
         }
 
         .staging-preview img {
-            max-width: 60px;
-            max-height: 60px;
+            max-width: 50px;
+            max-height: 50px;
             border-radius: 6px;
             border: 2px solid var(--pi-purple);
+            display: block;
         }
 
         .remove-staging-btn {
@@ -259,19 +226,47 @@
         }
 
         .staging-text {
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 0.75rem;
+            color: #555;
+            flex: 1;
+            margin-right: 10px;
+            text-align: right;
         }
 
-        /* شريط الإدخال السفلي */
+        /* شريط الخدمات الإضافية السفلي */
+        .action-chips {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+            background-color: #f1f3f5;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-pay { background-color: var(--pi-gold); color: #333; }
+        .btn-upload { background-color: #007bff; color: white; }
+
+        /* شريط الإدخال الفعلي */
         .input-area {
-            padding: 10px 15px;
-            background-color: white;
+            padding: 10px 12px;
             display: flex;
             gap: 10px;
             align-items: center;
-            border-top: 1px solid #eef0f2;
-            padding-bottom: env(safe-area-inset-bottom, 10px);
+            background-color: white;
+            padding-bottom: env(safe-area-inset-bottom, 12px);
         }
 
         .input-area input {
@@ -280,7 +275,7 @@
             border: 1.5px solid #ccced0;
             border-radius: 25px;
             outline: none;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .input-area input:focus {
@@ -291,21 +286,21 @@
             background: linear-gradient(135deg, var(--pi-purple), var(--pi-dark-purple));
             color: white;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .chat-media-attached img {
-            max-width: 160px;
-            max-height: 160px;
+            max-width: 140px;
+            max-height: 140px;
             border-radius: 8px;
-            margin-top: 6px;
+            margin-top: 5px;
             display: block;
         }
 
@@ -331,19 +326,19 @@
             border-top: 5px solid var(--pi-purple);
         }
 
-        .modal-content h3 { margin-top: 0; color: var(--pi-purple); }
+        .modal-content h3 { margin-top: 0; color: var(--pi-purple); font-size: 1.1rem; }
         .modal-content ul { text-align: right; margin: 12px 0; padding-right: 15px; }
-        .modal-content li { margin-bottom: 6px; font-size: 0.85rem; color: #555; }
+        .modal-content li { margin-bottom: 6px; font-size: 0.8rem; color: #555; }
         
         .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
-        .modal-btn { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .modal-btn { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
         .btn-confirm { background-color: var(--pi-gold); color: #333; }
         .btn-close { background-color: #ddd; color: #333; }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر الاحترافي للمنصة -->
+    <!-- الهيدر العلوي -->
     <header class="app-header">
         <div class="app-title">
             <h1 id="txt-title">Rady Social AI | رضي إي آي</h1>
@@ -352,20 +347,18 @@
         <button class="lang-btn" onclick="toggleLanguage()">English</button>
     </header>
 
-    <!-- منطقة العرض الرئيسية الديناميكية للتبديل بين الحالات -->
+    <!-- منطقة المحتوى القابلة للتمرير المستقل -->
     <main class="main-content" id="main-content-area">
         
-        <!-- الحالة الأولى: القائمة الرئيسية النظيفة (تظهر أولاً) -->
+        <!-- الحالة الأولى: القائمة الرئيسية النظيفة وثنائية الأعمدة -->
         <div class="menu-container" id="menu-view">
             <div class="menu-welcome" id="welcome-msg">مرحباً بك في Rady Social AI 🌍 اختر نوع المساعدة لنبدأ فوراً:</div>
             <div class="quick-replies" id="replies-container"></div>
         </div>
 
-        <!-- الحالة الثانية: واجهة شاشة المحادثة النشطة للقسم (تظهر عند الدخول للقسم) -->
+        <!-- الحالة الثانية: واجهة المحادثة النشطة داخل القسم -->
         <div class="chat-view" id="chat-view-container">
             <div class="chat-box" id="chat-box-flow"></div>
-            
-            <!-- شريط الملاحة والعودة للقائمة الرئيسية بدون الخروج نهائياً -->
             <div class="back-navigation">
                 <button class="back-btn" onclick="returnToMainMenu()" id="back-btn-text">🔙 العودة للقائمة الرئيسية</button>
             </div>
@@ -373,26 +366,30 @@
 
     </main>
 
-    <!-- منطقة انتظار المرفقات قبل الضغط على إرسال -->
-    <div class="upload-staging-area" id="staging-area">
-        <div class="staging-preview" id="staging-preview-container"></div>
-        <div class="staging-text" id="staging-status-text">المستند جاهز، اكتب سؤالك واضغط إرسال...</div>
+    <!-- الحاوية السفلية الثابتة والمضمونة الظهور دائماً على جميع هواتف المستخدمين -->
+    <div class="fixed-bottom-controls">
+        
+        <!-- منطقة انتظار المرفقات فوق صندوق الإدخال مباشرة لتنظيم المساحة -->
+        <div class="upload-staging-area" id="staging-area">
+            <div class="staging-text" id="staging-status-text">المستند جاهز، اكتب سؤالك واضغط إرسال...</div>
+            <div class="staging-preview" id="staging-preview-container"></div>
+        </div>
+
+        <!-- شريط الخدمات (اشتراك، ميديا) -->
+        <div class="action-chips">
+            <button class="action-btn btn-pay" onclick="openSubscriptionModal()">🌟 <span id="txt-btn-sub">تفعيل المميز (Pay with Pi)</span></button>
+            <button class="action-btn btn-upload" onclick="document.getElementById('hidden-file').click()">📁 <span id="txt-btn-up">رفع وسائط</span></button>
+            <input type="file" id="hidden-file" style="display:none" accept="image/*, video/*" onchange="stageMediaFile(event)">
+        </div>
+
+        <!-- شريط الإدخال الفعلي وزر الإرسال -->
+        <footer class="input-area">
+            <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
+            <button class="send-btn" onclick="sendMessage()">➔</button>
+        </footer>
     </div>
 
-    <!-- شريط الخدمات السريعة (اشتراك، ميديا) -->
-    <div class="action-chips">
-        <button class="action-btn btn-pay" onclick="openSubscriptionModal()">🌟 <span id="txt-btn-sub">تفعيل المميز (Pay with Pi)</span></button>
-        <button class="action-btn btn-upload" onclick="document.getElementById('hidden-file').click()">📁 <span id="txt-btn-up">رفع وسائط</span></button>
-        <input type="file" id="hidden-file" style="display:none" accept="image/*, video/*" onchange="stageMediaFile(event)">
-    </div>
-
-    <!-- شريط الإدخال السفلي العالمي للدردشة -->
-    <footer class="input-area">
-        <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
-        <button class="send-btn" onclick="sendMessage()">➔</button>
-    </footer>
-
-    <!-- نافذة تفاصيل الاشتراك المميز (Modal) -->
+    <!-- نافذة تفاصيل الاشتراك المنبثقة -->
     <div class="modal" id="sub-modal">
         <div class="modal-content" id="modal-content-area"></div>
     </div>
@@ -412,7 +409,7 @@
                 "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية الاحترافية:**\nجسر التواصل اللغوي المباشر لعالميتك:\n- ترجمة دقيقة ومحترفة للمقالات والرسائل والنصوص من العربية إلى الإنجليزية والعكس بدقة متناهية.",
                 "تعليم اللغات 🔤": "🎓 **مرحباً بك في مركز تعليم اللغات الذكي لـ Rady Social AI!**\nالمنصة مجهزة لاحتواء واستيعاب مناهج اللغات بالكامل الآن ومستقبلاً بشكل مرن:\n- **الإنجليزية (English Track):** لممارسة المحادثة وضبط القواعد اللغوية.\n- **الفرنسية (Français Track):** لتعلم الكلمات والتعابير الأساسية النطقية.\n- **الألمانية (Deutsch Track):** لتركيب الجمل التفاعلية اليومية.\n\n*اكتب للمساعد التفاعلي الآن في حقل الإدخال بالأسفل الجملة التي تريد ممارستها أو العبارة التي تود تصحيحها وسيرد عليك فوراً!*",
                 "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتخصيص تجربتك الفريدة داخل التطبيق:\n- تبديل المظهر، مسح سجل المحادثات المؤقت، وتخصيص إشعارات التنبيه الذكية.",
-                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Note & Social AI\n• **المطور الأساسي:** Ismail Ahmed Alrady\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار:** V1.2.0 (State Control Update)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi اللامركزية."
+                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Note & Social AI\n• **المطور الأساسي:** Ismail Ahmed Alrady\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار:** V1.2.1 (Sticky Layout Update)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi اللامركزية."
             },
             en: {
                 "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including feasibility studies and marketing growth strategies for startups.",
@@ -422,7 +419,7 @@
                 "Translation 5️⃣": "🔤 **Instant Translation Section:**\nProfessional translation and precise linguistic phrasing from Arabic to English and vice versa.",
                 "Languages Hub 🔤": "🎓 **Welcome to Rady Social AI Language Learning Node!**\nOur platform structures language acquisition natively now and in future updates:\n- **English Track:** Practice conversation or clarify complex grammar principles.\n- **French Track:** Master essential vocabulary.\n- **German Track:** Learn daily interactions.\n\n*Type your objective now in the bottom input bar (e.g., 'Teach me useful English phrases') and the assistant will answer you instantly!*",
                 "Settings ⚙️": "⚙️ **Platform Settings:**\nToggle themes, clear temporary chat history, and adjust smart alert notifications.",
-                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Note & Social AI\n• **Lead Developer:** Ismail Ahmed Alrady\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.2.0 (State Control Update)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
+                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Note & Social AI\n• **Lead Developer:** Ismail Ahmed Alrady\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.2.1 (Sticky Layout Update)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
             }
         };
 
@@ -430,7 +427,7 @@
             ar: {
                 title: "Rady Social AI | رضي إي آي",
                 welcome: "مرحباً بك في Rady Social AI 🌍 اختر نوع المساعدة لنبدأ فوراً:",
-                placeholder: "اكتب رسالتك هنا للمساعد...",
+                placeholder: "اكتب رسالتك هنا...",
                 subBtn: "تفعيل المميز (Pay with Pi)",
                 upBtn: "رفع وسائط",
                 backBtn: "🔙 العودة للقائمة الرئيسية",
@@ -440,12 +437,12 @@
             en: {
                 title: "Rady Social AI",
                 welcome: "Welcome to Rady Social AI 🌍 Choose a category to get started immediately:",
-                placeholder: "Type your message here for the assistant...",
+                placeholder: "Type your message here...",
                 subBtn: "Premium Subscription (Pay with Pi)",
                 upBtn: "Upload Media",
                 backBtn: "🔙 Back to Main Menu",
                 statingText: "Media is staged. Type your prompt and click send...",
-                options: ["Business & Projects 1️⃣", "Personal Development 2️⃣", "Tech & Apps 3️⃣", "Crypto & Pi 4️⃣", "Translation 5️⃣", "Languages Hub 🔤", "Settings ⚙️", "About Platform ℹ️"]
+                options: ["Business & Projects 1️⃣", "Personal Development 2️⃣", "Tech & Apps 3️⃣", "Crypto & Pi 4️⃣", "Translation 5️⃣", "Languages Hub 🤤", "Settings ⚙️", "About Platform ℹ️"]
             }
         };
 
@@ -487,31 +484,20 @@
             });
         }
 
-        // الدخول الآمن للقسم مع التبديل الكامل للحالة لإنهاء تراكم الرسائل وزر الرجوع المعيب
         function enterCategorySection(categoryName) {
             activeSection = categoryName;
-            
-            // إخفاء واجهة القائمة الرئيسية النظيفة
             document.getElementById('menu-view').style.display = 'none';
-            
-            // تهيئة وتطهير شاشة الشات والتدفق بالكامل
             const chatBoxFlow = document.getElementById('chat-box-flow');
             chatBoxFlow.innerHTML = ''; 
-            
-            // إظهار شاشة الشات المخصصة للقسم
             document.getElementById('chat-view-container').style.display = 'flex';
             
-            // طباعة رسالة ترحيب القسم الفورية داخل الشات الجديد
             let detailedInfo = sectionDetails[currentLang][categoryName] || categoryName;
             appendMessage(detailedInfo, 'ai');
         }
 
-        // الخروج والعودة للقائمة الرئيسية بنظام التبديل الكامل والصحيح (حل مشكلة التكرار المعيب في الصور المرفقة)
         function returnToMainMenu() {
             activeSection = null;
-            // إخفاء شاشة الشات والدردشة بالكامل لتطهير الواجهة
             document.getElementById('chat-view-container').style.display = 'none';
-            // إعادة إظهار واجهة القائمة الرئيسية النظيفة والأصلية
             document.getElementById('menu-view').style.display = 'flex';
         }
 
@@ -553,14 +539,12 @@
             document.getElementById('hidden-file').value = '';
         }
 
-        // معالجة وإرسال الرسائل وتأمين تفعيل استجابة المساعد التفاعلي الفورية
         function sendMessage() {
             const input = document.getElementById('user-input');
             const text = input.value.trim();
             
             if (!text && !stagedMediaData) return;
 
-            // إذا كان المستخدم في القائمة الرئيسية وكتب مباشرة، يتم تحويله لشاشة الشات الافتراضية
             if (document.getElementById('menu-view').style.display !== 'none') {
                 document.getElementById('menu-view').style.display = 'none';
                 document.getElementById('chat-box-flow').innerHTML = '';
@@ -595,7 +579,6 @@
             let passedMedia = stagedMediaData;
             clearStagedMedia();
 
-            // المحاكي البرمجي التفاعلي للاستجابة على الرسائل والطلبات دون أي تجميد
             setTimeout(() => {
                 let aiReply = "";
                 
@@ -658,11 +641,10 @@
                     <h3>🌟 اشتراك باقة رضي المميزة (Rady AI Premium)</h3>
                     <p>انضم للمستخدمين المميزين عالمياً واستمتع بمزايا غير محدودة:</p>
                     <ul>
-                        <li>سرعة معالجة فائقة ومستمرة لجميع أقسام التعلم والأعمال والتقنية.</li>
-                        <li>إمكانية رفع الصور والملفات بشكل غير محدود وبثبات تام.</li>
-                        <li>دخول مخصص لأحدث تحديثات الذكاء الاصطناعي ومجموعات اللغات المتقدمة.</li>
+                        <li>سرعة معالجة فائقة لجميع الأقسام.</li>
+                        <li>إمكانية رفع الصور والملفات بشكل مستقر.</li>
                     </ul>
-                    <p style="font-weight: bold; color: var(--pi-purple); font-size: 1.1rem;">💰 قيمة الاشتراك: 1 Pi فقط</p>
+                    <p style="font-weight: bold; color: var(--pi-purple); font-size: 1rem;">💰 قيمة الاشتراك: 1 Pi فقط</p>
                     <div class="modal-buttons">
                         <button class="modal-btn btn-confirm" onclick="triggerPiPayment()">تأكيد ودفع الآن ⚡</button>
                         <button class="modal-btn btn-close" onclick="closeSubscriptionModal()">إلغاء</button>
@@ -673,11 +655,10 @@
                     <h3>🌟 Rady AI Premium Subscription</h3>
                     <p>Join global premium users and unlock full ultimate capabilities:</p>
                     <ul>
-                        <li>Ultra-fast processing for language, programming, and strategy queries.</li>
-                        <li>Unlimited secure media and image staging workflows.</li>
-                        <li>Exclusive entry to next-gen advanced custom AI LLM execution models.</li>
+                        <li>Ultra-fast processing for all queries.</li>
+                        <li>Unlimited secure media and image workflows.</li>
                     </ul>
-                    <p style="font-weight: bold; color: var(--pi-purple); font-size: 1.1rem;">💰 Price: 1 Pi Only</p>
+                    <p style="font-weight: bold; color: var(--pi-purple); font-size: 1rem;">💰 Price: 1 Pi Only</p>
                     <div class="modal-buttons">
                         <button class="modal-btn btn-confirm" onclick="triggerPiPayment()">Confirm & Pay Now ⚡</button>
                         <button class="modal-btn btn-close" onclick="closeSubscriptionModal()">Cancel</button>
@@ -694,7 +675,7 @@
         function triggerPiPayment() {
             closeSubscriptionModal();
             if (!window.Pi) {
-                alert(currentLang === 'ar' ? "يرجى فتح التطبيق داخل Pi Browser لتنفيذ معاملة الدفع وتخطي الخطوة." : "Please access from Pi Browser to complete payment verification.");
+                alert(currentLang === 'ar' ? "يرجى فتح التطبيق داخل Pi Browser لتنفيذ معاملة الدفع." : "Please access from Pi Browser to complete payment.");
                 return;
             }
 
@@ -703,10 +684,10 @@
                 memo: "Activate Rady Social AI Premium Features",
                 metadata: { orderId: "rady_prod_004", type: "premium_sub" }
             }, {
-                onReadyForServerApproval: function(paymentId) { console.log("Approved Payment ID: " + paymentId); },
+                onReadyForServerApproval: function(paymentId) { },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     alert(currentLang === 'ar' ? "تم تأكيد عملية الدفع بنجاح!" : "Payment success!");
-                    appendMessage(currentLang === 'ar' ? "🎉 تم تفعيل العضوية المميزة بنجاح عبر البلوكشين!" : "🎉 Premium subscription active via blockchain!", 'ai');
+                    appendMessage(currentLang === 'ar' ? "🎉 تم تفعيل العضوية المميزة بنجاح!" : "🎉 Premium subscription active!", 'ai');
                 },
                 onCancel: function(paymentId) { },
                 onError: function(error, paymentId) { }
