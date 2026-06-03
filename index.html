@@ -14,7 +14,6 @@
             --bg-color: #f8f9fa;
             --chat-bg: #ffffff;
             --user-msg: linear-gradient(135deg, #6a11cb, #2575fc);
-            --ai-msg: #ffffff;
         }
 
         body {
@@ -25,30 +24,31 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            overflow: hidden;
         }
 
-        /* الهيدر العلوي الاحترافي للمنصة */
+        /* الهيدر العلوي للمنصة */
         .app-header {
             background: linear-gradient(135deg, var(--pi-purple), var(--pi-dark-purple));
             color: white;
-            padding: 15px 20px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             border-bottom: 2px solid var(--pi-gold);
+            z-index: 10;
         }
 
         .app-title h1 {
             margin: 0;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            letter-spacing: 0.5px;
         }
 
         .app-title p {
             margin: 2px 0 0 0;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             opacity: 0.8;
         }
 
@@ -56,10 +56,10 @@
             background: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             transition: all 0.3s;
         }
@@ -67,32 +67,93 @@
         .lang-btn:hover {
             background: var(--pi-gold);
             color: var(--pi-dark-purple);
-            border-color: var(--pi-gold);
         }
 
-        /* منطقة الشات والرسائل */
-        .chat-container {
+        /* منطقة العرض الرئيسية السلسة */
+        .main-content {
             flex: 1;
-            overflow-y: auto;
-            padding: 20px;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
+            padding: 15px;
             gap: 15px;
+        }
+
+        /* حاوية القائمة الرئيسية النظيفة */
+        .menu-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-top: 10px;
+        }
+
+        .menu-welcome {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .quick-replies {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .chip {
+            background-color: #fff;
+            border: 1.5px solid var(--pi-purple);
+            color: var(--pi-purple);
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .chip:hover {
+            background-color: var(--pi-purple);
+            color: white;
+        }
+
+        /* واجهة الدردشة والمحادثة النشطة */
+        .chat-view {
+            display: none; /* مخفية افتراضياً وتظهر عند اختيار قسم */
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .chat-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            padding-bottom: 10px;
         }
 
         .message {
             max-width: 85%;
             padding: 12px 16px;
-            border-radius: 18px;
+            border-radius: 16px;
             font-size: 0.95rem;
-            line-height: 1.6;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
             word-wrap: break-word;
             white-space: pre-line;
         }
 
         .message.ai {
-            background-color: var(--chat-bg);
+            background-color: white;
             align-self: flex-start;
             border-top-left-radius: 2px;
             border: 1px solid #eef0f2;
@@ -106,82 +167,65 @@
             border-top-right-radius: 2px;
         }
 
-        /* الأزرار التفاعلية السريعة (Chips) */
-        .quick-replies {
+        /* زر التراجع الاحترافي المثبت أسفل نافذة القسم */
+        .back-navigation {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 12px;
-            justify-content: flex-start;
+            justify-content: center;
+            padding: 5px 0;
         }
 
-        .chip {
-            background-color: white;
-            border: 1.5px solid var(--pi-purple);
-            color: var(--pi-purple);
-            padding: 8px 14px;
-            border-radius: 25px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-
-        .chip:hover {
-            background-color: var(--pi-purple);
-            color: white;
-        }
-
-        .chip.back-btn {
-            background-color: #f8f9fa;
+        .back-btn {
+            background-color: #fff;
             border: 1.5px solid #dc3545;
             color: #dc3545;
-            font-weight: bold;
-            margin-top: 12px;
-            display: block;
-        }
-
-        .chip.back-btn:hover {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        /* شريط الخدمات الإضافية */
-        .action-chips {
-            display: flex;
-            gap: 10px;
-            padding: 10px 20px;
-            background-color: #f0f2f5;
-            overflow-x: auto;
-        }
-
-        .action-btn {
-            padding: 10px 18px;
-            border: none;
+            padding: 8px 20px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.15);
+        }
+
+        .back-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        /* شريط الخدمات الإضافية السفلي */
+        .action-chips {
+            display: flex;
+            gap: 10px;
+            padding: 10px 15px;
+            background-color: #f0f2f5;
+            overflow-x: auto;
+            border-top: 1px solid #eef0f2;
+        }
+
+        .action-btn {
+            padding: 9px 15px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             white-space: nowrap;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
 
         .btn-pay { background-color: var(--pi-gold); color: #333; }
         .btn-upload { background-color: #007bff; color: white; }
 
-        /* منطقة انتظار المرفقات قبل الإرسال (Staging Area) */
+        /* منطقة انتظار المرفقات قبل الإرسال */
         .upload-staging-area {
             display: none;
             background-color: #ffffff;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-top: 1px solid #eef0f2;
             align-items: center;
-            gap: 15px;
-            position: relative;
+            gap: 12px;
         }
 
         .staging-preview {
@@ -189,24 +233,24 @@
             display: inline-block;
         }
 
-        .staging-preview img, .staging-preview video {
-            max-width: 70px;
-            max-height: 70px;
-            border-radius: 8px;
+        .staging-preview img {
+            max-width: 60px;
+            max-height: 60px;
+            border-radius: 6px;
             border: 2px solid var(--pi-purple);
         }
 
         .remove-staging-btn {
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: -6px;
+            right: -6px;
             background-color: #dc3545;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -215,28 +259,28 @@
         }
 
         .staging-text {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #666;
         }
 
         /* شريط الإدخال السفلي */
         .input-area {
-            padding: 15px 20px;
-            background-color: var(--chat-bg);
+            padding: 10px 15px;
+            background-color: white;
             display: flex;
             gap: 10px;
             align-items: center;
             border-top: 1px solid #eef0f2;
+            padding-bottom: env(safe-area-inset-bottom, 10px);
         }
 
         .input-area input {
             flex: 1;
-            padding: 12px 18px;
+            padding: 10px 15px;
             border: 1.5px solid #ccced0;
             border-radius: 25px;
             outline: none;
-            font-size: 0.95rem;
-            transition: border-color 0.3s;
+            font-size: 0.9rem;
         }
 
         .input-area input:focus {
@@ -247,27 +291,25 @@
             background: linear-gradient(135deg, var(--pi-purple), var(--pi-dark-purple));
             color: white;
             border: none;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* المرفقات المعروضة داخل فقاعة الشات بعد الإرسال */
-        .chat-media-attached img, .chat-media-attached video {
-            max-width: 180px;
-            max-height: 180px;
-            border-radius: 10px;
-            margin-top: 8px;
+        .chat-media-attached img {
+            max-width: 160px;
+            max-height: 160px;
+            border-radius: 8px;
+            margin-top: 6px;
             display: block;
-            border: 1px solid rgba(255,255,255,0.2);
         }
 
-        /* نافذة الاشتراك المنبثقة (Modal) */
+        /* نافذة الاشتراك المنبثقة */
         .modal {
             display: none;
             position: fixed;
@@ -277,33 +319,31 @@
             align-items: center;
             z-index: 1000;
             padding: 20px;
-            box-sizing: border-box;
         }
 
         .modal-content {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            max-width: 450px;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 400px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             border-top: 5px solid var(--pi-purple);
         }
 
         .modal-content h3 { margin-top: 0; color: var(--pi-purple); }
-        .modal-content ul { text-align: right; margin: 15px 0; padding-right: 20px; }
-        .modal-content li { margin-bottom: 8px; font-size: 0.9rem; color: #555; }
+        .modal-content ul { text-align: right; margin: 12px 0; padding-right: 15px; }
+        .modal-content li { margin-bottom: 6px; font-size: 0.85rem; color: #555; }
         
-        .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-        .modal-btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+        .modal-btn { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
         .btn-confirm { background-color: var(--pi-gold); color: #333; }
         .btn-close { background-color: #ddd; color: #333; }
     </style>
 </head>
 <body>
 
-    <!-- الهيدر الاحترافي -->
+    <!-- الهيدر الاحترافي للمنصة -->
     <header class="app-header">
         <div class="app-title">
             <h1 id="txt-title">Rady Social AI | رضي إي آي</h1>
@@ -312,18 +352,31 @@
         <button class="lang-btn" onclick="toggleLanguage()">English</button>
     </header>
 
-    <!-- منطقة الشات الديناميكية -->
-    <main class="chat-container" id="chat-box">
-        <div class="message ai" id="main-welcome-box">
-            <span id="welcome-msg">مرحباً بك في Rady Social AI 🌍 اختر نوع المساعدة لنبدأ فوراً:</span>
+    <!-- منطقة العرض الرئيسية الديناميكية للتبديل بين الحالات -->
+    <main class="main-content" id="main-content-area">
+        
+        <!-- الحالة الأولى: القائمة الرئيسية النظيفة (تظهر أولاً) -->
+        <div class="menu-container" id="menu-view">
+            <div class="menu-welcome" id="welcome-msg">مرحباً بك في Rady Social AI 🌍 اختر نوع المساعدة لنبدأ فوراً:</div>
             <div class="quick-replies" id="replies-container"></div>
         </div>
+
+        <!-- الحالة الثانية: واجهة شاشة المحادثة النشطة للقسم (تظهر عند الدخول للقسم) -->
+        <div class="chat-view" id="chat-view-container">
+            <div class="chat-box" id="chat-box-flow"></div>
+            
+            <!-- شريط الملاحة والعودة للقائمة الرئيسية بدون الخروج نهائياً -->
+            <div class="back-navigation">
+                <button class="back-btn" onclick="returnToMainMenu()" id="back-btn-text">🔙 العودة للقائمة الرئيسية</button>
+            </div>
+        </div>
+
     </main>
 
     <!-- منطقة انتظار المرفقات قبل الضغط على إرسال -->
     <div class="upload-staging-area" id="staging-area">
         <div class="staging-preview" id="staging-preview-container"></div>
-        <div class="staging-text" id="staging-status-text">تم تحميل الملف وجاهز للصياغة...</div>
+        <div class="staging-text" id="staging-status-text">المستند جاهز، اكتب سؤالك واضغط إرسال...</div>
     </div>
 
     <!-- شريط الخدمات السريعة (اشتراك، ميديا) -->
@@ -333,7 +386,7 @@
         <input type="file" id="hidden-file" style="display:none" accept="image/*, video/*" onchange="stageMediaFile(event)">
     </div>
 
-    <!-- شريط الإدخال السفلي العالمي -->
+    <!-- شريط الإدخال السفلي العالمي للدردشة -->
     <footer class="input-area">
         <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
         <button class="send-btn" onclick="sendMessage()">➔</button>
@@ -348,28 +401,28 @@
         let currentLang = 'ar';
         let stagedMediaData = null; 
         let stagedMediaType = null;
+        let activeSection = null;
 
-        // تفاصيل الأقسام بما فيها قسم تعليم اللغات الجديد
         const sectionDetails = {
             ar: {
-                "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nيوفر لك هذا القسم استشارات ذكية تشمل:\n- دراسات جدوى مبسطة لمشروعك.\n- خطط تسويقية واستراتيجيات نمو للمشاريع الناشئة.",
-                "تطوير الذات 2️⃣": "🧠 **قسم تطوير الذات:**\nمساعدك الشخصي للنمو اليومي:\n- وضع خطط تنظيم الوقت وبناء العادات الإيجابية.\n- التوجيه للتخلص من التسويف والمماطلة.",
-                "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات:**\nالدعم الفني والبرمجي المتكامل:\n- مساعدتك في حل مشاكل الأكواد والنشر على منصات مثل Vercel و GitHub.",
-                "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nمساحتك لفهم اقتصاد المستقبل:\n- شرح آليات البلوكشين وتحديثات مستقبل شبكة Pi Network والتطبيقات اللامركزية Web3.",
-                "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية:**\nجسر التواصل اللغوي العالمي:\n- ترجمة احترافية وصياغة دقيقة للمقالات والرسائل من العربية إلى الإنجليزية والعكس.",
-                "تعليم اللغات 🔤": "🎓 **مرحباً بك في مركز تعليم اللغات الذكي لـ Rady Social AI!**\nتحتوي المنصة على نظام مرن لتعليم اللغات الآن ومستقبلاً. اختر أو اكتب ما تريد:\n- **الإنجليزية (English):** لممارسة التحدث أو تعلم القواعد.\n- **الفرنسية (Français):** لتعلم أساسيات النطق والكلمات.\n- **الألمانية (Deutsch):** لبناء الجمل اليومية.\n\n*اكتب للمساعد الآن اللعبة التي تريدها أو العبارة التي تود تصحيحها (مثال: 'علمني جمل إنجليزية مفيدة' أو 'صحح لي هذه الجملة').*",
-                "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتخصيص تجربتك الفريدة داخل التطبيق:\n- يمكنك تبديل المظهر، مسح سجل المحادثات المؤقت، وتخصيص إشعارات التنبيه الذكية.",
-                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Social AI\n• **المطور الأساسي:** Ismail Ahmed Alrady\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار الحركي:** V1.1.0 (Language Update)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi."
+                "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nيوفر لك هذا القسم استشارات ذكية تشمل:\n- دراسات جدوى مبسطة لمشروعك الناشئ.\n- خطط تسويقية واستراتيجيات نمو للمشاريع وعرض القيمة المضافة المتميزة لمشروعك.",
+                "تطوير الذات 2️⃣": "🧠 **قسم تطوير الذات:**\nمساعدك الشخصي للنمو اليومي وتنمية المهارات:\n- وضع خطط تنظيم الوقت وبناء العادات الإيجابية والتخلص المستدام من المماطلة والتسويف اليومي.",
+                "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات:**\nالدعم الفني والبرمجي المتكامل للأنظمة الحركية:\n- مساعدتك في حل مشاكل الأكواد والنشر والربط على منصات الاستضافة مثل Vercel و GitHub بنجاح.",
+                "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nمساحتك لفهم اقتصاد البلوكشين وتطبيقات Web3 الذكية:\n- شرح آليات المحفظة والعقود وتحديثات مستقبل شبكة Pi Network الحالية.",
+                "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية الاحترافية:**\nجسر التواصل اللغوي المباشر لعالميتك:\n- ترجمة دقيقة ومحترفة للمقالات والرسائل والنصوص من العربية إلى الإنجليزية والعكس بدقة متناهية.",
+                "تعليم اللغات 🔤": "🎓 **مرحباً بك في مركز تعليم اللغات الذكي لـ Rady Social AI!**\nالمنصة مجهزة لاحتواء واستيعاب مناهج اللغات بالكامل الآن ومستقبلاً بشكل مرن:\n- **الإنجليزية (English Track):** لممارسة المحادثة وضبط القواعد اللغوية.\n- **الفرنسية (Français Track):** لتعلم الكلمات والتعابير الأساسية النطقية.\n- **الألمانية (Deutsch Track):** لتركيب الجمل التفاعلية اليومية.\n\n*اكتب للمساعد التفاعلي الآن في حقل الإدخال بالأسفل الجملة التي تريد ممارستها أو العبارة التي تود تصحيحها وسيرد عليك فوراً!*",
+                "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتخصيص تجربتك الفريدة داخل التطبيق:\n- تبديل المظهر، مسح سجل المحادثات المؤقت، وتخصيص إشعارات التنبيه الذكية.",
+                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Note & Social AI\n• **المطور الأساسي:** Ismail Ahmed Alrady\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار:** V1.2.0 (State Control Update)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi اللامركزية."
             },
             en: {
-                "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including feasibility studies and marketing growth strategies.",
-                "Personal Development 2️⃣": "🧠 **Personal Development Section:**\nYour personal growth assistant for time management and building positive habits.",
-                "Tech & Apps 3️⃣": "💻 **Tech & Applications Section:**\nAssisting you with debugging code and deploying to Vercel & GitHub.",
-                "Crypto & Pi 4️⃣": "⚡ **Crypto & Pi Network Section:**\nUpdates and insights on the Pi Network ecosystem and Web3 decentralization.",
-                "Translation 5️⃣": "🔤 **Instant Translation Section:**\nProfessional translation and precise phrasing from Arabic to English and vice versa.",
-                "Languages Hub 🔤": "🎓 **Welcome to Rady Social AI Language Learning Node!**\nOur platform structures language acquisition natively. Choose your path:\n- **English Track:** Practice fluent conversation or fix grammar.\n- **French Track:** Master essential vocabulary.\n- **German Track:** Learn daily interaction phrases.\n\n*Type your objective now (e.g., 'Give me common English idioms' or 'Check my German grammar').*",
+                "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including feasibility studies and marketing growth strategies for startups.",
+                "Personal Development 2️⃣": "🧠 **Personal Development Section:**\nYour personal growth assistant for time management and overcoming procrastination actively.",
+                "Tech & Apps 3️⃣": "💻 **Tech & Applications Section:**\nAssisting you with debugging code and deploying to web hosting networks like Vercel & GitHub.",
+                "Crypto & Pi 4️⃣": "⚡ **Crypto & Pi Network Section:**\nUpdates and analytical insights on the Pi Network ecosystem and decentralized Web3 application nodes.",
+                "Translation 5️⃣": "🔤 **Instant Translation Section:**\nProfessional translation and precise linguistic phrasing from Arabic to English and vice versa.",
+                "Languages Hub 🔤": "🎓 **Welcome to Rady Social AI Language Learning Node!**\nOur platform structures language acquisition natively now and in future updates:\n- **English Track:** Practice conversation or clarify complex grammar principles.\n- **French Track:** Master essential vocabulary.\n- **German Track:** Learn daily interactions.\n\n*Type your objective now in the bottom input bar (e.g., 'Teach me useful English phrases') and the assistant will answer you instantly!*",
                 "Settings ⚙️": "⚙️ **Platform Settings:**\nToggle themes, clear temporary chat history, and adjust smart alert notifications.",
-                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Social AI\n• **Lead Developer:** Ismail Ahmed Alrady\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.1.0 (Language Update)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
+                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Note & Social AI\n• **Lead Developer:** Ismail Ahmed Alrady\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.2.0 (State Control Update)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
             }
         };
 
@@ -377,17 +430,17 @@
             ar: {
                 title: "Rady Social AI | رضي إي آي",
                 welcome: "مرحباً بك في Rady Social AI 🌍 اختر نوع المساعدة لنبدأ فوراً:",
-                placeholder: "اكتب رسالتك هنا...",
+                placeholder: "اكتب رسالتك هنا للمساعد...",
                 subBtn: "تفعيل المميز (Pay with Pi)",
                 upBtn: "رفع وسائط",
                 backBtn: "🔙 العودة للقائمة الرئيسية",
-                statingText: "الملف جاهز، اكتب سؤالك واضغط إرسال...",
+                statingText: "المستند جاهز، اكتب سؤالك واضغط إرسال...",
                 options: ["أعمال ومشاريع 1️⃣", "تطوير الذات 2️⃣", "تقنية وتطبيقات 3️⃣", "العملات الرقمية 4️⃣", "ترجمة عربي ↔ إنجليزي 5️⃣", "تعليم اللغات 🔤", "الإعدادات ⚙️", "حول المنصة ℹ️"]
             },
             en: {
                 title: "Rady Social AI",
                 welcome: "Welcome to Rady Social AI 🌍 Choose a category to get started immediately:",
-                placeholder: "Type your message here...",
+                placeholder: "Type your message here for the assistant...",
                 subBtn: "Premium Subscription (Pay with Pi)",
                 upBtn: "Upload Media",
                 backBtn: "🔙 Back to Main Menu",
@@ -417,9 +470,8 @@
             document.getElementById('user-input').placeholder = translations[currentLang].placeholder;
             document.getElementById('txt-btn-sub').innerText = translations[currentLang].subBtn;
             document.getElementById('txt-btn-up').innerText = translations[currentLang].upBtn;
-            if(document.getElementById('staged-status-text')) {
-                document.getElementById('staged-status-text').innerText = translations[currentLang].statingText;
-            }
+            document.getElementById('back-btn-text').innerText = translations[currentLang].backBtn;
+            document.getElementById('staging-status-text').innerText = translations[currentLang].statingText;
             renderQuickReplies();
         }
 
@@ -430,43 +482,37 @@
                 const button = document.createElement('button');
                 button.className = 'chip';
                 button.innerText = option;
-                button.onclick = () => selectCategory(option);
+                button.onclick = () => enterCategorySection(option);
                 container.appendChild(button);
             });
         }
 
-        function selectCategory(categoryName) {
-            appendMessage(categoryName, 'user');
+        // الدخول الآمن للقسم مع التبديل الكامل للحالة لإنهاء تراكم الرسائل وزر الرجوع المعيب
+        function enterCategorySection(categoryName) {
+            activeSection = categoryName;
             
-            setTimeout(() => {
-                let detailedInfo = sectionDetails[currentLang][categoryName] || categoryName;
-                
-                const chatBox = document.getElementById('chat-box');
-                const msgDiv = document.createElement('div');
-                msgDiv.className = "message ai";
-                msgDiv.innerHTML = `<div>${detailedInfo.replace(/\n/g, '<br>')}</div>`;
-                
-                const backBtn = document.createElement('button');
-                backBtn.className = 'chip back-btn';
-                backBtn.innerText = translations[currentLang].backBtn;
-                backBtn.onclick = () => {
-                    appendMessage(translations[currentLang].backBtn, 'user');
-                    setTimeout(() => {
-                        appendMessage(translations[currentLang].welcome, 'ai');
-                        renderQuickReplies();
-                        document.getElementById('replies-container').remove();
-                        const newRepliesContainer = document.createElement('div');
-                        newRepliesContainer.className = 'quick-replies';
-                        newRepliesContainer.id = 'replies-container';
-                        chatBox.lastElementChild.appendChild(newRepliesContainer);
-                        renderQuickReplies();
-                    }, 400);
-                };
-                
-                msgDiv.appendChild(backBtn);
-                chatBox.appendChild(msgDiv);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 500);
+            // إخفاء واجهة القائمة الرئيسية النظيفة
+            document.getElementById('menu-view').style.display = 'none';
+            
+            // تهيئة وتطهير شاشة الشات والتدفق بالكامل
+            const chatBoxFlow = document.getElementById('chat-box-flow');
+            chatBoxFlow.innerHTML = ''; 
+            
+            // إظهار شاشة الشات المخصصة للقسم
+            document.getElementById('chat-view-container').style.display = 'flex';
+            
+            // طباعة رسالة ترحيب القسم الفورية داخل الشات الجديد
+            let detailedInfo = sectionDetails[currentLang][categoryName] || categoryName;
+            appendMessage(detailedInfo, 'ai');
+        }
+
+        // الخروج والعودة للقائمة الرئيسية بنظام التبديل الكامل والصحيح (حل مشكلة التكرار المعيب في الصور المرفقة)
+        function returnToMainMenu() {
+            activeSection = null;
+            // إخفاء شاشة الشات والدردشة بالكامل لتطهير الواجهة
+            document.getElementById('chat-view-container').style.display = 'none';
+            // إعادة إظهار واجهة القائمة الرئيسية النظيفة والأصلية
+            document.getElementById('menu-view').style.display = 'flex';
         }
 
         function stageMediaFile(event) {
@@ -480,19 +526,13 @@
                 
                 const stagingArea = document.getElementById('staging-area');
                 const previewContainer = document.getElementById('staging-preview-container');
-                const statusText = document.getElementById('staging-status-text');
                 
                 previewContainer.innerHTML = '';
-                statusText.innerText = translations[currentLang].statingText;
 
                 if (stagedMediaType.startsWith('image/')) {
                     const img = document.createElement('img');
                     img.src = stagedMediaData;
                     previewContainer.appendChild(img);
-                } else if (stagedMediaType.startsWith('video/')) {
-                    const video = document.createElement('video');
-                    video.src = stagedMediaData;
-                    previewContainer.appendChild(video);
                 }
 
                 const removeBtn = document.createElement('button');
@@ -513,13 +553,21 @@
             document.getElementById('hidden-file').value = '';
         }
 
+        // معالجة وإرسال الرسائل وتأمين تفعيل استجابة المساعد التفاعلي الفورية
         function sendMessage() {
             const input = document.getElementById('user-input');
             const text = input.value.trim();
             
             if (!text && !stagedMediaData) return;
 
-            const chatBox = document.getElementById('chat-box');
+            // إذا كان المستخدم في القائمة الرئيسية وكتب مباشرة، يتم تحويله لشاشة الشات الافتراضية
+            if (document.getElementById('menu-view').style.display !== 'none') {
+                document.getElementById('menu-view').style.display = 'none';
+                document.getElementById('chat-box-flow').innerHTML = '';
+                document.getElementById('chat-view-container').style.display = 'flex';
+            }
+
+            const chatBoxFlow = document.getElementById('chat-box-flow');
             const msgDiv = document.createElement('div');
             msgDiv.className = "message user";
             
@@ -532,76 +580,72 @@
             if (stagedMediaData) {
                 const mediaContainer = document.createElement('div');
                 mediaContainer.className = 'chat-media-attached';
-                if (stagedMediaType.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = stagedMediaData;
-                    mediaContainer.appendChild(img);
-                } else if (stagedMediaType.startsWith('video/')) {
-                    const video = document.createElement('video');
-                    video.src = stagedMediaData;
-                    mediaContainer.appendChild(video);
-                }
+                const img = document.createElement('img');
+                img.src = stagedMediaData;
+                mediaContainer.appendChild(img);
                 msgDiv.appendChild(mediaContainer);
             }
 
-            chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatBoxFlow.appendChild(msgDiv);
+            chatBoxFlow.scrollTop = chatBoxFlow.scrollHeight;
 
             const lowerText = text.toLowerCase();
             input.value = '';
+            
+            let passedMedia = stagedMediaData;
             clearStagedMedia();
 
-            // ردود تفاعلية تشمل سيناريوهات تعليم اللغات الجديد
+            // المحاكي البرمجي التفاعلي للاستجابة على الرسائل والطلبات دون أي تجميد
             setTimeout(() => {
                 let aiReply = "";
                 
                 if (currentLang === 'ar') {
-                    if (lowerText.includes('علمني') || lowerText.includes('انجليزي') || lowerText.includes('لغة') || lowerText.includes('english') || lowerText.includes('جمل')) {
-                        aiReply = "🔤 مرحباً بك في ركن اللغات المطور! إليك عبارة اليوم بالإنجليزية:\n" +
-                                  "💡 *'Actions speak louder than words'* (الأفعال أبلغ من الأقوال).\n\n" +
-                                  "هل تود التدرب على محادثة معينة؟ اكتب لي أي جملة وسأقوم بتدقيقها لك فوراً!";
-                    } else if (lowerText.includes('كود') || lowerText.includes('برمجة') || lowerText.includes('تطبيق')) {
-                        aiReply = "💻 أهلاً بك في الدعم التقني البرمجي! تحليل طلبك يوضح أنك تعمل على بناء ميزة ذكية. تأكد دائماً من تهيئة البيئة البرمجية بشكل سليم ومراجعة ملفات الـ Console لحصر الخطأ.";
-                    } else if (lowerText.includes('تسويق') || lowerText.includes('مشروع') || lowerText.includes('فلوس')) {
-                        aiReply = "💼 مستشارك الاستثماري هنا! لضمان نجاح مشروعك، ابدأ دائماً بتحديد الشريحة المستهدفة بدقة واهتم بالقيمة المضافة الفردية التي تقدمها منصتك مقارنة بالمنافسين.";
+                    if (lowerText.includes('علمني') || lowerText.includes('انجليزي') || lowerText.includes('لغة') || lowerText.includes('english') || lowerText.includes('جمل') || lowerText.includes('لغات')) {
+                        aiReply = "🔤 مرحباً بك في ركن ممارسة اللغات الحي! العبارة التدريبية المقترحة لك الآن:\n" +
+                                  "💡 *'Practice makes perfect'* (التكرار والممارسة تصنع الاتقان).\n\n" +
+                                  "اكتب لي أي جملة تود ترجمتها أو صياغتها، وسأقوم بالرد الفوري لتطوير مهاراتك اللغوية وتأهيلك للعالمية!";
+                    } else if (lowerText.includes('كود') || lowerText.includes('برمجة') || lowerText.includes('تطبيق') || lowerText.includes('خطأ')) {
+                        aiReply = "💻 دعم رضي التقني نشط الآن! بخصوص استفسارك البرمجي، يرجى تزويدي بالسطر المعيب أو الرسالة التي تظهر لك لكي أحلل لك طريقة معالجتها لرفع الكود بنجاح على GitHub أو Vercel.";
+                    } else if (lowerText.includes('تسويق') || lowerText.includes('مشروع') || lowerText.includes('عمل') || lowerText.includes('دراسة')) {
+                        aiReply = "💼 مستشارك الاستثماري والريادي معك! لتنفيذ طلبك بشكل سليم، ركز أولاً على ميزتك التنافسية الفردية وخريطة التدفق المالي لمستخدمي المنصة.";
                     } else if (lowerText.includes('باي') || lowerText.includes('عملة') || lowerText.includes('pi')) {
-                        aiReply = "⚡ معلومات شبكة Pi Network: نظام Web3 القائم على البلوكشين في تطبيقنا يسمح لك ببناء معاملات دفع حقيقية (User-to-App) بسرعة وأمان من خلال الـ SDK الخاص بنا.";
+                        aiReply = "⚡ مساحة الـ Web3 ونظام البلوكشين الذكي: نستخدم في تطبيقنا بروتوكولات الدفع الآمنة لـ Pi SDK لتمكين المعاملات الموثوقة بيئياً وبسرعة فائقة.";
                     } else if (lowerText.includes('اسماعيل') || lowerText.includes('إسماعيل') || lowerText.includes('المطور')) {
-                        aiReply = "ℹ️ المطور الأساسي وصاحب هذه الرؤية المتميزة هو  Ismail Ahmed Ismail، ويمكنك دائماً مراسلته عبر البريد الرسمي المرفق في قسم 'حول المنصة'.";
-                    } else if (stagedMediaData && !text) {
-                        aiReply = "📥 لقد استلمت الصورة بنجاح في نظام المعالجة البصرية لرضي إي آي! يرجى كتابة استفسارك أو كتابة ما المطلوب مني تحليله في هذه الصورة وسأرد عليك فوراً.";
+                        aiReply = "ℹ️ مطور المنصة هو المبرمج Ismail Ahmed Ismail وعنوان الاتصال الرسمي به هو asmaylalrdy744@gmail.com لمشاركة الأفكار الريادية الكبرى للـ Pi Network.";
+                    } else if (passedMedia && !text) {
+                        aiReply = "📥 لقد استلمت الصورة بنجاح في معالج رضي إي آي البصري! يرجى كتابة سؤالك بخصوص هذه الصورة في حقل الإدخال لكي أقوم بتحليلها وإعطائك الإجابة الدقيقة فوراً.";
                     } else {
-                        aiReply = `🤖 أنا هنا للتفاعل معك! لقد استلمت رسالتك بخصوص "${text}" وجاري تشغيل منطق رضي إي آي الذكي لتقديم أفضل مساعدة مخصصة لك في هذا القسم.`;
+                        aiReply = `🤖 أنا هنا وأتفاعل معك بكفاءة! لقد استلمت طلبك بخصوص "${text}" بوضوح، وجاري تحليل الكلمات المفتاحية لتقديم الدعم الحركي الأنسب لك في هذا القسم الذكي.`;
                     }
                 } else {
-                    if (lowerText.includes('learn') || lowerText.includes('english') || lowerText.includes('language') || lowerText.includes('phrase')) {
-                        aiReply = "🔤 Welcome to the Language learning block! Here is your daily English idiom:\n" +
-                                  "💡 *'Break a leg'* (Means: Good luck!).\n\n" +
-                                  "Type any phrase you want to evaluate or practice, and I will act as your interactive tutor!";
-                    } else if (lowerText.includes('code') || lowerText.includes('program') || lowerText.includes('app')) {
-                        aiReply = "💻 Technical Support Node active! Ensure your dependencies are correctly bundled and check the Vercel logs to avoid runtime execution crashes.";
+                    if (lowerText.includes('learn') || lowerText.includes('english') || lowerText.includes('language') || lowerText.includes('phrase') || lowerText.includes('speak')) {
+                        aiReply = "🔤 Welcome to the Live Language Learning Station! Today's rule:\n" +
+                                  "💡 *'Better late than never'* (أن تصل متأخراً خير من ألا تصل أبداً).\n\n" +
+                                  "Type any statement or phrase to check, and I will interactively correct it for you.";
+                    } else if (lowerText.includes('code') || lowerText.includes('program') || lowerText.includes('app') || lowerText.includes('error')) {
+                        aiReply = "💻 Developer Support Active! Provide the specific code block or execution logs so I can help you debug and deploy correctly.";
                     } else if (lowerText.includes('business') || lowerText.includes('market') || lowerText.includes('project')) {
-                        aiReply = "💼 Strategy Node active! To scale your project globally, map your user persona constraints and focus on iterative organic user onboarding pipelines.";
+                        aiReply = "💼 Strategy Node active! To structure your business flow, map your core target audience constraints and iterative distribution channels.";
                     } else if (lowerText.includes('pi') || lowerText.includes('crypto') || lowerText.includes('blockchain')) {
-                        aiReply = "⚡ Blockchain Integration active! The Pi Network ecosystem relies on decentralized trust architectures. Our platform is fully synchronized via Pi SDK.";
-                    } else if (stagedMediaData && !text) {
-                        aiReply = "📥 I have safely staged your uploaded media element. Please type your query or prompt regarding this file so I can perform the precise analysis.";
+                        aiReply = "⚡ Pi Ecosystem Active. Fully synchronized via current Web3 Pi SDK configurations for streamlined user-to-app payment flows.";
+                    } else if (passedMedia && !text) {
+                        aiReply = "📥 Media element successfully captured. Please enter your text description or command so I can perform the targeted analytical execution.";
                     } else {
-                        aiReply = `🤖 Live AI Node: Received your prompt regarding "${text}". Processing via Rady Social AI analytical engine to give you the optimal response.`;
+                        aiReply = `🤖 Live Response Engine: Successfully processing your dynamic prompt regarding "${text}" to assist your active session requirements.`;
                     }
                 }
                 
                 appendMessage(aiReply, 'ai');
-            }, 800);
+            }, 700);
         }
 
         function appendMessage(text, sender) {
-            const chatBox = document.getElementById('chat-box');
+            const chatBoxFlow = document.getElementById('chat-box-flow');
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${sender}`;
             msgDiv.innerText = text;
-            chatBox.appendChild(msgDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatBoxFlow.appendChild(msgDiv);
+            chatBoxFlow.scrollTop = chatBoxFlow.scrollHeight;
             return msgDiv;
         }
 
@@ -614,9 +658,9 @@
                     <h3>🌟 اشتراك باقة رضي المميزة (Rady AI Premium)</h3>
                     <p>انضم للمستخدمين المميزين عالمياً واستمتع بمزايا غير محدودة:</p>
                     <ul>
-                        <li>سرعة معالجة فائقة ومستمرة للاستفسارات البرمجية والأعمال.</li>
-                        <li>إمكانية رفع وسائط وملفات ذات أحجام كبيرة بلا حدود.</li>
-                        <li>دخول حصري لنماذج الذكاء الاصطناعي المتقدمة ودروس اللغات الموسعة.</li>
+                        <li>سرعة معالجة فائقة ومستمرة لجميع أقسام التعلم والأعمال والتقنية.</li>
+                        <li>إمكانية رفع الصور والملفات بشكل غير محدود وبثبات تام.</li>
+                        <li>دخول مخصص لأحدث تحديثات الذكاء الاصطناعي ومجموعات اللغات المتقدمة.</li>
                     </ul>
                     <p style="font-weight: bold; color: var(--pi-purple); font-size: 1.1rem;">💰 قيمة الاشتراك: 1 Pi فقط</p>
                     <div class="modal-buttons">
@@ -629,9 +673,9 @@
                     <h3>🌟 Rady AI Premium Subscription</h3>
                     <p>Join global premium users and unlock full ultimate capabilities:</p>
                     <ul>
-                        <li>Ultra-fast, high-priority processing for coding and business nodes.</li>
-                        <li>Unlimited large-scale media and file uploads.</li>
-                        <li>Exclusive access to next-gen advanced AI and extensive language tracks.</li>
+                        <li>Ultra-fast processing for language, programming, and strategy queries.</li>
+                        <li>Unlimited secure media and image staging workflows.</li>
+                        <li>Exclusive entry to next-gen advanced custom AI LLM execution models.</li>
                     </ul>
                     <p style="font-weight: bold; color: var(--pi-purple); font-size: 1.1rem;">💰 Price: 1 Pi Only</p>
                     <div class="modal-buttons">
@@ -657,11 +701,9 @@
             window.Pi.createPayment({
                 amount: 1, 
                 memo: "Activate Rady Social AI Premium Features",
-                metadata: { orderId: "rady_prod_003", type: "premium_sub" }
+                metadata: { orderId: "rady_prod_004", type: "premium_sub" }
             }, {
-                onReadyForServerApproval: function(paymentId) {
-                    console.log("Approved Payment ID: " + paymentId);
-                },
+                onReadyForServerApproval: function(paymentId) { console.log("Approved Payment ID: " + paymentId); },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     alert(currentLang === 'ar' ? "تم تأكيد عملية الدفع بنجاح!" : "Payment success!");
                     appendMessage(currentLang === 'ar' ? "🎉 تم تفعيل العضوية المميزة بنجاح عبر البلوكشين!" : "🎉 Premium subscription active via blockchain!", 'ai');
