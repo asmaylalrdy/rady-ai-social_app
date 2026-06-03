@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" id="html-tag">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Rady Social AI</title>
     <!-- استدعاء مكتبة Pi Network SDK الرسمية -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
@@ -20,15 +20,20 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden; /* يمنع الصفحة كاملة من الانهيار */
+            /* إضافة هامش سفلي كبير لحجز مساحة ومنع المحتوى من الاختفاء تحت شريط الإدخال الثابت */
+            padding-bottom: 140px; 
+            overflow-y: auto;
         }
 
         /* الهيدر العلوي للمنصة */
@@ -41,7 +46,9 @@
             align-items: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             border-bottom: 2px solid var(--pi-gold);
-            flex-shrink: 0; /* يمنع الهيدر من الانضغاط */
+            position: sticky;
+            top: 0;
+            z-index: 200;
         }
 
         .app-title h1 {
@@ -67,13 +74,10 @@
             font-weight: bold;
         }
 
-        /* منطقة العرض الرئيسية - قابلة للتمرير بشكل مستقل */
+        /* منطقة العرض الرئيسية */
         .main-content {
-            flex: 1;
-            overflow-y: auto; /* يسمح بالتمرير هنا فقط إذا زادت الأزرار */
             padding: 12px;
-            display: flex;
-            flex-direction: column;
+            width: 100%;
         }
 
         /* حاوية القائمة الرئيسية النظيفة */
@@ -99,7 +103,7 @@
 
         .quick-replies {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* ترتيب ثنائي متناسق جداً مثل الصورة */
+            grid-template-columns: repeat(2, 1fr); /* ترتيب ثنائي متناسق جداً */
             gap: 10px;
         }
 
@@ -121,16 +125,14 @@
         .chat-view {
             display: none;
             flex-direction: column;
-            height: 100%;
+            width: 100%;
         }
 
         .chat-box {
-            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            overflow-y: auto;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
         }
 
         .message {
@@ -161,7 +163,7 @@
         .back-navigation {
             display: flex;
             justify-content: center;
-            padding: 8px 0 0 0;
+            padding: 15px 0;
         }
 
         .back-btn {
@@ -175,13 +177,16 @@
             cursor: pointer;
         }
 
-        /* الجزء السفلي المثبت بالكامل (Fixed Bottom Controls) */
+        /* حلاً جذرياً: تثبيت مطلق صارم في أسفل نافذة العرض المتصفح */
         .fixed-bottom-controls {
-            flex-shrink: 0; /* يمنع هذا الجزء من الاختفاء أو الانضغاط */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
             background-color: white;
             border-top: 1px solid #eef0f2;
-            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-            z-index: 100;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.08);
+            z-index: 999; /* البقاء فوق كل عناصر الصفحة */
         }
 
         /* منطقة انتظار المرفقات قبل الإرسال */
@@ -259,14 +264,15 @@
         .btn-pay { background-color: var(--pi-gold); color: #333; }
         .btn-upload { background-color: #007bff; color: white; }
 
-        /* شريط الإدخال الفعلي */
+        /* شريط الإدخال الفعلي وإرسال البيانات */
         .input-area {
             padding: 10px 12px;
             display: flex;
             gap: 10px;
             align-items: center;
             background-color: white;
-            padding-bottom: env(safe-area-inset-bottom, 12px);
+            /* حماية الشاشات والهواتف الحديثة ذات الحواف السفلية المنحنية */
+            padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
         }
 
         .input-area input {
@@ -347,8 +353,8 @@
         <button class="lang-btn" onclick="toggleLanguage()">English</button>
     </header>
 
-    <!-- منطقة المحتوى القابلة للتمرير المستقل -->
-    <main class="main-content" id="main-content-area">
+    <!-- منطقة المحتوى الرئيسية القابلة للتمرير الحر -->
+    <main class="main-content">
         
         <!-- الحالة الأولى: القائمة الرئيسية النظيفة وثنائية الأعمدة -->
         <div class="menu-container" id="menu-view">
@@ -366,7 +372,7 @@
 
     </main>
 
-    <!-- الحاوية السفلية الثابتة والمضمونة الظهور دائماً على جميع هواتف المستخدمين -->
+    <!-- الحاوية السفلية المثبتة بشكل مطلق وصارم بأسفل الشاشة لتفادي اختفائها نهائياً -->
     <div class="fixed-bottom-controls">
         
         <!-- منطقة انتظار المرفقات فوق صندوق الإدخال مباشرة لتنظيم المساحة -->
@@ -400,6 +406,7 @@
         let stagedMediaType = null;
         let activeSection = null;
 
+        // تعديل البيانات وتحديث التسمية والمطور الرسمي بناءً على توجيهاتك الصارمة
         const sectionDetails = {
             ar: {
                 "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nيوفر لك هذا القسم استشارات ذكية تشمل:\n- دراسات جدوى مبسطة لمشروعك الناشئ.\n- خطط تسويقية واستراتيجيات نمو للمشاريع وعرض القيمة المضافة المتميزة لمشروعك.",
@@ -407,9 +414,9 @@
                 "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات:**\nالدعم الفني والبرمجي المتكامل للأنظمة الحركية:\n- مساعدتك في حل مشاكل الأكواد والنشر والربط على منصات الاستضافة مثل Vercel و GitHub بنجاح.",
                 "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nمساحتك لفهم اقتصاد البلوكشين وتطبيقات Web3 الذكية:\n- شرح آليات المحفظة والعقود وتحديثات مستقبل شبكة Pi Network الحالية.",
                 "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية الاحترافية:**\nجسر التواصل اللغوي المباشر لعالميتك:\n- ترجمة دقيقة ومحترفة للمقالات والرسائل والنصوص من العربية إلى الإنجليزية والعكس بدقة متناهية.",
-                "تعليم اللغات 🔤": "🎓 **مرحباً بك في مركز تعليم اللغات الذكي لـ Rady Social AI!**\nالمنصة مجهزة لاحتواء واستيعاب مناهج اللغات بالكامل الآن ومستقبلاً بشكل مرن:\n- **الإنجليزية (English Track):** لممارسة المحادثة وضبط القواعد اللغوية.\n- **الفرنسية (Français Track):** لتعلم الكلمات والتعابير الأساسية النطقية.\n- **الألمانية (Deutsch Track):** لتركيب الجمل التفاعلية اليومية.\n\n*اكتب للمساعد التفاعلي الآن في حقل الإدخال بالأسفل الجملة التي تريد ممارستها أو العبارة التي تود تصحيحها وسيرد عليك فوراً!*",
+                "تعليم اللغات 🔤": "🎓 **مرحباً بك في مركز تعليم اللغات الذكي لـ Rady Social AI!**\nالمنصة مجهزة لاحتواء واستيعاب مناهج اللغات بالكامل الآن ومستقبلاً بشكل مرن:\n- ** can الإنجليزية (English Track):** لممارسة المحادثة وضبط القواعد اللغوية.\n- **الفرنسية (Français Track):** لتعلم الكلمات والتعابير الأساسية النطقية.\n- **الألمانية (Deutsch Track):** لتركيب الجمل التفاعلية اليومية.\n\n*اكتب للمساعد التفاعلي الآن في حقل الإدخال بالأسفل الجملة التي تريد ممارستها أو العبارة التي تود تصحيحها وسيرد عليك فوراً!*",
                 "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتخصيص تجربتك الفريدة داخل التطبيق:\n- تبديل المظهر، مسح سجل المحادثات المؤقت، وتخصيص إشعارات التنبيه الذكية.",
-                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Note & Social AI\n• **المطور الأساسي:** Ismail Ahmed Alrady\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار:** V1.2.1 (Sticky Layout Update)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi اللامركزية."
+                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Social AI\n• **المطور الأساسي:** Ismail Ahmed Ismail\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار:** V1.2.5 (Fixed Bottom Absolute Layout)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi اللامركزية."
             },
             en: {
                 "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including feasibility studies and marketing growth strategies for startups.",
@@ -419,7 +426,7 @@
                 "Translation 5️⃣": "🔤 **Instant Translation Section:**\nProfessional translation and precise linguistic phrasing from Arabic to English and vice versa.",
                 "Languages Hub 🔤": "🎓 **Welcome to Rady Social AI Language Learning Node!**\nOur platform structures language acquisition natively now and in future updates:\n- **English Track:** Practice conversation or clarify complex grammar principles.\n- **French Track:** Master essential vocabulary.\n- **German Track:** Learn daily interactions.\n\n*Type your objective now in the bottom input bar (e.g., 'Teach me useful English phrases') and the assistant will answer you instantly!*",
                 "Settings ⚙️": "⚙️ **Platform Settings:**\nToggle themes, clear temporary chat history, and adjust smart alert notifications.",
-                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Note & Social AI\n• **Lead Developer:** Ismail Ahmed Alrady\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.2.1 (Sticky Layout Update)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
+                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Social AI\n• **Lead Developer:** Ismail Ahmed Ismail\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.2.5 (Fixed Bottom Absolute Layout)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
             }
         };
 
@@ -442,7 +449,7 @@
                 upBtn: "Upload Media",
                 backBtn: "🔙 Back to Main Menu",
                 statingText: "Media is staged. Type your prompt and click send...",
-                options: ["Business & Projects 1️⃣", "Personal Development 2️⃣", "Tech & Apps 3️⃣", "Crypto & Pi 4️⃣", "Translation 5️⃣", "Languages Hub 🤤", "Settings ⚙️", "About Platform ℹ️"]
+                options: ["Business & Projects 1️⃣", "Personal Development 2️⃣", "Tech & Apps 3️⃣", "Crypto & Pi 4️⃣", "Translation 5️⃣", "Languages Hub 🔤", "Settings ⚙️", "About Platform ℹ️"]
             }
         };
 
@@ -493,12 +500,14 @@
             
             let detailedInfo = sectionDetails[currentLang][categoryName] || categoryName;
             appendMessage(detailedInfo, 'ai');
+            window.scrollTo(0, 0);
         }
 
         function returnToMainMenu() {
             activeSection = null;
             document.getElementById('chat-view-container').style.display = 'none';
             document.getElementById('menu-view').style.display = 'flex';
+            window.scrollTo(0, 0);
         }
 
         function stageMediaFile(event) {
@@ -571,7 +580,9 @@
             }
 
             chatBoxFlow.appendChild(msgDiv);
-            chatBoxFlow.scrollTop = chatBoxFlow.scrollHeight;
+            
+            // جعل التمرير ينزل للأسفل تلقائياً لروية الرسائل الجديدة
+            window.scrollTo(0, document.body.scrollHeight);
 
             const lowerText = text.toLowerCase();
             input.value = '';
@@ -619,6 +630,7 @@
                 }
                 
                 appendMessage(aiReply, 'ai');
+                window.scrollTo(0, document.body.scrollHeight);
             }, 700);
         }
 
@@ -628,7 +640,6 @@
             msgDiv.className = `message ${sender}`;
             msgDiv.innerText = text;
             chatBoxFlow.appendChild(msgDiv);
-            chatBoxFlow.scrollTop = chatBoxFlow.scrollHeight;
             return msgDiv;
         }
 
