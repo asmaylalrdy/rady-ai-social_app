@@ -166,3 +166,537 @@
 
         .back-btn {
             background-color: #fff;
+            border: 1.5px solid #dc3545;
+            color: #dc3545;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* الحاوية السفلية الملتصقة بأسفل هيكل الصفحة */
+        .fixed-bottom-controls {
+            flex-shrink: 0;
+            background-color: white;
+            border-top: 1px solid #eef0f2;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.08);
+            position: relative;
+            z-index: 150;
+        }
+
+        /* منطقة انتظار المرفقات قبل الإرسال */
+        .upload-staging-area {
+            display: none;
+            background-color: #fdfcfb;
+            padding: 8px 15px;
+            border-bottom: 1px solid #eef0f2;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .staging-preview {
+            position: relative;
+            display: inline-block;
+        }
+
+        .staging-preview img {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 6px;
+            border: 2px solid var(--pi-purple);
+            display: block;
+        }
+
+        .remove-staging-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .staging-text {
+            font-size: 0.75rem;
+            color: #555;
+            flex: 1;
+            margin-right: 10px;
+            text-align: right;
+        }
+
+        /* شريط الخدمات الإضافية السفلي */
+        .action-chips {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+            background-color: #f1f3f5;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-pay { background-color: var(--pi-gold); color: #333; }
+        .btn-upload { background-color: #007bff; color: white; }
+
+        /* شريط الإدخال الفعلي وإرسال البيانات */
+        .input-area {
+            padding: 10px 12px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background-color: white;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1.5px solid #ccced0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 0.85rem;
+        }
+
+        .input-area input:focus {
+            border-color: var(--pi-purple);
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--pi-purple), var(--pi-dark-purple));
+            color: white;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .chat-media-attached img {
+            max-width: 140px;
+            max-height: 140px;
+            border-radius: 8px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* نافذة الاشتراك المنبثقة */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            border-top: 5px solid var(--pi-purple);
+        }
+
+        .modal-content h3 { margin-top: 0; color: var(--pi-purple); font-size: 1.1rem; }
+        .modal-content ul { text-align: right; margin: 12px 0; padding-right: 15px; }
+        .modal-content li { margin-bottom: 6px; font-size: 0.8rem; color: #555; }
+        
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 15px; }
+        .modal-btn { padding: 8px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
+        .btn-confirm { background-color: var(--pi-gold); color: #333; }
+        .btn-close { background-color: #ddd; color: #333; }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="app-title">
+            <h1 id="txt-title">Rady Social AI | رضي إي آي</h1>
+            <p id="txt-subtitle">منصتك الذكية للعالمية • Your Global Smart Platform</p>
+        </div>
+        <button class="lang-btn" onclick="toggleLanguage()">English</button>
+    </header>
+
+    <main class="main-content" id="scrollable-content-area">
+        
+        <div class="menu-container" id="menu-view">
+            <div class="menu-welcome" id="welcome-msg">مرحباً بك في Rady Social AI 🌍 اختر نوع المساعدة لنبدأ فوراً:</div>
+            <div class="quick-replies" id="replies-container"></div>
+        </div>
+
+        <div class="chat-view" id="chat-view-container">
+            <div class="chat-box" id="chat-box-flow"></div>
+            <div class="back-navigation">
+                <button class="back-btn" onclick="returnToMainMenu()" id="back-btn-text">🔙 العودة للقائمة الرئيسية</button>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="fixed-bottom-controls">
+        
+        <div class="upload-staging-area" id="staging-area">
+            <div class="staging-text" id="staging-status-text">المستند جاهز، اكتب سؤالك واضغط إرسال...</div>
+            <div class="staging-preview" id="staging-preview-container"></div>
+        </div>
+
+        <div class="action-chips">
+            <button class="action-btn btn-pay" onclick="openSubscriptionModal()">🌟 <span id="txt-btn-sub">تفعيل المميز (Pay with Pi)</span></button>
+            <button class="action-btn btn-upload" onclick="document.getElementById('hidden-file').click()">📁 <span id="txt-btn-up">رفع وسائط</span></button>
+            <input type="file" id="hidden-file" style="display:none" accept="image/*, video/*" onchange="stageMediaFile(event)">
+        </div>
+
+        <footer class="input-area">
+            <input type="text" id="user-input" placeholder="اكتب رسالتك هنا...">
+            <button class="send-btn" onclick="sendMessage()">➔</button>
+        </footer>
+    </div>
+
+    <div class="modal" id="sub-modal">
+        <div class="modal-content" id="modal-content-area"></div>
+    </div>
+
+    <script>
+        let currentLang = 'ar';
+        let stagedMediaData = null; 
+        let stagedMediaType = null;
+        let activeSection = null;
+
+        const sectionDetails = {
+            ar: {
+                "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nيوفر لك هذا القسم استشارات ذكية تشمل:\n- دراسات جدوى مبسطة لمشروعك الناشئ.\n- خطط تسويقية واستراتيجيات نمو للمشاريع وعرض القيمة المضافة المتميزة لمشروعك.",
+                "تطوير الذات 2️⃣": "🧠 **قسم تطوير الذات:**\nمساعدك الشخصي للنمو اليومي وتنمية المهارات:\n- وضع خطط تنظيم الوقت وبناء العادات الإيجابية والتخلص المستدام من المماطلة والتسويف اليومي.",
+                "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات:**\nالدعم الفني والبرمجي المتكامل للأنظمة الحركية:\n- مساعدتك في حل مشاكل الأكواد والنشر والربط على منصات الاستضافة مثل Vercel و GitHub بنجاح.",
+                "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nمساحتك لفهم اقتصاد البلوكشين وتطبيقات Web3 الذكية:\n- شرح آليات المحفظة والعقود وتحديثات مستقبل شبكة Pi Network الحالية.",
+                "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية الاحترافية:**\nجسر التواصل اللغوي المباشر لعالميتك:\n- ترجمة دقيقة ومحترفة للمقالات والرسائل والنصوص من العربية إلى الإنجليزية والعكس بدقة متناهية.",
+                "تعليم اللغات 🔤": "🎓 **مرحباً بك في مركز تعليم اللغات الذكي لـ Rady Social AI!**\nالمنصة مجهزة لاحتواء واستيعاب مناهج اللغات بالكامل الآن ومستقبلاً بشكل مرن:\n- **الإنجليزية (English Track):** لممارسة المحادثة وضبط القواعد اللغوية.\n- **الفرنسية (Français Track):** لتعلم الكلمات والتعابير الأساسية النطقية.\n- **الألمانية (Deutsch Track):** لتركيب الجمل التفاعلية اليومية.\n\n*اكتب للمساعد التفاعلي الآن في حقل الإدخال بالأسفل الجملة التي تريد ممارستها أو العبارة التي تود تصحيحها وسيرد عليك فوراً!*",
+                "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتخصيص تجربتك الفريدة داخل التطبيق:\n- تبديل المظهر، مسح سجل المحادثات المؤقت، وتخصيص إشعارات التنبيه الذكية.",
+                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Social AI\n• **المطور الأساسي:** Ismail Ahmed Ismail\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار:** V1.3.0 (Flexible Content Container)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi اللامركزية."
+            },
+            en: {
+                "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including feasibility studies and marketing growth strategies for startups.",
+                "Personal Development 2️⃣": "🧠 **Personal Development Section:**\nYour personal growth assistant for time management and overcoming procrastination actively.",
+                "Tech & Apps 3️⃣": "💻 **Tech & Applications Section:**\nAssisting you with debugging code and deploying to web hosting networks like Vercel & GitHub.",
+                "Crypto & Pi 4️⃣": "⚡ **Crypto & Pi Network Section:**\nUpdates and analytical insights on the Pi Network ecosystem and decentralized Web3 application nodes.",
+                "Translation 5️⃣": "🔤 **Instant Translation Section:**\nProfessional translation and precise linguistic phrasing from Arabic to English and vice versa.",
+                "Languages Hub 🔤": "🎓 **Welcome to Rady Social AI Language Learning Node!**\nOur platform structures language acquisition natively now and in future updates:\n- **English Track:** Practice conversation or clarify complex grammar principles.\n- **French Track:** Master essential vocabulary.\n- **German Track:** Learn daily interactions.\n\n*Type your objective now in the bottom input bar (e.g., 'Teach me useful English phrases') and the assistant will answer you instantly!*",
+                "Settings ⚙️": "⚙️ **Platform Settings:**\nToggle themes, clear temporary chat history, and adjust smart alert notifications.",
+                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Social AI\n• **Lead Developer:** Ismail Ahmed Ismail\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.3.0 (Flexible Content Container)\n• Designed to deliver top-tier AI companion features directly inside the Pi ecosystem."
+            }
+        };
+
+        const translations = {
+            ar: {
+                title: "Rady Social AI | رضي إي آي",
+                welcome: "مرحباً بك في Rady Social AI 🌍 اختر نوع المساعدة لنبدأ فوراً:",
+                placeholder: "اكتب رسالتك هنا...",
+                subBtn: "تفعيل المميز (Pay with Pi)",
+                upBtn: "رفع وسائط",
+                backBtn: "🔙 العودة للقائمة الرئيسية",
+                statingText: "المستند جاهز، اكتب سؤالك واضغط إرسال...",
+                options: ["أعمال ومشاريع 1️⃣", "تطوير الذات 2️⃣", "تقنية وتطبيقات 3️⃣", "العملات الرقمية 4️⃣", "ترجمة عربي ↔ إنجليزي 5️⃣", "تعليم اللغات 🔤", "الإعدادات ⚙️", "حول المنصة ℹ️"]
+            },
+            en: {
+                title: "Rady Social AI",
+                welcome: "Welcome to Rady Social AI 🌍 Choose a category to get started immediately:",
+                placeholder: "Type your message here...",
+                subBtn: "Premium Subscription (Pay with Pi)",
+                upBtn: "Upload Media",
+                backBtn: "🔙 Back to Main Menu",
+                statingText: "Media is staged. Type your prompt and click send...",
+                options: ["Business & Projects 1️⃣", "Personal Development 2️⃣", "Tech & Apps 3️⃣", "Crypto & Pi 4️⃣", "Translation 5️⃣", "Languages Hub 🔤", "Settings ⚙️", "About Platform ℹ️"]
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.Pi) { window.Pi.init({ version: "2.0", sandbox: false }); }
+            renderQuickReplies();
+        });
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            const htmlTag = document.documentElement;
+            const langBtn = document.querySelector('.lang-btn');
+
+            if (currentLang === 'en') {
+                htmlTag.dir = 'ltr'; htmlTag.lang = 'en'; langBtn.innerText = 'العربية';
+            } else {
+                htmlTag.dir = 'rtl'; htmlTag.lang = 'ar'; langBtn.innerText = 'English';
+            }
+
+            document.getElementById('txt-title').innerText = translations[currentLang].title;
+            document.getElementById('welcome-msg').innerText = translations[currentLang].welcome;
+            document.getElementById('user-input').placeholder = translations[currentLang].placeholder;
+            document.getElementById('txt-btn-sub').innerText = translations[currentLang].subBtn;
+            document.getElementById('txt-btn-up').innerText = translations[currentLang].upBtn;
+            document.getElementById('back-btn-text').innerText = translations[currentLang].backBtn;
+            document.getElementById('staging-status-text').innerText = translations[currentLang].statingText;
+            renderQuickReplies();
+        }
+
+        function renderQuickReplies() {
+            const container = document.getElementById('replies-container');
+            container.innerHTML = '';
+            translations[currentLang].options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'chip';
+                button.innerText = option;
+                button.onclick = () => enterCategorySection(option);
+                container.appendChild(button);
+            });
+        }
+
+        function enterCategorySection(categoryName) {
+            activeSection = categoryName;
+            document.getElementById('menu-view').style.display = 'none';
+            const chatBoxFlow = document.getElementById('chat-box-flow');
+            chatBoxFlow.innerHTML = ''; 
+            document.getElementById('chat-view-container').style.display = 'flex';
+            
+            let detailedInfo = sectionDetails[currentLang][categoryName] || categoryName;
+            appendMessage(detailedInfo, 'ai');
+            
+            // تهيئة مؤشر التمرير لمنطقة المحتوى لتكون في الأعلى عند فتح قسم جديد
+            document.getElementById('scrollable-content-area').scrollTop = 0;
+        }
+
+        function returnToMainMenu() {
+            activeSection = null;
+            document.getElementById('chat-view-container').style.display = 'none';
+            document.getElementById('menu-view').style.display = 'flex';
+            document.getElementById('scrollable-content-area').scrollTop = 0;
+        }
+
+        function stageMediaFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            stagedMediaType = file.type;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                stagedMediaData = e.target.result;
+                
+                const stagingArea = document.getElementById('staging-area');
+                const previewContainer = document.getElementById('staging-preview-container');
+                
+                previewContainer.innerHTML = '';
+
+                if (stagedMediaType.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = stagedMediaData;
+                    previewContainer.appendChild(img);
+                }
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-staging-btn';
+                removeBtn.innerText = 'X';
+                removeBtn.onclick = clearStagedMedia;
+                previewContainer.appendChild(removeBtn);
+
+                stagingArea.style.display = 'flex';
+            }
+            reader.readAsDataURL(file);
+        }
+
+        function clearStagedMedia() {
+            stagedMediaData = null;
+            stagedMediaType = null;
+            document.getElementById('staging-area').style.display = 'none';
+            document.getElementById('hidden-file').value = '';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            
+            if (!text && !stagedMediaData) return;
+
+            if (document.getElementById('menu-view').style.display !== 'none') {
+                document.getElementById('menu-view').style.display = 'none';
+                document.getElementById('chat-box-flow').innerHTML = '';
+                document.getElementById('chat-view-container').style.display = 'flex';
+            }
+
+            const chatBoxFlow = document.getElementById('chat-box-flow');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "message user";
+            
+            if (text) {
+                const textSpan = document.createElement('div');
+                textSpan.innerText = text;
+                msgDiv.appendChild(textSpan);
+            }
+
+            if (stagedMediaData) {
+                const mediaContainer = document.createElement('div');
+                mediaContainer.className = 'chat-media-attached';
+                const img = document.createElement('img');
+                img.src = stagedMediaData;
+                mediaContainer.appendChild(img);
+                msgDiv.appendChild(mediaContainer);
+            }
+
+            chatBoxFlow.appendChild(msgDiv);
+            
+            // جعل منطقة التمرير الذكية تنزل للأسفل لرؤية الرسالة الجديدة فوراً
+            const mainContentArea = document.getElementById('scrollable-content-area');
+            mainContentArea.scrollTop = mainContentArea.scrollHeight;
+
+            const userPromptText = text;
+            input.value = '';
+            
+            let passedMedia = stagedMediaData;
+            clearStagedMedia();
+
+            setTimeout(() => {
+                let aiReply = "";
+                
+                if (currentLang === 'ar') {
+                    // تحسين دقة التحليل اللغوي العربي للمساعد ليتفاعل مع المطور والمستخدم بكفاءة كاملة
+                    if (userPromptText.includes('علمني') || userPromptText.includes('انجليزي') || userPromptText.includes('لغة') || userPromptText.includes('لغات') || userPromptText.toLowerCase().includes('english')) {
+                        aiReply = "🔤 مرحباً بك في ركن ممارسة اللغات الحي لـ Rady Social AI!\nالعبارة التدريبية المخصصة لك الآن لزيادة الحصيلة اللغوية:\n\n" +
+                                  "💡 *'Action speaks louder than words'* (الأفعال أبلغ من الأقوال).\n\n" +
+                                  "اكتب لي أي جملة تود ممارستها أو ترجمتها وسأقوم بتعديلها وصياغتها لك تفاعلياً على الفور.";
+                    } else if (userPromptText.includes('كود') || userPromptText.includes('برمجة') || userPromptText.includes('تطبيق') || userPromptText.includes('خطأ') || userPromptText.includes('Vercel') || userPromptText.includes('GitHub')) {
+                        aiReply = "💻 أهلاً بك يا صديقي المطور في واجهة المساعد البرمجية النشطة!\n" +
+                                  "بخصوص استفسارات الأكواد ومشاكل المزامنة والاستضافة على GitHub و Vercel، يرجى تزويدي بالسطر المعيب أو نص رسالة الخطأ لأقوم بتحليل البنية ومساعدتك في تعديلها ونشرها فوراً وبنجاح تام.";
+                    } else if (userPromptText.includes('تسويق') || userPromptText.includes('مشروع') || userPromptText.includes('عمل') || userPromptText.includes('دراسة') || userPromptText.includes('أعمال')) {
+                        aiReply = "💼 مستشارك الاستثماري والريادي نشط الآن ومستعد! لبناء مشروعك وتطوير خطة العمل التسويقية، نحتاج أولاً لتحديد الفئة المستهدفة ونموذج العمل المالي المباشر للمنصة.";
+                    } else if (userPromptText.includes('باي') || userPromptText.includes('عملة') || userPromptText.includes('Pi') || userPromptText.includes('pi')) {
+                        aiReply = "⚡ نظام البلوكشين وتطبيقات الـ Web3: منصتنا متصلة بالكامل ببروتوكول Pi SDK الرسمي لمعالجة عمليات الدفع ونقل البيانات بشكل آمن وسريع داخل الشبكة المغلقة والعلنية.";
+                    } else if (userPromptText.includes('اسماعيل') || userPromptText.includes('إسماعيل') || userPromptText.includes('المطور')) {
+                        aiReply = "ℹ️ مطور التطبيق والمنصة هو المبرمج والمطور المحترف: *Ismail Ahmed Ismail*، ويمكنك التواصل البرمجي الرسمي معه عبر البريد الإلكتروني: asmaylalrdy744@gmail.com لمشاركة الرؤى والمشاريع التكنولوجية الكبرى.";
+                    } else if (passedMedia && !userPromptText) {
+                        aiReply = "📥 تم استقبال الملف والوسائط بنجاح في معالج الرؤية البصرية لـ Rady Social AI! يرجى كتابة سؤالك بخصوص هذه الصورة أو الملف هنا في الأسفل لكي أقوم بالتحليل البرمجي والمنطقي والإجابة عليك بدقة.";
+                    } else {
+                        aiReply = `🤖 محرك رضي إي آي التفاعلي نشط ومستمع لك بالكامل! لقد استلمت طلبك بخصوص "${userPromptText}" بنجاح، وجاري معالجة المدخلات لتقديم الدعم المعرفي المباشر والأمثل لك في هذا القسم.`;
+                    }
+                } else {
+                    const lowerText = userPromptText.toLowerCase();
+                    if (lowerText.includes('learn') || lowerText.includes('english') || lowerText.includes('language') || lowerText.includes('phrase')) {
+                        aiReply = "🔤 Welcome to the Live Language Learning Station!\nToday's practice quote:\n\n" +
+                                  "💡 *'Knowledge is power'* (المعرفة قوة).\n\n" +
+                                  "Type any phrase you want to practice and I will support you interactively.";
+                    } else if (lowerText.includes('code') || lowerText.includes('program') || lowerText.includes('app') || lowerText.includes('error') || lowerText.includes('vercel')) {
+                        aiReply = "💻 Developer Console Active! Provide the code block or Vercel log error details so I can assist you with debugging and deployment optimization.";
+                    } else if (lowerText.includes('business') || lowerText.includes('market') || lowerText.includes('project')) {
+                        aiReply = "💼 Strategy Node active! Let's structure your dynamic business roadmap and analyze the core target audience constraints.";
+                    } else if (lowerText.includes('pi') || lowerText.includes('crypto') || lowerText.includes('blockchain')) {
+                        aiReply = "⚡ Pi Ecosystem Node. Fully dynamic integration via current Web3 Pi SDK protocols for user-to-app microtransactions.";
+                    } else if (passedMedia && !userPromptText) {
+                        aiReply = "📥 Media asset captured successfully. Please enter your text command so I can execute the accurate analysis.";
+                    } else {
+                        aiReply = `🤖 Live Response Engine: Successfully processing your dynamic prompt regarding "${userPromptText}" to assist your active session requirements.`;
+                    }
+                }
+                
+                appendMessage(aiReply, 'ai');
+                // النزول التلقائي لأسفل الحاوية لعرض رد المساعد كاملاً مع زر الرجوع
+                mainContentArea.scrollTop = mainContentArea.scrollHeight;
+            }, 600);
+        }
+
+        function appendMessage(text, sender) {
+            const chatBoxFlow = document.getElementById('chat-box-flow');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
+            msgDiv.innerText = text;
+            chatBoxFlow.appendChild(msgDiv);
+            return msgDiv;
+        }
+
+        function openSubscriptionModal() {
+            const modal = document.getElementById('sub-modal');
+            const contentArea = document.getElementById('modal-content-area');
+            
+            if (currentLang === 'ar') {
+                contentArea.innerHTML = `
+                    <h3>🌟 اشتراك باقة رضي المميزة (Rady AI Premium)</h3>
+                    <p>انضم للمستخدمين المميزين عالمياً واستمتع بمزايا غير محدودة:</p>
+                    <ul>
+                        <li>سرعة معالجة فائقة لجميع الأقسام.</li>
+                        <li>إمكانية رفع الصور والملفات بشكل مستقر.</li>
+                    </ul>
+                    <p style="font-weight: bold; color: var(--pi-purple); font-size: 1rem;">💰 قيمة الاشتراك: 1 Pi فقط</p>
+                    <div class="modal-buttons">
+                        <button class="modal-btn btn-confirm" onclick="triggerPiPayment()">تأكيد ودفع الآن ⚡</button>
+                        <button class="modal-btn btn-close" onclick="closeSubscriptionModal()">إلغاء</button>
+                    </div>
+                `;
+            } else {
+                contentArea.innerHTML = `
+                    <h3>🌟 Rady AI Premium Subscription</h3>
+                    <p>Join global premium users and unlock full ultimate capabilities:</p>
+                    <ul>
+                        <li>Ultra-fast processing for all queries.</li>
+                        <li>Unlimited secure media and image workflows.</li>
+                    </ul>
+                    <p style="font-weight: bold; color: var(--pi-purple); font-size: 1rem;">💰 Price: 1 Pi Only</p>
+                    <div class="modal-buttons">
+                        <button class="modal-btn btn-confirm" onclick="triggerPiPayment()">Confirm & Pay Now ⚡</button>
+                        <button class="modal-btn btn-close" onclick="closeSubscriptionModal()">Cancel</button>
+                    </div>
+                `;
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeSubscriptionModal() {
+            document.getElementById('sub-modal').style.display = 'none';
+        }
+
+        function triggerPiPayment() {
+            closeSubscriptionModal();
+            if (!window.Pi) {
+                alert(currentLang === 'ar' ? "يرجى فتح التطبيق داخل Pi Browser لتنفيذ معاملة الدفع." : "Please access from Pi Browser to complete payment.");
+                return;
+            }
+
+            window.Pi.createPayment({
+                amount: 1, 
+                memo: "Activate Rady Social AI Premium Features",
+                metadata: { orderId: "rady_prod_005", type: "premium_sub" }
+            }, {
+                onReadyForServerApproval: function(paymentId) { },
+                onReadyForServerCompletion: function(paymentId, txid) {
+                    alert(currentLang === 'ar' ? "تم تأكيد عملية الدفع بنجاح!" : "Payment success!");
+                    appendMessage(currentLang === 'ar' ? "🎉 تم تفعيل العضوية المميزة بنجاح!" : "🎉 Premium subscription active!", 'ai');
+                },
+                onCancel: function(paymentId) { },
+                onError: function(error, paymentId) { }
+            });
+        }
+    </script>
+</body>
+</html>
