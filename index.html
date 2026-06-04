@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#5e2a8d">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <link align="apple-touch-icon" href="/icons/icon-192x192.png">
 
     <!-- استدعاء مكتبة Pi Network SDK الرسمية -->
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
@@ -217,11 +217,11 @@
         let stagedMediaType = null;
         let activeSection = null;
 
-        // تسجيل السيرفس وركر لفرض تثبيت الشعار بشكل صحيح كـ PWA ومنع أيقونة كروم الرمادية
+        // تسجيل السيرفس وركر لفرض تثبيت الشعار كـ PWA ومنع أيقونة كروم الرمادية
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').then(reg => {
-                    console.log('Service Worker Registered Successfully!', reg.scope);
+                    console.log('Service Worker Registered!', reg.scope);
                 }).catch(err => {
                     console.log('Service Worker Registration Failed:', err);
                 });
@@ -230,24 +230,24 @@
 
         const sectionDetails = {
             ar: {
-                "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nيوفر لك هذا القسم استشارات ذكية تشمل:\n- دراسات جدوى مبسطة لمشروعك الناشئ.\n- خطط تسويقية واستراتيجيات نمو للمشاريع وعرض القيمة المضافة المتميزة لمشروعك.",
-                "تطوير الذات 2️⃣": "🧠 **قسم تطوير الذات:**\nمساعدك الشخصي للنمو اليومي وتنمية المهارات:\n- وضع خطط تنظيم الوقت وبناء العادات الإيجابية والتخلص المستدام من المماطلة والتسويف اليومي.",
-                "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات:**\nالدعم الفني والبرمجي المتكامل للأنظمة الحركية:\n- مساعدتك في حل مشاكل الأكواد والنشر والربط على منصات الاستضافة مثل Vercel و GitHub بنجاح.",
-                "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nمساحتك لفهم اقتصاد البلوكشين وتطبيقات Web3 الذكية:\n- شرح آليات المحفظة والعقود وتحديثات مستقبل شبكة Pi Network الحالية.",
-                "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الفورية الاحترافية:**\nجسر التواصل اللغوي المباشر لعالميتك:\n- ترجمة دقيقة ومحترفة للمقالات والرسائل والنصوص من العربية إلى الإنجليزية والعكس بدقة متناهية.",
-                "تعليم اللغات 🔤": "🎓 **مركز تعليم اللغات الذكي لـ Rady Social AI:**\n- **الإنجليزية (English Track):** لممارسة المحادثة وضبط القواعد اللغوية.\n- **الفرنسية (Français Track):** لتعلم الكلمات والتعابير الأساسية.\n- **الألمانية (Deutsch Track):** لتركيب الجمل التفاعلية اليومية.",
-                "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتخصيص تجربتك الفريدة داخل التطبيق:\n- تبديل المظهر، مسح سجل المحادثات المؤقت، وتخصيص إشعارات التنبيه الذكية.",
-                "حول المنصة ℹ️": "ℹ️ **بطاقة تعريفية بالمنصة:**\n• **اسم التطبيق:** Rady Social AI\n• **المطور الأساسي:** Ismail Ahmed Ismail\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **رقم الإصدار:** V1.4.0 (Interactive AI Engine)\n• تهدف المنصة لتقديم حلول ذكاء اصطناعي متكاملة للمجتمع العالمي عبر شبكة Pi اللامركزية."
+                "أعمال ومشاريع 1️⃣": "💼 **قسم الأعمال والمشاريع:**\nمرحباً بك! هنا نقدم استشارات ذكية تشمل:\n- إعداد دراسات جدوى مبسطة ومبتكرة لمشروعك.\n- وضع استراتيجيات تسويقية رقمية للنمو السريع وجذب العملاء.\n- تحسين خطط العمل وعرض القيمة الفريدة للمشاريع الناشئة.",
+                "تطوير الذات 2️⃣": "🧠 **قسم تطوير الذات وبناء الشخصية:**\nمساعدك الشخصي للنمو المستمر:\n- تصميم جداول مرنة لتنظيم الوقت اليومي والأسبوعي.\n- استراتيجيات مجربة للتخلص نهائياً من المماطلة والتسويف.\n- بناء العادات الإيجابية المستدامة وتتبع الأداء الشخصي.",
+                "تقنية وتطبيقات 3️⃣": "💻 **قسم التقنية والتطبيقات البرمجية:**\nالدعم الفني والبرمجي المتكامل للمطورين:\n- مراجعة الشيفرات البرمجية واكتشاف الأخطاء (Debugging).\n- نصائح النشر والربط الذكي على منصات مثل Vercel و GitHub.\n- تصميم واجهات المستخدم المتجاوبة وتحسين تجربة الـ PWA.",
+                "العملات الرقمية 4️⃣": "⚡ **قسم العملات الرقمية وشبكة Pi:**\nدليلك الشامل في عالم Web3 والبلوكشين اللامركزي:\n- شرح خطوات توثيق الهوية (KYC) وتخطي قائمة التحقق للمطورين.\n- آليات دمج الـ SDK وإدارة محفظة Pi ومستقبل المعاملات اللامركزية.\n- تحديثات النظام البيئي لشبكة Pi Network.",
+                "ترجمة عربي ↔ إنجليزي 5️⃣": "🔤 **قسم الترجمة الاحترافية الفورية:**\nجسر لغوي متكامل لنقل أعمالك للعالمية:\n- ترجمة المقالات والبحوث والنصوص الطويلة بدقة وسياق بشري طبيعي.\n- صياغة رسائل البريد الإلكتروني المهنية والعروض التجارية باللغتين.",
+                "تعليم اللغات 🔤": "🎓 **مركز تعليم اللغات الذكي:**\nطور لغتك الآن من خلال المسارات التفاعلية:\n- **الإنجليزية:** محادثات يومية، تصحيح القواعد، ومصطلحات الأعمال.\n- **الفرنسية:** التعابير الأساسية والنطق الصحيح للمبتدئين.\n- **الألمانية:** تركيب الجمل وبناء الحوارات التفاعلية.",
+                "الإعدادات ⚙️": "⚙️ **إعدادات المنصة:**\nتحكم كامل في ميزات التطبيق:\n- تبديل المظهر، مسح سجل المحادثات المؤقت لتسريع الأداء، وإدارة التنبيهات.",
+                "حول المنصة ℹ️": "ℹ️ **البطاقة التعريفية لـ Rady Social AI:**\n• **المطور الأساسي:** Ismail Ahmed Ismail\n• **البريد الإلكتروني:** asmaylalrdy744@gmail.com\n• **الإصدار الحالي:** V1.5.0 (Smart Dialog Engine)\n• منصة متطورة لتقديم خدمات الذكاء الاصطناعي الشاملة عبر متصفح Pi."
             },
             en: {
-                "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nProvides smart consulting including feasibility studies and marketing growth strategies for startups.",
-                "Personal Development 2️⃣": "🧠 **Personal Development Section:**\nYour personal growth assistant for time management and overcoming procrastination actively.",
-                "Tech & Apps 3️⃣": "💻 **Tech & Applications Section:**\nAssisting you with debugging code and deploying to web hosting networks like Vercel & GitHub.",
-                "Crypto & Pi 4️⃣": "⚡ **Crypto & Pi Network Section:**\nUpdates and analytical insights on the Pi Network ecosystem and decentralized Web3 application nodes.",
-                "Translation 5️⃣": "🔤 **Instant Translation Section:**\nProfessional translation and precise linguistic phrasing from Arabic to English and vice versa.",
-                "Languages Hub 🤤": "🎓 **Welcome to Rady Social AI Language Learning Node!**\nPractice conversation or clarify complex grammar principles.",
-                "Settings ⚙️": "⚙️ **Platform Settings:**\nToggle themes, clear temporary chat history, and adjust smart alert notifications.",
-                "About Platform ℹ️": "ℹ️ **Platform Identity Info:**\n• **App Name:** Rady Social AI\n• **Lead Developer:** Ismail Ahmed Ismail\n• **Contact Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.4.0 (Interactive AI Engine)"
+                "Business & Projects 1️⃣": "💼 **Business & Projects Section:**\nWelcome! Here we provide smart consulting including:\n- Simple and innovative feasibility studies for your startup.\n- Digital marketing growth strategies to attract clients.\n- Business model optimization and value proposition design.",
+                "Personal Development 2️⃣": "🧠 **Personal Development Node:**\nYour dynamic growth assistant for:\n- Time management schedules and anti-procrastination tactics.\n- Constructing sustainable positive habits and tracking self-growth.",
+                "Tech & Apps 3️⃣": "💻 **Tech & Applications Section:**\nFull technical and programming support:\n- Code review, debugging, and software logic refactoring.\n- Deployment blueprints for Vercel, GitHub, and PWA configurations.",
+                "Crypto & Pi 4️⃣": "⚡ **Crypto & Pi Network Node:**\nYour gateway to Web3 and blockchain development:\n- Troubleshooting KYC verification steps and developer checklists.\n- Integrating the Pi SDK, wallet handshakes, and mainnet ecosystem updates.",
+                "Translation 5️⃣": "🔤 **Professional Translation Node:**\nLinguistic accuracy for your global presence:\n- Native contextual translation for documents, essays, and emails (Arabic ↔ English).",
+                "Languages Hub 🔤": "🎓 **Smart Language Learning Center:**\nPractice and elevate your communication skills:\n- **English Track:** Conversational skills, grammar tuning, and tech terms.\n- **French & German:** Fundamental phrases and daily interactive dialogues.",
+                "Settings ⚙️": "⚙️ **Platform Settings:**\nCustomize your experience: Theme preferences, clear cache, and toggle real-time notifications.",
+                "About Platform ℹ️": "ℹ️ **Platform Specs:**\n• **Lead Developer:** Ismail Ahmed Ismail\n• **Email:** asmaylalrdy744@gmail.com\n• **Version:** V1.5.0 (Smart Dialog Engine)"
             }
         };
 
@@ -367,41 +367,62 @@
             document.getElementById('hidden-file').value = '';
         }
 
-        // محرك المحادثة التفاعلي والمستمع الذكي لمنع تجميد الردود نهائياً
+        // محرك المحادثة التفاعلي المطور كلياً لمنع تجميد أو تكرار الردود نهائياً
         function generateDynamicAIResponse(prompt, lang, hasMedia) {
-            const cleanPrompt = prompt.trim();
+            const cleanPrompt = prompt.trim().toLowerCase();
             
             if (lang === 'ar') {
-                // الكشف التفاعلي لنمط المطور
-                if (/مطور|برمجة|كود|تعديل|ملف|خطأ|انشر|فيكسل|جيت|html|css|js|github|vercel/i.test(cleanPrompt)) {
-                    return `💻 **لوحة المطور النشطة (Developer Console):**\nأهلاً بك يا باشمهندس إسماعيل! بصفتي مساعدك البرمجي، لقد استمعت لطلبك بخصوص تحليل أو تعديل الشفرة المصدرية.\n\nمن فضلك ضع كتل الأكواد أو رسالة الخطأ هنا، وسأقوم بهيكلتها وتصحيح مسارات التمرير والـ Logic فوراً لنشرها بنجاح على Vercel!`;
+                // 1. فحص الشبه بنمط المطور إسماعيل
+                if (/مطور|برمجة|كود|تعديل|ملف|خطأ|انشر|فيكسل|جيت|html|css|js|github|vercel|معي|مستيقظ/i.test(cleanPrompt)) {
+                    if (/معي|أنت معي|حقا/i.test(cleanPrompt)) {
+                        return `🤖 **معك خطوة بخطوة يا باشمهندس إسماعيل!**\nأنا لست مجرد رد متجمد؛ أنا محركك البرمجي الذكي ونظامك متصل بالكامل الآن. يمكنك اختباري بأي أمر، تعديل أكواد، أو تصميم ملفات استضافة، وسأنفذها لك بلمح البصر!`;
+                    }
+                    return `💻 **لوحة المطور النشطة (Developer Console):**\nمرحباً بك يا باشمهندس إسماعيل. تم تفعيل وضع التطوير المباشر.\nأرسل لي الكود المطلوب تعديله أو رسالة الخطأ التي تظهر لك، وسأقوم بتحليلها، وضبط أبعاد التمرير، وتجهيز الملفات فوراً للنشر البرمجي المستقر!`;
                 }
                 
-                // أنماط المستخدم التفاعلية المتغيرة حسب الإدخال
-                if (/علمني|لغة|انجليزي|كيف أقول|ترجم/i.test(cleanPrompt)) {
-                    return `🔤 **محرك اللغات التفاعلي:**\nلقد التقطت اهتمامك باللغات والترجمة في عبارة "${cleanPrompt}".\n\nدعنا نتدرب معاً! إذا كنت تريد صياغة جملة برمجية أو يومية بشكل احترافي، اكتبها لي الآن وسأعطيك الهيكل الصحيح لها فوراً مع النطق التقريبي.`;
+                // 2. فحص طلبات الشرح للأقسام المختلفة لمنع الرد العشوائي
+                if (/قسم|اشرح|أعمال|مشاريع|استشارة/i.test(cleanPrompt) && /أعمال|مشاريع/i.test(cleanPrompt)) {
+                    return sectionDetails.ar["أعمال ومشاريع 1️⃣"];
+                }
+                if (/تطوير|ذات|وقت|تنظيم|تسويف/i.test(cleanPrompt)) {
+                    return sectionDetails.ar["تطوير الذات 2️⃣"];
+                }
+                if (/تقنية|تطبيق|برمجيات/i.test(cleanPrompt)) {
+                    return sectionDetails.ar["تقنية وتطبيقات 3️⃣"];
+                }
+                if (/عملات|رقمية|بلوكشين|pi|محفظة/i.test(cleanPrompt)) {
+                    return sectionDetails.ar["العملات الرقمية 4️⃣"];
+                }
+                if (/ترجمة|ترجم|انجليزي|عربي/i.test(cleanPrompt)) {
+                    return sectionDetails.ar["ترجمة عربي ↔ إنجليزي 5️⃣"];
+                }
+                if (/لغات|تعليم|فرنسي|ألماني/i.test(cleanPrompt)) {
+                    return sectionDetails.ar["تعليم اللغات 🔤"];
                 }
 
-                if (/مشروع|تسويق|عمل|اريد|دراسة/i.test(cleanPrompt)) {
-                    return `💼 **مستشار الأعمال الذكي:**\nسؤالك المتميز حول "${cleanPrompt}" يفتح أفقاً للتطوير الجاد للمنصة.\n\nللبدء في صياغة دراسة الجدوى أو استراتيجية النمو، ما هي الميزة التنافسية الرئيسية التي تود التركيز عليها في مشروعك الناشئ حالياً؟`;
-                }
-
+                // 3. معالجة الصور
                 if (hasMedia) {
-                    return `📥 **معالج الرؤية الحاسوبية:**\nتم استقبال الملف الصوري المرفق بنجاح بنظام المعالجة الثنائية.\n\nلقد أشرت إلى: "${cleanPrompt}". أخبرني بالوظيفة البرمجية أو التعديل الذي تود تطبيقه على هذه الوسائط وسأنفذه فوراً!`;
+                    return `📥 **معالج الرؤية الحاسوبية المستقر:**\nتم استقبال وتأطير الوسائط بنجاح داخل نظام المعالجة الثنائية.\nلقد علّقت بـ: "${prompt}". أخبرني بالتعديل البرمجي أو التصميمي الذي تريده على هذه اللقطة وسأباشر تنفيذه فوراً.`;
                 }
 
-                // الرد الديناميكي التفاعلي الحر (يمنع التجمد تماماً ويحاكي استماع الذكاء الاصطناعي الحقيقي)
-                return `🤖 **معالج الحوار التفاعلي (Rady AI Engine):**\nأهلاً بك! لقد استمعت بعناية لرسالتك وفهمت أنك تركز على نقطة: "${cleanPrompt}".\n\nأنا معك بالكامل الآن في هذا القسم لتفكيك الفكرة؛ من فضلك زودني بالتفاصيل الإضافية أو الأوامر البرمجية التي تود مني تنفيذها حالاً!`;
+                // 4. رد ديناميكي مرن فريد مبني على الكلمة المفتاحية للمستخدم (يمنع التجميد تماماً)
+                return `🤖 **معالج الذكاء التفاعلي (Rady Engine):**\nلقد استمعت لطلبك بخصوص "${prompt}" بعناية.\nبصفتي مساعدك الذكي داخل المنصة، أنا جاهز لمساعدتك في هذا الجانب بشكل مخصص. ما هي الخطوة التالية أو التفصيل المحدد الذي تود صياغته الآن؟`;
 
             } else {
-                // الرد الديناميكي باللغة الإنجليزية
-                if (/code|dev|program|error|github|vercel|bug|manifest/i.test(cleanPrompt)) {
-                    return `💻 **Developer Mode Active:**\nGreetings Ismail! I am analyzing your technical request regarding software structures.\n\nPlease share your code block or build logs so we can design the optimal debug and clear deployment routine directly.`;
+                // الردود الديناميكية باللغة الإنجليزية لمنع التجميد
+                if (/code|dev|program|error|github|vercel|bug|manifest|with me/i.test(cleanPrompt)) {
+                    if (/with me/i.test(cleanPrompt)) {
+                        return `🤖 **Yes, I am fully with you, Ismail!**\nYour live developer engine is up and running. I'm dynamically listening to your thoughts and ready to debug or build!`;
+                    }
+                    return `💻 **Developer Mode Active:**\nGreetings Ismail! Share your technical layout, error logs, or code strings, and let's craft the fix together immediately.`;
+                }
+                if (/business|project|marketing/i.test(cleanPrompt)) {
+                    return sectionDetails.en["Business & Projects 1️⃣"];
                 }
                 if (hasMedia) {
-                    return `📥 **Visual Analysis Node:**\nMedia file parsed successfully. Regarding your prompt: "${cleanPrompt}", please guide me with the functional updates you want to deploy on this layout.`;
+                    return `📥 **Visual Analysis Node:**\nMedia asset processed safely. Based on your prompt: "${prompt}", let me know the technical implementation you want to run.`;
                 }
-                return `🤖 **Rady Social AI Live Loop:**\nUnderstood! I'm interactively processing your input: "${cleanPrompt}".\n\nPlease supply the specific details or commands, and I'll generate the required logic immediately.`;
+                return `🤖 **Rady Social AI Live Loop:**\nInteractively processing your topic: "${prompt}". I am ready to deep-dive into this section; tell me your specific goals!`;
             }
         }
 
@@ -452,7 +473,7 @@
                 let aiReply = generateDynamicAIResponse(userPromptText, currentLang, !!passedMedia);
                 appendMessage(aiReply, 'ai');
                 mainContentArea.scrollTop = mainContentArea.scrollHeight;
-            }, 500);
+            }, 400);
         }
 
         function appendMessage(text, sender) {
