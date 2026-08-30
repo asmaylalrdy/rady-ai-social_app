@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rady Social AI | رضي إي آي</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
@@ -13,6 +13,9 @@
             --chat-bg: #ffffff;
             --text-color: #1f2937;
         }
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
@@ -22,54 +25,95 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            overflow: hidden;
         }
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 12px 15px;
+            padding: 10px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
-        .header-title h1 { margin: 0; font-size: 1.2rem; }
-        .header-title p { margin: 3px 0 0; font-size: 0.75rem; opacity: 0.9; }
+        .header-title h1 { margin: 0; font-size: 1.1rem; }
+        .header-title p { margin: 2px 0 0; font-size: 0.7rem; opacity: 0.9; }
         .lang-btn {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white; padding: 6px 12px; border-radius: 15px;
-            cursor: pointer; font-size: 0.8rem; font-weight: bold;
+            color: white; padding: 5px 10px; border-radius: 12px;
+            cursor: pointer; font-size: 0.75rem; font-weight: bold;
         }
         #chat-container {
-            flex: 1; overflow-y: auto; padding: 12px;
-            display: flex; flex-direction: column; gap: 10px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            -webkit-overflow-scrolling: touch;
         }
         .message {
-            max-width: 85%; padding: 12px 16px; border-radius: 15px;
-            font-size: 0.95rem; line-height: 1.6; word-wrap: break-word;
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            word-wrap: break-word;
         }
         .message.ai {
-            background-color: var(--chat-bg); align-self: flex-start;
-            border: 1px solid #e5e7eb; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            background-color: var(--chat-bg);
+            align-self: flex-start;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         .message.user {
-            background-color: var(--primary-color); color: white; align-self: flex-end;
+            background-color: var(--primary-color);
+            color: white;
+            align-self: flex-end;
         }
         .input-area {
-            background: white; padding: 10px; display: flex;
-            gap: 6px; border-top: 1px solid #e5e7eb; align-items: center;
+            background: white;
+            padding: 8px 10px;
+            display: flex;
+            gap: 5px;
+            border-top: 1px solid #e5e7eb;
+            align-items: flex-end;
+            flex-shrink: 0;
+            width: 100%;
         }
-        input[type="text"] {
-            flex: 1; padding: 10px 14px; border: 1px solid #d1d5db;
-            border-radius: 20px; outline: none; font-size: 0.9rem;
+        textarea {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 18px;
+            outline: none;
+            font-size: 0.9rem;
+            font-family: inherit;
+            resize: none;
+            max-height: 100px;
+            min-height: 38px;
+            line-height: 1.4;
         }
         button.action-btn {
-            border: none; padding: 9px 10px; border-radius: 20px;
-            cursor: pointer; font-weight: bold; font-size: 0.75rem; color: white; white-space: nowrap;
+            border: none;
+            padding: 9px 10px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: white;
+            white-space: nowrap;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
         .pi-btn { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .media-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
-        .send-btn { background-color: var(--primary-color); padding: 9px 14px; }
+        .send-btn { background-color: var(--primary-color); padding: 0 14px; }
         input[type="file"] { display: none; }
     </style>
 </head>
@@ -98,10 +142,10 @@
     </div>
 
     <div class="input-area">
-        <button class="action-btn pi-btn" id="btn-pi" onclick="payWithPi()">🌟 دفع Pi</button>
-        <button class="action-btn media-btn" id="btn-media" onclick="document.getElementById('media-input').click()">📁 رفع</button>
+        <button class="action-btn pi-btn" id="btn-pi" onclick="payWithPi()" title="دفع Pi">🌟 Pi</button>
+        <button class="action-btn media-btn" id="btn-media" onclick="document.getElementById('media-input').click()" title="رفع ملف">📁</button>
         <input type="file" id="media-input" onchange="handleMediaUpload(event)">
-        <input type="text" id="user-input" placeholder="اكتب أمرك أو استفسارك هنا..." onkeypress="handleKeyPress(event)">
+        <textarea id="user-input" placeholder="اكتب أمرك أو استفسارك هنا..." rows="1" oninput="autoResize(this)" onkeydown="handleKeyDown(event)"></textarea>
         <button class="action-btn send-btn" id="btn-send" onclick="sendMessage()">إرسال</button>
     </div>
 
@@ -115,8 +159,6 @@
                 langBtn: "English",
                 placeholder: "اكتب أمرك أو استفسارك هنا...",
                 send: "إرسال",
-                media: "📁 رفع",
-                pi: "🌟 دفع Pi",
                 welcome: "مرحباً بك يا إسماعيل في منصتك الذكية Rady Social AI 🌍<br>كيف يمكنني مساعدتك اليوم؟ اختر أحد الأقسام أو اطرح سؤالك مباشرة:<br>1️⃣ أعمال ومشاريع<br>2️⃣ تطوير الذات<br>3️⃣ تقنية وتطبيقات<br>4️⃣ العملات الرقمية وباي<br>5️⃣ ترجمة فورية<br>6️⃣ الإعدادات ⚙️<br>7️⃣ حول المنصة ℹ️"
             },
             en: {
@@ -125,8 +167,6 @@
                 langBtn: "العربية",
                 placeholder: "Type your command or query...",
                 send: "Send",
-                media: "📁 Upload",
-                pi: "🌟 Pay Pi",
                 welcome: "Welcome to Rady Social AI 🌍<br>How can I help you today? Choose a category or type directly:<br>1️⃣ Business & Projects<br>2️⃣ Self Development<br>3️⃣ Tech & Apps<br>4️⃣ Crypto & Pi Network<br>5️⃣ Translation<br>6️⃣ Settings ⚙️<br>7️⃣ About ℹ️"
             }
         };
@@ -141,8 +181,6 @@
             document.getElementById('lang-toggle-btn').innerText = t.langBtn;
             document.getElementById('user-input').placeholder = t.placeholder;
             document.getElementById('btn-send').innerText = t.send;
-            document.getElementById('btn-media').innerText = t.media;
-            document.getElementById('btn-pi').innerText = t.pi;
             document.getElementById('welcome-msg').innerHTML = t.welcome;
         }
 
@@ -152,11 +190,15 @@
             } catch (e) { console.log(e); }
         });
 
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+
         function appendMessage(text, sender) {
             const container = document.getElementById('chat-container');
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${sender}`;
-            // معالجة تنظيف الرموز لتظهر النصوص بشكل منسق وسليم تماماً باللغة العربية
             let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>');
             msgDiv.innerHTML = formattedText.replace(/\n/g, '<br>');
             container.appendChild(msgDiv);
@@ -170,39 +212,48 @@
 
             appendMessage(text, 'user');
             input.value = '';
+            input.style.height = '38px';
 
             setTimeout(() => {
                 let reply = getSmartReply(text);
                 appendMessage(reply, 'ai');
-            }, 400);
+            }, 300);
         }
 
-        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+        function handleKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
 
         function getSmartReply(q) {
             const cleanQ = q.toLowerCase();
 
             if (currentLang === 'ar') {
                 if (cleanQ.includes('تصميم') || cleanQ.includes('بيع') || cleanQ.includes('متجر') || cleanQ.includes('مشروع')) {
-                    return "🎨 ممتاز يا إسماعيل! مشروع 'بيع التصاميم' يحتاج خطة قوية:\n1. **المنصة:** عرض تصاميمك عبر موقعك أو شبكة Pi.\n2. **التسويق:** استغلال منصات التواصل الاجتماعي (واتساب وفيسبوك).\n3. **الدفع:** تفعيل عملات Pi لتسهيل الشراء للعملاء.\nهل تبدأ بتصميم الهوية البصرية أم استراتيجية التسويق؟";
+                    return "🎨 ممتاز يا إسماعيل! مشروع 'بيع التصاميم' يحتاج خطة قوية:\n1. **المنصة:** عرض تصاميمك عبر موقعك أو شبكة Pi.\n2. **التسويق:** استغلال وسائل التواصل الاجتماعي.\n3. **الدفع:** تفعيل عملات Pi لتسهيل الشراء.\nهل تبدأ بتصميم الهوية البصرية أم استراتيجية التسويق؟";
                 }
-                if (cleanQ.includes('خطة') || cleanQ.includes('نموذج') || cleanQ.includes('تجاري') || cleanQ.includes('أعمال') || cleanQ.includes('1')) {
-                    return "💼 نموذج خطة العمل التجاري جاهز لمساعدتك في ترتيب أفكارك، أخبرني بطبيعة منتجك أو خدمتك لنخصص الخطوات معاً!";
+                if (cleanQ.includes('استفسار') || cleanQ.includes('منصة') || cleanQ.includes('عن')) {
+                    return "ℹ️ **حول منصة Rady Social AI:**\nهي منصتك الخاصة التي تجمع بين الذكاء الاصطناعي، إدارة الأعمال، تطوير الذات، واقتصاد شبكة Pi الرقمية. تم تصميمها خصيصاً لتناسب احتياجاتك ومشاريعك!";
                 }
-                if (cleanQ.includes('تطوير') || cleanQ.includes('ذات') || cleanQ.includes('وقت') || cleanQ.includes('2')) {
-                    return "🧠 تطوير الذات يعتمد على تنظيم المهام اليومية بتركيز عالي. ما هي العادة أو المهام التي ترغب بتطويرها اليوم؟";
+                if (cleanQ.includes('خطة') || cleanQ.includes('نموذج') || cleanQ.includes('تجاري') || cleanQ.includes('1')) {
+                    return "💼 نموذج خطة العمل التجاري جاهز تماماً، أخبرني بطبيعة مشروعك لنخصص الخطوات معاً!";
+                }
+                if (cleanQ.includes('تطوير') || cleanQ.includes('ذات') || cleanQ.includes('2')) {
+                    return "🧠 تطوير الذات يعتمد على تنظيم المهام اليومية بتركيز وعزيمة. ما هي العادة التي ترغب بتطويرها اليوم؟";
                 }
                 if (cleanQ.includes('تقنية') || cleanQ.includes('برمجة') || cleanQ.includes('3')) {
-                    return "🛠️ تطبيقك يعمل بكفاءة عالية على PWA و Pi Browser. هل تواجه تحدياً برمجياً معيناً؟";
+                    return "🛠️ تطبيقك يعمل بكفاءة عالية على PWA و Pi Browser. هل تواجه أي تحدٍ برميجي حالياً؟";
                 }
                 if (cleanQ.includes('عملات') || cleanQ.includes('باي') || cleanQ.includes('pi') || cleanQ.includes('4')) {
                     return "🪙 شبكة Pi تتيح لك دمج المدفوعات واختبارها بسلاسة عبر بيئة Testnet.";
                 }
                 if (cleanQ.includes('ترجمة') || cleanQ.includes('5')) {
-                    return "🔤 أرسل النص الذي تريد ترجمته وسأقوم بترجمته فوراً.";
+                    return "🔤 أرسل النص الذي تريد ترجمته وسأقوم بترجمته فوراً وبدقة عالية.";
                 }
                 
-                return `أهلاً بك يا إسماعيل! استلمت استفسارك: "${q}". أنا معك خطوة بخطوة لدعم مشروعك وتطوير أعمالك، فما الخطوة التالية؟ 🚀`;
+                return `أهلاً بك يا إسماعيل! استلمت استفسارك:\n"${q}"\nأنا معك خطوة بخطوة لدعم مشروعك وتطوير أعمالك، فما الخطوة التالية التي تريد تنفيذها؟ 🚀`;
             } else {
                 return `Received your input: "${q}". Let's proceed with your project! 🚀`;
             }
