@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,23 +27,39 @@
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 15px;
-            text-align: center;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        header h1 {
+        .header-title h1 {
             margin: 0;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
         }
-        header p {
-            margin: 5px 0 0;
-            font-size: 0.85rem;
+        .header-title p {
+            margin: 3px 0 0;
+            font-size: 0.75rem;
             opacity: 0.9;
+        }
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
         #chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -69,52 +85,50 @@
         }
         .input-area {
             background: white;
-            padding: 10px 15px;
+            padding: 10px;
             display: flex;
-            gap: 10px;
+            gap: 6px;
             border-top: 1px solid #e5e7eb;
             align-items: center;
         }
         input[type="text"] {
             flex: 1;
-            padding: 10px 15px;
+            padding: 10px 14px;
             border: 1px solid #d1d5db;
-            border-radius: 25px;
+            border-radius: 20px;
             outline: none;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
-        button.send-btn, button.pi-btn {
+        button.action-btn {
             border: none;
-            padding: 10px 18px;
-            border-radius: 25px;
+            padding: 9px 10px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
+            color: white;
             transition: opacity 0.2s;
+            white-space: nowrap;
         }
-        button.send-btn {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        button.pi-btn {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            font-size: 0.8rem;
-        }
-        button:active {
-            opacity: 0.8;
-        }
+        .pi-btn { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .media-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+        .send-btn { background-color: var(--primary-color); padding: 9px 14px; }
+        button:active { opacity: 0.8; }
+        input[type="file"] { display: none; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Rady Social AI | رضي إي آي</h1>
-        <p>منصتك الذكية للاستشارات والأعمال وتطوير الذات</p>
+        <div class="header-title">
+            <h1 id="hdr-title">Rady Social AI | رضي إي آي</h1>
+            <p id="hdr-sub">منصتك الذكية للاستشارات والأعمال وتطوير الذات</p>
+        </div>
+        <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">English</button>
     </header>
 
     <div id="chat-container">
-        <div class="message ai">
+        <div class="message ai" id="welcome-msg">
             مرحباً بك في Rady Social AI 🌍<br>
             اختر نوع المساعدة:<br>
             1️⃣ أعمال ومشاريع<br>
@@ -124,24 +138,79 @@
             5️⃣ ترجمة عربي ↔ إنجليزي<br>
             6️⃣ الإعدادات ⚙️<br>
             7️⃣ حول ℹ️<br>
-            <b>اكتب رقم القسم لنبدأ أو أرسل استفسارك مباشرة!</b>
+            <b>اكتب رقم القسم أو استفسارك لنبدأ!</b>
         </div>
     </div>
 
     <div class="input-area">
-        <button class="pi-btn" onclick="payWithPi()">🌟 تفعيل (Pi)</button>
+        <button class="action-btn pi-btn" id="btn-pi" onclick="payWithPi()">🌟 Pi</button>
+        <button class="action-btn media-btn" id="btn-media" onclick="document.getElementById('media-input').click()">📁 رفع</button>
+        <input type="file" id="media-input" onchange="handleMediaUpload(event)">
         <input type="text" id="user-input" placeholder="اكتب رسالتك هنا..." onkeypress="handleKeyPress(event)">
-        <button class="send-btn" onclick="sendMessage()">إرسال</button>
+        <button class="action-btn send-btn" id="btn-send" onclick="sendMessage()">إرسال</button>
     </div>
 
     <script>
-        // التهيئة لشبكة باي
-        window.addEventListener('DOMContentLoaded', (event) => {
-            try {
-                Pi.init({ version: "2.0", sandbox: true });
-            } catch (e) {
-                console.log("Pi SDK Init Error:", e);
+        let currentLang = 'ar';
+
+        const translations = {
+            ar: {
+                title: "Rady Social AI | رضي إي آي",
+                sub: "منصتك الذكية للاستشارات والأعمال وتطوير الذات",
+                langBtn: "English",
+                placeholder: "اكتب رسالتك أو رقم القسم...",
+                send: "إرسال",
+                media: "📁 رفع",
+                pi: "🌟 دفع Pi",
+                welcome: "مرحباً بك في Rady Social AI 🌍<br>اختر نوع المساعدة:<br>1️⃣ أعمال ومشاريع<br>2️⃣ تطوير الذات<br>3️⃣ تقنية وتطبيقات<br>4️⃣ العملات الرقمية<br>5️⃣ ترجمة عربي ↔ إنجليزي<br>6️⃣ الإعدادات ⚙️<br>7️⃣ حول ℹ️<br><b>اكتب رقم القسم أو استفسارك لنبدأ!</b>",
+                fileUploaded: "تم رفع الملف بنجاح: ",
+                fileAnalyzing: "جاري تحليل الملف بواسطة الذكاء الاصطناعي...",
+                fileReady: "✅ تم استلام الملف في القسم المخصص، وبإمكاني مساعدتك في قراءته وتطويره! 📊",
+                piProcessing: "⚡ جاري معالجة الدفع عبر شبكة Pi...",
+                piSuccess: "🎉 تم إتمام معاملة الدفع بنجاح واجتياز خطوة المطورين!",
+                piCancel: "⚠️ تم إلغاء معاملة الدفع.",
+                piError: "❌ حدث خطأ في الدفع. تأكد من فتح التطبيق في Pi Browser."
+            },
+            en: {
+                title: "Rady Social AI",
+                sub: "Your Smart Platform for Business & Growth",
+                langBtn: "العربية",
+                placeholder: "Type your message or section number...",
+                send: "Send",
+                media: "📁 Upload",
+                pi: "🌟 Pay Pi",
+                welcome: "Welcome to Rady Social AI 🌍<br>Choose a category:<br>1️⃣ Business & Projects<br>2️⃣ Self Development<br>3️⃣ Tech & Apps<br>4️⃣ Crypto & Pi Network<br>5️⃣ Translation (Ar ↔ En)<br>6️⃣ Settings ⚙️<br>7️⃣ About ℹ️<br><b>Type a section number to start!</b>",
+                fileUploaded: "File uploaded successfully: ",
+                fileAnalyzing: "Analyzing file with AI...",
+                fileReady: "✅ File received successfully. Ready to assist you with it! 📊",
+                piProcessing: "⚡ Processing payment via Pi Network...",
+                piSuccess: "🎉 Payment completed successfully and developer checklist step passed!",
+                piCancel: "⚠️ Payment was cancelled.",
+                piError: "❌ Payment error. Make sure you are using Pi Browser."
             }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            const t = translations[currentLang];
+            
+            document.getElementById('html-root').setAttribute('lang', currentLang);
+            document.getElementById('html-root').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+            
+            document.getElementById('hdr-title').innerText = t.title;
+            document.getElementById('hdr-sub').innerText = t.sub;
+            document.getElementById('lang-toggle-btn').innerText = t.langBtn;
+            document.getElementById('user-input').placeholder = t.placeholder;
+            document.getElementById('btn-send').innerText = t.send;
+            document.getElementById('btn-media').innerText = t.media;
+            document.getElementById('btn-pi').innerText = t.pi;
+            document.getElementById('welcome-msg').innerHTML = t.welcome;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                if (window.Pi) Pi.init({ version: "2.0", sandbox: true });
+            } catch (e) { console.log(e); }
         });
 
         function appendMessage(text, sender) {
@@ -161,67 +230,68 @@
             appendMessage(text, 'user');
             input.value = '';
 
-            // محاكاة الرد الفوري الذكي للأقسام
             setTimeout(() => {
                 let reply = getSmartReply(text);
                 appendMessage(reply, 'ai');
-            }, 600);
+            }, 500);
         }
 
         function handleKeyPress(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+            if (e.key === 'Enter') sendMessage();
         }
 
-        function getSmartReply(query) {
-            if (query === '1' || query.includes('أعمال')) {
-                return "💼 **قسم الأعمال والمشاريع:**\n- دراسات جدوى متكاملة واستراتيجيات التسويق الرقمي.\n- تطوير نموذج العمل التجاري (Business Model Canvas).\nاكتب فكرة مشروعك لنبدأ العمل عليها!";
-            } else if (query === '2' || query.includes('تطوير')) {
-                return "🧠 **قسم تطوير الذات:**\n- العقلية النامية وتحديد الأهداف بذكاء (SMART).\n- إدارة الوقت وتقنية بومودورو.\nخصص 10 دقائق صباحاً لكتابة أهم 3 مهام يومك.";
-            } else if (query === '3' || query.includes('تقنية')) {
-                return "🛠️ **قسم تقنية وتطبيقات:**\n- أحدث أدوات الذكاء الاصطناعي وتطوير الويب.\n- بناء التطبيقات المتوافقة مع Pi Network وPWA.";
-            } else if (query === '4' || query.includes('عملات') || query.includes('Pi')) {
-                return "🪙 **قسم العملات الرقمية و Pi Network:**\n- متابعة اقتصاد Pi والتقنيات اللامركزية.\n- استراتيجيات التداول وتحليل السوق الرقمي.";
-            } else if (query === '5' || query.includes('ترجمة')) {
-                return "🔤 **قسم الترجمة:**\nأرسل النص الذي تريد ترجمته فوراً (عربي ↔ إنجليزي) وسأقدم لك ترجمة احترافية ودقيقة.";
-            } else if (query === '6' || query.includes('إعدادات')) {
-                return "⚙️ **قسم الإعدادات:**\nالمنصة تعمل بكفاءة عالية، جميع الأقسام مفعلة، وتدعم المعاملات الرقمية.";
-            } else if (query === '7' || query.includes('حول')) {
-                return "ℹ️ **حول المنصة:**\nRady Social AI هي منصة ذكية تدمج الذكاء الاصطناعي لخدمة المطورين والمجتمع الرقمي العربي بكل احترافية.";
+        function getSmartReply(q) {
+            const cleanQ = q.replace(/[١]/g, '1').replace(/[٢]/g, '2').replace(/[٣]/g, '3').replace(/[٤]/g, '4').replace(/[٥]/g, '5').replace(/[٦]/g, '6').replace(/[٧]/g, '7').trim();
+
+            if (currentLang === 'ar') {
+                if (cleanQ === '1') return "💼 **قسم الأعمال والمشاريع:**\n- دراسات الجدوى واستراتيجيات التسويق الرقمي.\n- نموذج العمل التجاري (Business Model Canvas).";
+                if (cleanQ === '2') return "🧠 **قسم تطوير الذات:**\n- تحديد الأهداف بذكاء (SMART Goals).\n- إدارة الوقت وتقنية بومودورو.";
+                if (cleanQ === '3') return "🛠️ **قسم تقنية وتطبيقات:**\n- أدوات الذكاء الاصطناعي وتطوير تطبيقات الويب وPWA.";
+                if (cleanQ === '4') return "🪙 **العملات الرقمية و Pi Network:**\n- اقتصاد بلوكشين باي واستراتيجيات التداول.";
+                if (cleanQ === '5') return "🔤 **قسم الترجمة الفورية:**\nأرسل النص وسأقوم بترجمته بدقة عالية (عربي ↔ إنجليزي).";
+                if (cleanQ === '6') return "⚙️ **قسم الإعدادات:**\nكافة الأنظمة تعمل بكفاءة عالية، وربط الشبكة جاهز.";
+                if (cleanQ === '7') return "ℹ️ **حول المنصة:**\nRady Social AI منصتك الذكية لدمج الذكاء الاصطناعي واقتصاد باي.";
+                return `أهلاً بك يا رفيقي! استلمت طلبك: "${q}". اختر رقماً من 1 إلى 7 لنبدأ فوراً! 🚀`;
             } else {
-                return `أهلاً بك يا رفيقي! لقد استستلمت رسالتك: "${query}". أنا جاهز لدعمك باحترافية عالية في كافة المجالات، أختر أحد الأقسام من 1 إلى 7 لنبدأ فوراً! 🚀`;
+                if (cleanQ === '1') return "💼 **Business & Projects:**\n- Feasibility studies and digital marketing strategies.\n- Business Model Canvas.";
+                if (cleanQ === '2') return "🧠 **Self Development:**\n- SMART Goals setting and effective time management.";
+                if (cleanQ === '3') return "🛠️ **Tech & Apps:**\n- AI tools, Web Apps, and PWA integration.";
+                if (cleanQ === '4') return "🪙 **Crypto & Pi Network:**\n- Blockchain economics and crypto trading strategies.";
+                if (cleanQ === '5') return "🔤 **Translation Section:**\nSend any text to get instant translation (Ar ↔ En).";
+                if (cleanQ === '6') return "⚙️ **Settings:**\nAll systems operational and Pi integration ready.";
+                if (cleanQ === '7') return "ℹ️ **About Platform:**\nRady Social AI connects artificial intelligence with the Pi economy.";
+                return `Welcome my friend! Received your message: "${q}". Choose a number from 1 to 7 to start! 🚀`;
             }
         }
 
-        // دالة معاملة الدفع لاجتياز الخطوة 10 في بوابة المطورين
+        function handleMediaUpload(event) {
+            const file = event.target.files[0];
+            const t = translations[currentLang];
+            if (file) {
+                appendMessage(`${t.fileUploaded} ${file.name}`, 'user');
+                setTimeout(() => {
+                    appendMessage(t.fileReady, 'ai');
+                }, 800);
+            }
+        }
+
         function payWithPi() {
-            const paymentData = {
-                amount: 1,
-                memo: "تفعيل الميزات الشاملة - Rady Social AI",
-                metadata: { appId: "rady-social-ai" },
-            };
-
-            const callbacks = {
-                onReadyForServerApproval: (paymentId) => {
-                    appendMessage("⚡ جاري معالجة الدفع عبر شبكة Pi...", "ai");
-                },
-                onReadyForServerCompletion: (paymentId, txid) => {
-                    appendMessage("✅ تم اعتماد الدفع بنجاح! تم فتح كافة الميزات الاحترافية لك.", "ai");
-                },
-                onCancel: (paymentId) => {
-                    appendMessage("⚠️ تم إلغاء عملية الدفع.", "ai");
-                },
-                onError: (error, payment) => {
-                    appendMessage("❌ حدث خطأ في الدفع، تأكد من استخدام متصفح Pi Browser.", "ai");
-                }
-            };
-
-            if (window.Pi) {
-                Pi.createPayment(paymentData, callbacks);
-            } else {
-                alert("يرجى فتح التطبيق حصرياً من داخل Pi Browser لإتمام المعاملة واجتياز الخطوة العاشرة.");
+            const t = translations[currentLang];
+            if (!window.Pi) {
+                alert(currentLang === 'ar' ? "يرجى فتح التطبيق من داخل Pi Browser" : "Please open inside Pi Browser");
+                return;
             }
+
+            Pi.createPayment({
+                amount: 1,
+                memo: "Rady Social AI Features Activation",
+                metadata: { appId: "rady-social-ai" },
+            }, {
+                onReadyForServerApproval: (id) => appendMessage(t.piProcessing, 'ai'),
+                onReadyForServerCompletion: (id, txid) => appendMessage(t.piSuccess, 'ai'),
+                onCancel: (id) => appendMessage(t.piCancel, 'ai'),
+                onError: (err, payment) => appendMessage(t.piError, 'ai')
+            });
         }
     </script>
 </body>
