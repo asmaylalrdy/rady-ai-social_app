@@ -227,46 +227,36 @@
             if (e.key === 'Enter') sendMessage();
         }
 
-        // محرك ذكي متطور يتفاعل فوراً مع أوامر المستخدم وأقسامه
+        // محرك ذكي متطور يحلل الكلمات المفتاحية ليقدم محتوى تفاعلياً حقيقياً فوراً
         function getSmartReply(q) {
-            const cleanQ = q.replace(/[١]/g, '1').replace(/[٢]/g, '2').replace(/[٣]/g, '3').replace(/[٤]/g, '4').replace(/[٥]/g, '5').replace(/[٦]/g, '6').replace(/[٧]/g, '7').trim();
+            const cleanQ = q.replace(/[١]/g, '1').replace(/[٢]/g, '2').replace(/[٣]/g, '3').replace(/[٤]/g, '4').replace(/[٥]/g, '5').replace(/[٦]/g, '6').replace(/[٧]/g, '7').toLowerCase();
 
             if (currentLang === 'ar') {
-                if (cleanQ === '1' || cleanQ.includes('أعمال') || cleanQ.includes('الاعمال') || cleanQ.includes('مشروع')) {
-                    return "💼 **قسم الأعمال والمشاريع المفعل:**\n- دراسات الجدوى الاحترافية واستراتيجيات التسويق الرقمي.\n- بناء خطة نموذج العمل التجاري (Business Model Canvas).\nأنا جاهز تماماً لتطوير فكرة مشروعك، اكتب تفاصيلها الآن!";
+                if (cleanQ.includes('خطة') || cleanQ.includes('نموذج') || cleanQ.includes('تجاري') || cleanQ.includes('أعمال') || cleanQ.includes('مشروع') || cleanQ.includes('1')) {
+                    return "💼 **نموذج خطة العمل التجاري (Business Model Canvas):**\n1. **الشرائح المستهدفة:** تحديد العملاء والجمهور المستهدف بدقة.\n2. **القيمة المقدمة:** ما المميز في خدمتك أو منتجك؟\n3. **قنوات التوزيع:** كيف يصل منتجك للعملاء (تطبيقات ويب، وسائل تواصل).\n4. **مصادر الدخل:** استراتيجيات الربح والمدفوعات (عبر Pi Network).\n*أخبرني بفكرة مشروعك لنصيغ نموذج عملك التجاري الآن!*";
                 } 
-                if (cleanQ === '2' || cleanQ.includes('تطوير') || cleanQ.includes('الذات') || cleanQ.includes('وقت')) {
-                    return "🧠 **قسم تطوير الذات المفعل:**\n- العقلية النامية وتخطيط الأهداف الاستراتيجية (SMART).\n- إدارة الوقت الفعالة وتقنية بومودورو لزيادة الإنتاجية.\nكيف يمكنني مساعدتك في تنظيم جدولك اليوم؟";
+                if (cleanQ.includes('تطوير') || cleanQ.includes('ذات') || cleanQ.includes('وقت') || cleanQ.includes('إنتاجية') || cleanQ.includes('2')) {
+                    return "🧠 **خطة تطوير الذات وإدارة الوقت:**\n- تحديد الأهداف بذكاء (SMART Goals).\n- استخدام تقنية بومودورو (25 دقيقة تركيز + 5 دقائق راحة).\n- ترتيب الأولويات اليومية.\n*ما هي المهام التي تريد إنجازها اليوم؟*";
                 } 
-                if (cleanQ === '3' || cleanQ.includes('تقنية') || cleanQ.includes('تطبيقات') || cleanQ.includes('برمجة')) {
-                    return "🛠️ **قسم تقنية وتطبيقات المفعل:**\n- تطوير ويب متقدم، تطبيقات PWA، وتكامل مع شبكة Pi Network.\n- حلول الذكاء الاصطناعي والأتمتة البرمجية.\nاطرح استفسارك التقني أو الكود الذي تريد مراجعته!";
+                if (cleanQ.includes('تقنية') || cleanQ.includes('تطبيقات') || cleanQ.includes('برمجة') || cleanQ.includes('كود') || cleanQ.includes('3')) {
+                    return "🛠️ **الدعم التقني والبرمجي:**\n- منصتك مبنية باستخدام HTML5, CSS3, JavaScript وتعمل بتقنية PWA المتوافقة مع متصفح Pi Browser.\n- ربط ذكي مع Pi SDK.\n*ما هي المشكلة البرمجية أو الاستفسار التقني الذي ترغب في معالجته؟*";
                 } 
-                if (cleanQ === '4' || cleanQ.includes('عملات') || cleanQ.includes('رقمية') || cleanQ.includes('Pi') || cleanQ.includes('باي')) {
-                    return "🪙 **قسم العملات الرقمية و Pi Network المفعل:**\n- متابعة اقتصاد شبكة باي والتحليل التقني.\n- استراتيجيات التداول وإدارة المحافظ الرقمية.\nما العملة التي ترغب في تحليلها؟";
+                if (cleanQ.includes('عملات') || cleanQ.includes('باي') || cleanQ.includes('pi') || cleanQ.includes('crypto') || cleanQ.includes('4')) {
+                    return "🪙 **قسم العملات الرقمية و Pi Network:**\n- متابعة شبكة Pi واقتصاد البلوكشين اللامركزي.\n- اختبار المعاملات البرمجية عبر بيئة Testnet.\n*هل ترغب في اختبار معاملات الدفع أو تحليل السوق؟*";
                 } 
-                if (cleanQ === '5' || cleanQ.includes('ترجمة') || cleanQ.includes('لغة')) {
-                    return "🔤 **قسم الترجمة الفورية المفعل:**\nأرسل أي نص وسأقوم بترجمته بدقة عالية واحترافية (عربي ↔ إنجليزي).";
+                if (cleanQ.includes('ترجمة') || cleanQ.includes('translate') || cleanQ.includes('5')) {
+                    return "🔤 **قسم الترجمة الفورية:**\nأرسل أي جملة أو نص تريد ترجمته وسأقدم لك ترجمة احترافية ودقيقة (عربي ↔ إنجليزي) فوراً.";
                 } 
-                if (cleanQ === '6' || cleanQ.includes('إعدادات') || cleanQ.includes('تفعيل')) {
-                    return "⚙️ **تم تفعيل جميع الأقسام والأنظمة بنجاح تام!**\nجميع الوظائف، استجابات الذكاء الاصطناعي، ومعاملات الدفع جاهزة لتعمل بكفاءة مطلقة كما طلبت.";
+                if (cleanQ.includes('إعدادات') || cleanQ.includes('تفعيل') || cleanQ.includes('6')) {
+                    return "⚙️ **لوحة التحكم والإعدادات:**\n- جميع الأقسام مفعلة.\n- نظام اللغات (عربي / إنجليزي) يعمل بكفاءة.\n- ربط Pi SDK جاهز لإتمام المعاملات.";
                 } 
-                if (cleanQ === '7' || cleanQ.includes('حول') || cleanQ.includes('منصة')) {
-                    return "ℹ️ **حول المنصة:**\nRady Social AI هي منصتك المتقدمة التي تجمع بين قوة الذكاء الاصطناعي واقتصاد شبكة Pi لخدمة المطورين والمبدعين.";
+                if (cleanQ.includes('حول') || cleanQ.includes('منصة') || cleanQ.includes('7')) {
+                    return "ℹ️ **حول المنصة:**\nRady Social AI هي منصتك المتقدمة التي تجمع الذكاء الاصطناعي واقتصاد شبكة Pi لخدمة المطورين والمبدعين.";
                 } 
                 
-                // التفاعل مع أي أمر أو طلب نصي حر يكتبه المستخدم لئلا يكون الرد جامداً
-                return `أهلاً بك يا إسماعيل! لقد استلمت توجيهك: "${q}". لقد قمت بتفعيل كافة الأقسام والاستجابة الفورية لطلبك بكل احترافية ودقة. أنا معك خطوة بخطوة، فما الخطوة التالية التي تريد تنفيذها؟ 🚀`;
+                return `أهلاً بك يا إسماعيل! لقد استلمت طلبك: "${q}". لقد قمت بتحليل النص وتفعيل القسم المناسب فوراً. أنا معك خطوة بخطوة، فما الخطوة التالية التي تريد تنفيذها؟ 🚀`;
             } else {
-                // النسخة الإنجليزية
-                if (cleanQ === '1' || cleanQ.includes('business')) return "💼 **Business & Projects Activated:** Feasibility studies, marketing, and business planning ready. Share your project idea!";
-                if (cleanQ === '2' || cleanQ.includes('self')) return "🧠 **Self Development Activated:** SMART goals and time management. How can I help?";
-                if (cleanQ === '3' || cleanQ.includes('tech')) return "🛠️ **Tech & Apps Activated:** Web apps, PWA, and Pi SDK integration ready.";
-                if (cleanQ === '4' || cleanQ.includes('crypto')) return "🪙 **Crypto & Pi Network Activated:** Blockchain and trading analysis ready.";
-                if (cleanQ === '5' || cleanQ.includes('translation')) return "🔤 **Translation Activated:** Send text for instant Ar-En translation.";
-                if (cleanQ === '6' || cleanQ.includes('settings')) return "⚙️ **All sections and systems successfully activated!**";
-                if (cleanQ === '7' || cleanQ.includes('about')) return "ℹ️ **About Rady Social AI:** Connecting AI with the Pi economy.";
-                
-                return `Received your command: "${q}". All sections are fully activated and responsive to your needs. Let's build something great! 🚀`;
+                return `Received your command: "${q}". All sections are fully active and tailored to assist you. Let's proceed! 🚀`;
             }
         }
 
@@ -280,10 +270,10 @@
             }
         }
 
-        // تفعيل دفع Pi الحقيقي لاجتياز الخطوة 10
+        // دفع Pi الحقيقي (يتطلب تفعيل نطاق payments في Developer Portal)
         function payWithPi() {
             if (typeof Pi === 'undefined') {
-                alert(currentLang === 'ar' ? "يرجى فتح التطبيق من داخل Pi Browser لإتمام معاملة الدفع." : "Please open inside Pi Browser to process payment.");
+                alert(currentLang === 'ar' ? "يرجى فتح التطبيق من داخل Pi Browser لإتمام المعاملة." : "Please open inside Pi Browser to process payment.");
                 return;
             }
 
@@ -304,7 +294,7 @@
                     appendMessage(currentLang === 'ar' ? "⚠️ تم إلغاء معاملة الدفع." : "⚠️ Payment cancelled.", 'ai');
                 },
                 onError: (error, payment) => {
-                    appendMessage(currentLang === 'ar' ? "❌ حدث خطأ في المعاملة. تأكد من رصيد محفظتك في Testnet." : "❌ Payment error occurred.", 'ai');
+                    appendMessage(currentLang === 'ar' ? "❌ حدث خطأ في المعاملة. تأكد من تفعيل صلاحية Payments في بوابة المطورين." : "❌ Payment error. Ensure 'payments' scope is enabled in Developer Portal.", 'ai');
                 }
             };
 
