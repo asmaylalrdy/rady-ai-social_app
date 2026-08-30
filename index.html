@@ -72,6 +72,7 @@
             background-color: var(--primary-color);
             color: white;
             align-self: flex-end;
+            white-space: pre-wrap; /* يحافظ على الأسطر الجديدة كما كتبها المستخدم */
         }
         .input-area {
             background: white;
@@ -92,7 +93,7 @@
             font-size: 0.9rem;
             font-family: inherit;
             resize: none;
-            max-height: 100px;
+            max-height: 120px;
             min-height: 38px;
             line-height: 1.4;
         }
@@ -145,7 +146,7 @@
         <button class="action-btn pi-btn" id="btn-pi" onclick="payWithPi()" title="دفع Pi">🌟 Pi</button>
         <button class="action-btn media-btn" id="btn-media" onclick="document.getElementById('media-input').click()" title="رفع ملف">📁</button>
         <input type="file" id="media-input" onchange="handleMediaUpload(event)">
-        <textarea id="user-input" placeholder="اكتب أمرك أو استفسارك هنا..." rows="1" oninput="autoResize(this)" onkeydown="handleKeyDown(event)"></textarea>
+        <textarea id="user-input" placeholder="اكتب أمرك أو استفسارك هنا..." rows="1" oninput="autoResize(this)"></textarea>
         <button class="action-btn send-btn" id="btn-send" onclick="sendMessage()">إرسال</button>
     </div>
 
@@ -199,8 +200,12 @@
             const container = document.getElementById('chat-container');
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${sender}`;
-            let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>');
-            msgDiv.innerHTML = formattedText.replace(/\n/g, '<br>');
+            if (sender === 'user') {
+                msgDiv.innerText = text; // يعرض النص مع الأسطر كما كتبها المستخدم تماماً
+            } else {
+                let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>');
+                msgDiv.innerHTML = formattedText.replace(/\n/g, '<br>');
+            }
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
         }
@@ -218,13 +223,6 @@
                 let reply = getSmartReply(text);
                 appendMessage(reply, 'ai');
             }, 300);
-        }
-
-        function handleKeyDown(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
         }
 
         function getSmartReply(q) {
@@ -251,6 +249,9 @@
                 }
                 if (cleanQ.includes('ترجمة') || cleanQ.includes('5')) {
                     return "🔤 أرسل النص الذي تريد ترجمته وسأقوم بترجمته فوراً وبدقة عالية.";
+                }
+                if (cleanQ.includes('مرحب') || cleanQ.includes('أهلاً') || cleanQ.includes('تحيات')) {
+                    return "أهلاً بك مرة أخرى يا إسماعيل! يسعدني دائماً التواصل معك، كيف يمكنني مساعدتك في تطوير أعمالك أو مشاريعك اليوم؟ ✨";
                 }
                 
                 return `أهلاً بك يا إسماعيل! استلمت استفسارك:\n"${q}"\nأنا معك خطوة بخطوة لدعم مشروعك وتطوير أعمالك، فما الخطوة التالية التي تريد تنفيذها؟ 🚀`;
