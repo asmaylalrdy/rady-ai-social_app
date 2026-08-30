@@ -24,18 +24,18 @@
         }
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white; padding: 10px 15px;
+            color: white; padding: 8px 12px;
             display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0;
         }
-        .header-title h1 { margin: 0; font-size: 1.1rem; }
-        .header-title p { margin: 2px 0 0; font-size: 0.7rem; opacity: 0.9; }
-        .top-actions { display: flex; gap: 6px; align-items: center; }
-        .lang-btn, .login-btn-top {
+        .header-title h1 { margin: 0; font-size: 1rem; }
+        .header-title p { margin: 2px 0 0; font-size: 0.65rem; opacity: 0.9; }
+        .top-actions { display: flex; gap: 4px; align-items: center; }
+        .top-btn {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white; padding: 5px 10px; border-radius: 12px;
-            cursor: pointer; font-size: 0.75rem; font-weight: bold;
+            color: white; padding: 4px 8px; border-radius: 10px;
+            cursor: pointer; font-size: 0.7rem; font-weight: bold;
         }
         #chat-container {
             flex: 1; overflow-y: auto; padding: 12px;
@@ -91,19 +91,20 @@
 
     <header>
         <div class="header-title">
-            <h1 id="hdr-title">Rady Social AI | رضي إي آي</h1>
-            <p id="hdr-sub">منصتك الذكية للاستشارات والأعمال وتطوير الذات</p>
+            <h1>Rady Social AI</h1>
+            <p>منصتك الذكية للأعمال وتطوير الذات</p>
         </div>
         <div class="top-actions">
-            <button class="login-btn-top" onclick="showLoginOptions()">👤 دخول</button>
-            <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">English</button>
+            <button class="top-btn" onclick="showLoginOptions()">👤 دخول</button>
+            <button class="top-btn" onclick="hardRefresh()">🔄 تحديث</button>
+            <button class="top-btn" onclick="toggleLanguage()" id="lang-toggle-btn">EN</button>
         </div>
     </header>
 
     <div id="chat-container">
         <div class="message ai" id="welcome-msg">
             مرحباً بك يا إسماعيل في منصتك الذكية Rady Social AI 🌍<br>
-            كيف يمكنني مساعدتك اليوم؟ اختر أحد الأقسام أو اكتب استفسارك مباشرة:<br>
+            اكتب رقم القسم أو اسأل مباشرة لنبدأ:<br>
             1️⃣ أعمال ومشاريع<br>
             2️⃣ تطوير الذات<br>
             3️⃣ تقنية وتطبيقات<br>
@@ -115,8 +116,8 @@
     </div>
 
     <div class="input-area">
-        <button class="action-btn pi-btn" id="btn-pi" onclick="payWithPi()" title="دفع Pi">🌟 Pi</button>
-        <button class="action-btn media-btn" id="btn-media" onclick="document.getElementById('media-input').click()" title="رفع ملف">📁</button>
+        <button class="action-btn pi-btn" onclick="payWithPi()" title="Pi">🌟 Pi</button>
+        <button class="action-btn media-btn" onclick="document.getElementById('media-input').click()" title="ملف">📁</button>
         <input type="file" id="media-input" onchange="handleMediaUpload(event)">
         <textarea id="user-input" placeholder="اكتب أمرك أو استفسارك هنا..." rows="1" oninput="autoResize(this)"></textarea>
         <button class="action-btn send-btn" id="btn-send" onclick="sendMessage()">إرسال</button>
@@ -125,36 +126,21 @@
     <script>
         let currentLang = 'ar';
 
-        const translations = {
-            ar: {
-                title: "Rady Social AI | رضي إي آي",
-                sub: "منصتك الذكية للاستشارات والأعمال وتطوير الذات",
-                langBtn: "English",
-                placeholder: "اكتب أمرك أو استفسارك هنا...",
-                send: "إرسال",
-                welcome: "مرحباً بك يا إسماعيل في منصتك الذكية Rady Social AI 🌍<br>كيف يمكنني مساعدتك اليوم؟ اختر أحد الأقسام أو اكتب استفسارك مباشرة:<br>1️⃣ أعمال ومشاريع<br>2️⃣ تطوير الذات<br>3️⃣ تقنية وتطبيقات<br>4️⃣ العملات الرقمية وباي<br>5️⃣ ترجمة فورية<br>6️⃣ الإعدادات ⚙️<br>7️⃣ حول المنصة ℹ️"
-            },
-            en: {
-                title: "Rady Social AI",
-                sub: "Your Smart Platform for Business & Growth",
-                langBtn: "العربية",
-                placeholder: "Type your command or query...",
-                send: "Send",
-                welcome: "Welcome to Rady Social AI 🌍<br>How can I help you today? Choose a category or type your query:<br>1️⃣ Business & Projects<br>2️⃣ Self Development<br>3️⃣ Tech & Apps<br>4️⃣ Crypto & Pi Network<br>5️⃣ Translation<br>6️⃣ Settings ⚙️<br>7️⃣ About ℹ️"
-            }
-        };
+        function hardRefresh() {
+            // مسح الكاش وإعادة تحميل الصفحة من السيرفر مباشرة
+            window.location.reload(true);
+        }
 
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            const t = translations[currentLang];
             document.getElementById('html-root').setAttribute('lang', currentLang);
             document.getElementById('html-root').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
-            document.getElementById('hdr-title').innerText = t.title;
-            document.getElementById('hdr-sub').innerText = t.sub;
-            document.getElementById('lang-toggle-btn').innerText = t.langBtn;
-            document.getElementById('user-input').placeholder = t.placeholder;
-            document.getElementById('btn-send').innerText = t.send;
-            document.getElementById('welcome-msg').innerHTML = t.welcome;
+            document.getElementById('lang-toggle-btn').innerText = currentLang === 'ar' ? 'EN' : 'AR';
+            document.getElementById('user-input').placeholder = currentLang === 'ar' ? "اكتب أمرك أو استفسارك هنا..." : "Type your query here...";
+            document.getElementById('btn-send').innerText = currentLang === 'ar' ? "إرسال" : "Send";
+            document.getElementById('welcome-msg').innerHTML = currentLang === 'ar' ? 
+                "مرحباً بك يا إسماعيل في منصتك الذكية Rady Social AI 🌍<br>اكتب رقم القسم أو اسأل مباشرة لنبدأ:<br>1️⃣ أعمال ومشاريع<br>2️⃣ تطوير الذات<br>3️⃣ تقنية وتطبيقات<br>4️⃣ العملات الرقمية وباي<br>5️⃣ ترجمة فورية<br>6️⃣ الإعدادات ⚙️<br>7️⃣ حول المنصة ℹ️" :
+                "Welcome Ismail to Rady Social AI 🌍<br>Type a section number or query:<br>1️⃣ Business<br>2️⃣ Self Dev<br>3️⃣ Tech<br>4️⃣ Crypto<br>5️⃣ Translation<br>6️⃣ Settings<br>7️⃣ About";
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -214,59 +200,38 @@
         }
 
         function getSmartReply(q) {
-            const cleanQ = q.toLowerCase().trim();
+            const text = q.toLowerCase();
 
-            if (currentLang === 'ar') {
-                // التحقق من النقاش البرمجي
-                if (cleanQ.includes('برمج') || cleanQ.includes('كود') || cleanQ.includes('تطوير التطبيق') || cleanQ.includes('vulnerability') || cleanQ.includes('github')) {
-                    return `💻 **النقاش البرمجي لمشروعك:**\nيا إسماعيل، من الناحية البرمجية نحن نعمل على تحديث واجهات PWA و ربط Vercel و GitHub وتكامل Pi SDK.\nهل ترغب بأن أكتب لك كوداً إضافياً لتطوير ميزة معينة في التطبيق حالياً؟ ⚡`;
-                }
-
-                // قسم 7 أو حول المنصة
-                if (cleanQ.includes('7') || cleanQ.includes('حول') || cleanQ.includes('من نحن') || cleanQ.includes('المنصة')) {
-                    return "ℹ️ **حول منصة Rady Social AI:**\nهي منصتك الذكية والمخصصة التي تجمع بين الذكاء الاصطناعي، إدارة الأعمال، تطوير الذات، واقتصاد شبكة Pi الرقمية، صُممت خصيصاً لتناسب رؤيتك ومشاريعك يا إسماعيل!";
-                }
-
-                // قسم 1 أو أعمال
-                if (cleanQ.includes('1') || cleanQ.includes('أعمال') || cleanQ.includes('مشاريع') || cleanQ.includes('تجاري')) {
-                    return "💼 **قسم أعمال ومشاريع:**\nمرحباً بك يا إسماعيل في ريادة الأعمال. هذا القسم يختص بالتجارة، دراسات الجدوى، خطط العمل والتسويق الرقمي. ما هو مشروعك الحالي الذي نعمل على تطويره؟";
-                }
-
-                // قسم 2 أو تطوير الذات
-                if (cleanQ.includes('2') || cleanQ.includes('تطوير الذات') || cleanQ.includes('تطوير') || cleanQ.includes('ذات')) {
-                    return "🧠 **قسم تطوير الذات:**\nالتركيز، التنظيم، إدارة الوقت وبناء العادات الذرية. كيف ترغب بترتيب مهامك اليومية أو تطوير مهاراتك اليوم؟";
-                }
-
-                // قسم 3 أو تقنية وتطبيقات
-                if (cleanQ.includes('3') || cleanQ.includes('تقنية') || cleanQ.includes('تطبيقات')) {
-                    return "🛠️ **قسم تقنية وتطبيقات:**\nنظام PWA، واجهات الويب، GitHub، Vercel وتطبيقات الذكاء الاصطناعي. تطبيقك يعمل بكفاءة عالية، فهل تريد تعديل شيء برمجي جديد؟";
-                }
-
-                // قسم 4 أو العملات الرقمية
-                if (cleanQ.includes('4') || cleanQ.includes('عملات') || cleanQ.includes('باي') || cleanQ.includes('pi')) {
-                    return "🪙 **قسم العملات الرقمية وباي Network:**\nتتابع شبكة Pi، اختبارات Testnet وعقود الدفع الذكية. جاهز لدمج أي ميزة مالية جديدة في التطبيق.";
-                }
-
-                // قسم 5 أو ترجمة
-                if (cleanQ.includes('5') || cleanQ.includes('ترجمة')) {
-                    return "🔤 **قسم الترجمة الفورية:**\nأرسل أي نص وسأقوم بترجمته بدقة واحترافية بين العربية والإنجليزية فوراً.";
-                }
-
-                // قسم 6 أو إعدادات
-                if (cleanQ.includes('6') || cleanQ.includes('إعدادات')) {
-                    return "⚙️ **قسم الإعدادات:**\nتخصيص الواجهة، إدارة المفاتيح، والتحكم في إعدادات المنصة. يمكنك النقر على زر '👤 دخول' في الأعلى لربط حساباتك.";
-                }
-
-                // التحيات والترحيب
-                if (cleanQ.includes('مرحب') || cleanQ.includes('أهلاً') || cleanQ.includes('تحيات') || cleanQ.includes('السلام')) {
-                    return "أهلاً بك يا إسماعيل! يسعدني دائماً التواصل معك، كيف يمكنني مساعدتك في تطوير أعمالك أو مشاريعك اليوم؟ ✨";
-                }
-
-                // رد ذكي مرن لأي استفسار آخر
-                return `أهلاً بك يا إسماعيل! استلمت استفسارك بدقة:\n"${q}"\nأنا معك خطوة بخطوة لدعم مشروعك وتطوير أعمالك، هل ترغب بتوجيه هذا السؤال لأحد الأقسام أم نبدأ تنفيذه فوراً؟ 🚀`;
-            } else {
-                return `Received your input: "${q}". Let's proceed with your project! 🚀`;
+            // فحص دقيق ومباشر للأرقام والكلمات المفتاحية
+            if (text === '1' || text.includes('أعمال') || text.includes('مشاريع') || text.includes('تجاري')) {
+                return "💼 **قسم أعمال ومشاريع:**\nمرحباً بك يا إسماعيل في ريادة الأعمال. هذا القسم يختص بالتجارة، دراسات الجدوى، خطط العمل والتسويق الرقمي. ما هو مشروعك الحالي الذي نعمل على تطويره؟";
             }
+            if (text === '2' || text.includes('تطوير') || text.includes('ذات') || text.includes('مهام')) {
+                return "🧠 **قسم تطوير الذات:**\nالتركيز، التنظيم، إدارة الوقت وبناء العادات الذرية. كيف ترغب بترتيب مهامك اليومية أو تطوير مهاراتك اليوم؟";
+            }
+            if (text === '3' || text.includes('تقنية') || text.includes('تطبيقات') || text.includes('برمج')) {
+                return "🛠️ **قسم تقنية وتطبيقات:**\nنظام PWA، واجهات الويب، GitHub، Vercel وتطبيقات الذكاء الاصطناعي. تطبيقك يعمل بكفاءة عالية، فهل تريد تعديل شيء برمجي جديد؟";
+            }
+            if (text === '4' || text.includes('عملات') || text.includes('باي') || text.includes('pi') || text.includes('تشفير')) {
+                return "🪙 **قسم العملات الرقمية وباي Network:**\nتتابع شبكة Pi، اختبارات Testnet وعقود الدفع الذكية. جاهز لدمج أي ميزة مالية جديدة في التطبيق.";
+            }
+            if (text === '5' || text.includes('ترجم')) {
+                return "🔤 **قسم الترجمة الفورية:**\nأرسل أي نص وسأقوم بترجمته بدقة واحترافية بين العربية والإنجليزية فوراً.";
+            }
+            if (text === '6' || text.includes('إعدادات')) {
+                return "⚙️ **قسم الإعدادات:**\nتخصيص الواجهة، إدارة المفاتيح، والتحكم في إعدادات المنصة. يمكنك النقر على زر '👤 دخول' في الأعلى لربط حساباتك.";
+            }
+            if (text === '7' || text.includes('حول') || text.includes('من نحن') || text.includes('المنصة')) {
+                return "ℹ️ **حول منصة Rady Social AI:**\nهي منصتك الذكية والمخصصة التي تجمع بين الذكاء الاصطناعي، إدارة الأعمال، تطوير الذات، واقتصاد شبكة Pi الرقمية، صُممت خصيصاً لتناسب رؤيتك ومشاريعك يا إسماعيل!";
+            }
+            if (text.includes('برمج') || text.includes('كود') || text.includes('github') || text.includes('vulnerability')) {
+                return "💻 **النقاش البرمجي لمشروعك:**\nيا إسماعيل، نحن نحدث الأكواد ونربط الأنظمة عبر Vercel و GitHub بانتظام. هل تريد إضافة دالة برمجية أو تعديل تصميم معين الآن؟ ⚡";
+            }
+            if (text.includes('مرحب') || text.includes('أهلاً') || text.includes('تحيات') || text.includes('السلام')) {
+                return "أهلاً بك يا إسماعيل! يسعدني دائماً التواصل معك، اختر أحد الأقسام (1 إلى 7) أو اطرح سؤالك لنبدأ العمل فوراً! ✨";
+            }
+
+            return `أهلاً بك يا إسماعيل! استلمت استفسارك:\n"${q}"\nأنا معك لدعم مشروعك وتطوير أعمالك، هل ترغب بتوجيه هذا السؤال لأحد الأقسام السبعة المتاحة أم نناقشه برمجياً؟ 🚀`;
         }
 
         function handleMediaUpload(event) {
