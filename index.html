@@ -13,104 +13,73 @@
             --chat-bg: #ffffff;
             --text-color: #1f2937;
         }
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column;
+            height: 100vh; overflow: hidden;
         }
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            flex-shrink: 0;
+            color: white; padding: 10px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0;
         }
         .header-title h1 { margin: 0; font-size: 1.1rem; }
         .header-title p { margin: 2px 0 0; font-size: 0.7rem; opacity: 0.9; }
-        .lang-btn {
+        .top-actions { display: flex; gap: 6px; align-items: center; }
+        .lang-btn, .login-btn-top {
             background: rgba(255, 255, 255, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.4);
             color: white; padding: 5px 10px; border-radius: 12px;
             cursor: pointer; font-size: 0.75rem; font-weight: bold;
         }
         #chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            flex: 1; overflow-y: auto; padding: 12px;
+            display: flex; flex-direction: column; gap: 10px;
             -webkit-overflow-scrolling: touch;
         }
         .message {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 14px;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            word-wrap: break-word;
+            max-width: 85%; padding: 10px 14px; border-radius: 14px;
+            font-size: 0.9rem; line-height: 1.5; word-wrap: break-word;
         }
         .message.ai {
-            background-color: var(--chat-bg);
-            align-self: flex-start;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            background-color: var(--chat-bg); align-self: flex-start;
+            border: 1px solid #e5e7eb; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         .message.user {
-            background-color: var(--primary-color);
-            color: white;
-            align-self: flex-end;
-            white-space: pre-wrap; /* يحافظ على الأسطر الجديدة كما كتبها المستخدم */
+            background-color: var(--primary-color); color: white;
+            align-self: flex-end; white-space: pre-wrap;
         }
+        .login-card {
+            background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px;
+            padding: 12px; margin-top: 8px; display: flex; flex-direction: column; gap: 8px;
+        }
+        .login-option-btn {
+            width: 100%; padding: 8px; border: none; border-radius: 8px;
+            font-weight: bold; font-size: 0.85rem; cursor: pointer; color: white;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-pi-login { background: #0f172a; border: 1px solid #f59e0b; color: #f59e0b; }
+        .btn-google-login { background: #db4437; }
+        .btn-apple-login { background: #000000; }
+
         .input-area {
-            background: white;
-            padding: 8px 10px;
-            display: flex;
-            gap: 5px;
-            border-top: 1px solid #e5e7eb;
-            align-items: flex-end;
-            flex-shrink: 0;
-            width: 100%;
+            background: white; padding: 8px 10px; display: flex; gap: 5px;
+            border-top: 1px solid #e5e7eb; align-items: flex-end; flex-shrink: 0; width: 100%;
         }
         textarea {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 18px;
-            outline: none;
-            font-size: 0.9rem;
-            font-family: inherit;
-            resize: none;
-            max-height: 120px;
-            min-height: 38px;
-            line-height: 1.4;
+            flex: 1; padding: 8px 12px; border: 1px solid #d1d5db;
+            border-radius: 18px; outline: none; font-size: 0.9rem;
+            font-family: inherit; resize: none; max-height: 120px; min-height: 38px; line-height: 1.4;
         }
         button.action-btn {
-            border: none;
-            padding: 9px 10px;
-            border-radius: 18px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.75rem;
-            color: white;
-            white-space: nowrap;
-            height: 38px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+            border: none; padding: 9px 10px; border-radius: 18px;
+            cursor: pointer; font-weight: bold; font-size: 0.75rem; color: white;
+            white-space: nowrap; height: 38px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
         .pi-btn { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .media-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
@@ -125,13 +94,16 @@
             <h1 id="hdr-title">Rady Social AI | رضي إي آي</h1>
             <p id="hdr-sub">منصتك الذكية للاستشارات والأعمال وتطوير الذات</p>
         </div>
-        <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">English</button>
+        <div class="top-actions">
+            <button class="login-btn-top" onclick="showLoginOptions()">👤 دخول</button>
+            <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">English</button>
+        </div>
     </header>
 
     <div id="chat-container">
         <div class="message ai" id="welcome-msg">
             مرحباً بك يا إسماعيل في منصتك الذكية Rady Social AI 🌍<br>
-            كيف يمكنني مساعدتك اليوم؟ اختر أحد الأقسام أو اطرح سؤالك مباشرة:<br>
+            كيف يمكنني مساعدتك اليوم؟ اختر أحد الأقسام أو اكتب رقمها لنبدأ:<br>
             1️⃣ أعمال ومشاريع<br>
             2️⃣ تطوير الذات<br>
             3️⃣ تقنية وتطبيقات<br>
@@ -160,7 +132,7 @@
                 langBtn: "English",
                 placeholder: "اكتب أمرك أو استفسارك هنا...",
                 send: "إرسال",
-                welcome: "مرحباً بك يا إسماعيل في منصتك الذكية Rady Social AI 🌍<br>كيف يمكنني مساعدتك اليوم؟ اختر أحد الأقسام أو اطرح سؤالك مباشرة:<br>1️⃣ أعمال ومشاريع<br>2️⃣ تطوير الذات<br>3️⃣ تقنية وتطبيقات<br>4️⃣ العملات الرقمية وباي<br>5️⃣ ترجمة فورية<br>6️⃣ الإعدادات ⚙️<br>7️⃣ حول المنصة ℹ️"
+                welcome: "مرحباً بك يا إسماعيل في منصتك الذكية Rady Social AI 🌍<br>كيف يمكنني مساعدتك اليوم؟ اختر أحد الأقسام أو اكتب رقمها لنبدأ:<br>1️⃣ أعمال ومشاريع<br>2️⃣ تطوير الذات<br>3️⃣ تقنية وتطبيقات<br>4️⃣ العملات الرقمية وباي<br>5️⃣ ترجمة فورية<br>6️⃣ الإعدادات ⚙️<br>7️⃣ حول المنصة ℹ️"
             },
             en: {
                 title: "Rady Social AI",
@@ -168,7 +140,7 @@
                 langBtn: "العربية",
                 placeholder: "Type your command or query...",
                 send: "Send",
-                welcome: "Welcome to Rady Social AI 🌍<br>How can I help you today? Choose a category or type directly:<br>1️⃣ Business & Projects<br>2️⃣ Self Development<br>3️⃣ Tech & Apps<br>4️⃣ Crypto & Pi Network<br>5️⃣ Translation<br>6️⃣ Settings ⚙️<br>7️⃣ About ℹ️"
+                welcome: "Welcome to Rady Social AI 🌍<br>How can I help you today? Choose a category or type its number:<br>1️⃣ Business & Projects<br>2️⃣ Self Development<br>3️⃣ Tech & Apps<br>4️⃣ Crypto & Pi Network<br>5️⃣ Translation<br>6️⃣ Settings ⚙️<br>7️⃣ About ℹ️"
             }
         };
 
@@ -196,12 +168,14 @@
             textarea.style.height = (textarea.scrollHeight) + 'px';
         }
 
-        function appendMessage(text, sender) {
+        function appendMessage(text, sender, isHtml = false) {
             const container = document.getElementById('chat-container');
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${sender}`;
-            if (sender === 'user') {
-                msgDiv.innerText = text; // يعرض النص مع الأسطر كما كتبها المستخدم تماماً
+            if (isHtml) {
+                msgDiv.innerHTML = text;
+            } else if (sender === 'user') {
+                msgDiv.innerText = text;
             } else {
                 let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>');
                 msgDiv.innerHTML = formattedText.replace(/\n/g, '<br>');
@@ -225,36 +199,59 @@
             }, 300);
         }
 
+        function showLoginOptions() {
+            let loginHTML = `🔐 **اختر طريقة تسجيل الدخول إلى منصتك:**
+            <div class="login-card">
+                <button class="login-option-btn btn-pi-login" onclick="loginAction('Pi Network')">🟡 تسجيل الدخول عبر Pi Network</button>
+                <button class="login-option-btn btn-google-login" onclick="loginAction('Google')">🌐 تسجيل الدخول عبر Google</button>
+                <button class="login-option-btn btn-apple-login" onclick="loginAction('Apple')">🍏 تسجيل الدخول عبر Apple ID</button>
+            </div>`;
+            appendMessage(loginHTML, 'ai', true);
+        }
+
+        function loginAction(provider) {
+            appendMessage(`✅ تم تسجيل الدخول بنجاح يا إسماعيل عبر حساب (${provider}) وأصبحت صلاحياتك مفعلة بالكامل كمدير للمنصة! 🚀`, 'ai');
+        }
+
         function getSmartReply(q) {
-            const cleanQ = q.toLowerCase();
+            const cleanQ = q.trim();
 
             if (currentLang === 'ar') {
-                if (cleanQ.includes('تصميم') || cleanQ.includes('بيع') || cleanQ.includes('متجر') || cleanQ.includes('مشروع')) {
-                    return "🎨 ممتاز يا إسماعيل! مشروع 'بيع التصاميم' يحتاج خطة قوية:\n1. **المنصة:** عرض تصاميمك عبر موقعك أو شبكة Pi.\n2. **التسويق:** استغلال وسائل التواصل الاجتماعي.\n3. **الدفع:** تفعيل عملات Pi لتسهيل الشراء.\nهل تبدأ بتصميم الهوية البصرية أم استراتيجية التسويق؟";
+                // قسم 1 أو أعمال
+                if (cleanQ === '1' || cleanQ.includes('أعمال') || cleanQ.includes('مشاريع') || cleanQ.includes('تجاري')) {
+                    return "💼 **قسم أعمال ومشاريع:**\nمرحباً بك يا إسماعيل في ريادة الأعمال. هذا القسم يختص بالتجارة، دراسات الجدوى، خطط العمل والتسويق الرقمي. ما هو مشروعك الحالي الذي نعمل على تطويره؟";
                 }
-                if (cleanQ.includes('استفسار') || cleanQ.includes('منصة') || cleanQ.includes('عن')) {
-                    return "ℹ️ **حول منصة Rady Social AI:**\nهي منصتك الخاصة التي تجمع بين الذكاء الاصطناعي، إدارة الأعمال، تطوير الذات، واقتصاد شبكة Pi الرقمية. تم تصميمها خصيصاً لتناسب احتياجاتك ومشاريعك!";
+                // قسم 2 أو تطوير الذات
+                if (cleanQ === '2' || cleanQ.includes('تطوير الذات') || cleanQ.includes('تطوير') || cleanQ.includes('ذات')) {
+                    return "🧠 **قسم تطوير الذات:**\nالتركيز، التنظيم، إدارة الوقت وبناء العادات الذرية. كيف ترغب بترتيب مهامك اليومية أو تطوير مهاراتك اليوم؟";
                 }
-                if (cleanQ.includes('خطة') || cleanQ.includes('نموذج') || cleanQ.includes('تجاري') || cleanQ.includes('1')) {
-                    return "💼 نموذج خطة العمل التجاري جاهز تماماً، أخبرني بطبيعة مشروعك لنخصص الخطوات معاً!";
+                // قسم 3 أو تقنية وتطبيقات
+                if (cleanQ === '3' || cleanQ.includes('تقنية') || cleanQ.includes('تطبيقات') || cleanQ.includes('برمجة')) {
+                    return "🛠️ **قسم تقنية وتطبيقات:**\nنظام PWA، واجهات الويب، GitHub، Vercel وتطبيقات الذكاء الاصطناعي. تطبيقك يعمل بكفاءة عالية، فهل تريد تعديل شيء برمجي جديد؟";
                 }
-                if (cleanQ.includes('تطوير') || cleanQ.includes('ذات') || cleanQ.includes('2')) {
-                    return "🧠 تطوير الذات يعتمد على تنظيم المهام اليومية بتركيز وعزيمة. ما هي العادة التي ترغب بتطويرها اليوم؟";
+                // قسم 4 أو عملات رقمية
+                if (cleanQ === '4' || cleanQ.includes('عملات') || cleanQ.includes('باي') || cleanQ.includes('pi') || cleanQ.includes('تشفير')) {
+                    return "🪙 **قسم العملات الرقمية وباي Network:**\nتتابع شبكة Pi، اختبارات Testnet وعقود الدفع الذكية. جاهز لدمج أي ميزة مالية جديدة في التطبيق.";
                 }
-                if (cleanQ.includes('تقنية') || cleanQ.includes('برمجة') || cleanQ.includes('3')) {
-                    return "🛠️ تطبيقك يعمل بكفاءة عالية على PWA و Pi Browser. هل تواجه أي تحدٍ برميجي حالياً؟";
+                // قسم 5 أو ترجمة
+                if (cleanQ === '5' || cleanQ.includes('ترجمة')) {
+                    return "🔤 **قسم الترجمة الفورية:**\nأرسل أي نص وسأقوم بترجمته بدقة واحترافية بين العربية والإنجليزية فوراً.";
                 }
-                if (cleanQ.includes('عملات') || cleanQ.includes('باي') || cleanQ.includes('pi') || cleanQ.includes('4')) {
-                    return "🪙 شبكة Pi تتيح لك دمج المدفوعات واختبارها بسلاسة عبر بيئة Testnet.";
+                // قسم 6 أو إعدادات
+                if (cleanQ === '6' || cleanQ.includes('إعدادات')) {
+                    return "⚙️ **قسم الإعدادات:**\nتخصيص الواجهة، إدارة المفاتيح، والتحكم في إعدادات المنصة. يمكنك النقر على زر '👤 دخول' في الأعلى لربط حساباتك.";
                 }
-                if (cleanQ.includes('ترجمة') || cleanQ.includes('5')) {
-                    return "🔤 أرسل النص الذي تريد ترجمته وسأقوم بترجمته فوراً وبدقة عالية.";
-                }
-                if (cleanQ.includes('مرحب') || cleanQ.includes('أهلاً') || cleanQ.includes('تحيات')) {
-                    return "أهلاً بك مرة أخرى يا إسماعيل! يسعدني دائماً التواصل معك، كيف يمكنني مساعدتك في تطوير أعمالك أو مشاريعك اليوم؟ ✨";
+                // قسم 7 أو حول
+                if (cleanQ === '7' || cleanQ.includes('حول') || cleanQ.includes('من نحن')) {
+                    return "ℹ️ **حول منصة Rady Social AI:**\nهي منصتك الذكية والمخصصة التي تجمع بين الذكاء الاصطناعي، إدارة الأعمال، تطوير الذات، واقتصاد شبكة Pi الرقمية، صُممت خصيصاً لتناسب رؤيتك ومشاريعك يا إسماعيل!";
                 }
                 
-                return `أهلاً بك يا إسماعيل! استلمت استفسارك:\n"${q}"\nأنا معك خطوة بخطوة لدعم مشروعك وتطوير أعمالك، فما الخطوة التالية التي تريد تنفيذها؟ 🚀`;
+                // ردود عامة ذكية
+                if (cleanQ.includes('مرحب') || cleanQ.includes('أهلاً') || cleanQ.includes('تحيات')) {
+                    return "أهلاً بك يا إسماعيل! يسعدني دائماً التواصل معك، اختر أحد الأقسام (من 1 إلى 7) أو اطرح سؤالك لنبدأ العمل فوراً! ✨";
+                }
+
+                return `أهلاً بك يا إسماعيل! استقطعت استفسارك بدقة:\n"${q}"\nنحن نعمل معاً في منصة Rady Social AI، هل ترغب بتوجيه هذا السؤال لأحد الأقسام الستة المتاحة أم نناقشه برمجياً؟ 🚀`;
             } else {
                 return `Received your input: "${q}". Let's proceed with your project! 🚀`;
             }
@@ -265,7 +262,7 @@
             if (file) {
                 appendMessage(`📁 تم رفع الملف بنجاح: ${file.name}`, 'user');
                 setTimeout(() => {
-                    appendMessage(`✅ تم استلام الملف وتحليله بنجاح وجاهز للعمل عليه!`, 'ai');
+                    appendMessage(`✅ تم استلام الملف وتحليله بنجاح وجاهز للعمل عليه في المنصة!`, 'ai');
                 }, 500);
             }
         }
@@ -282,7 +279,7 @@
                     metadata: { appId: "rady-social-ai" },
                 }, {
                     onReadyForServerApproval: () => appendMessage("⚡ جاري معالجة الدفع...", 'ai'),
-                    onReadyForServerCompletion: () => appendMessage("🎉 تم اعتماد الدفع بنجاح!", 'ai'),
+                    onReadyForServerCompletion: () => appendMessage("🎉 تم اعتماد الدفع بنجاح عبر شبكة Pi!", 'ai'),
                     onCancel: () => appendMessage("⚠️ تم إلغاء الدفع.", 'ai'),
                     onError: () => appendMessage("🌟 تم تفعيل المحاكاة بنجاح لتستمر في تجربة المنصة!", 'ai')
                 });
