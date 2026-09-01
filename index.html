@@ -154,8 +154,10 @@
                 const data = await res.json();
                 loadingMsg.remove();
 
-                if (data.text) {
-                    appendMessage(data.text, 'ai');
+                const aiResponse = data.reply || data.text;
+
+                if (aiResponse) {
+                    appendMessage(aiResponse, 'ai');
                 } else {
                     let fallback = getFallbackReply(text);
                     appendMessage(fallback, 'ai');
