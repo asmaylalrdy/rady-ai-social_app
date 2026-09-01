@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
@@ -38,7 +38,6 @@ export default async function handler(req, res) {
       const aiReply = data.candidates[0].content.parts[0].text;
       return res.status(200).json({ reply: aiReply });
     } else {
-      // إرجاع تفاصيل الخطأ القادم من Google للتشخيص
       const errorDetail = data.error?.message || 'لم يتم الحصول على إجابة من النموذج';
       return res.status(200).json({ reply: `⚠️ خطأ من الذكاء الاصطناعي: ${errorDetail}` });
     }
