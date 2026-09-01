@@ -112,7 +112,6 @@
 
     <script>
         let currentLang = 'ar';
-        let lastSection = 0;
 
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
@@ -133,7 +132,7 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('user-input');
             const text = input.value.trim();
             if (!text) return;
@@ -141,43 +140,38 @@
             appendMessage(text, 'user');
             input.value = '';
 
-            setTimeout(() => {
-                let reply = getSmartReply(text);
-                appendMessage(reply, 'ai');
-            }, 300);
+            appendMessage("جاري التفكير والأجابة... ⏳", 'ai');
+            const container = document.getElementById('chat-container');
+            const loadingMsg = container.lastElementChild;
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: text })
+                });
+
+                const data = await res.json();
+                loadingMsg.remove();
+
+                if (data.text) {
+                    appendMessage(data.text, 'ai');
+                } else {
+                    let fallback = getFallbackReply(text);
+                    appendMessage(fallback, 'ai');
+                }
+            } catch (err) {
+                loadingMsg.remove();
+                let fallback = getFallbackReply(text);
+                appendMessage(fallback, 'ai');
+            }
         }
 
-        function getSmartReply(q) {
+        function getFallbackReply(q) {
             const text = q.toLowerCase().trim();
-
-            // 1. قسم البلوكتشين والشرح التفصيلي
             if (text.includes('بلوكتشين') || text.includes('blockchain')) {
-                return "🔗 **شرح تقنية البلوكتشين (سلسلة الكتل):**\n\nالبلوكتشين هي دفتر حسابات رقمي موزع ومؤمن تماماً. يتم تسجيل المعاملات في \"كتل\" مرتبطة ببعضها مشفرة.\n\nأ) **أبرز المزايا:**\n• اللامركزية: لا يوجد طرف ثالث أو بنك يتحكم بالبيانات.\n• الأمان العالي: يصعب تعديل أي سجل بعد كتابته.\n• الشفافية: جميع المعاملات قابلة للمراجعة.\n\nب) **علاقتها بـ Pi Network:**\nتعتمد Pi على البلوكتشين لضمان أمان المعاملات ونقل الأصول بين المحافظ.";
+                return "🔗 **شرح تقنية البلوكتشين (سلسلة الكتل):**\n\nالبلوكتشين هي دفتر حسابات رقمي موزع ومؤمن تماماً.\n\nأ) **أبرز المزايا:**\n• اللامركزية.\n• الأمان العالي.\n• الشفافية.\n\nب) **علاقتها بـ Pi Network:**\nتعتمد Pi عليها لضمان أمان المعاملات ونقل الأصول.";
             }
-
-            // 2. قسم الترجمة
-            if (text.includes('ترجم') || text.includes('translate') || lastSection === 5) {
-                if (text.includes('أنا سعيد بالتعاون مع جيميناي')) {
-                    return "🔤 **الترجمة إلى الإنجليزية:**\n\"I am happy to collaborate with Gemini.\"\n\n💡 **ترجمة تفصيلية:**\nأ) أنا = I\nب) سعيد = am happy\nج) بالتعاون = to collaborate\nد) مع = with\nهـ) جيميناي = Gemini";
-                }
-            }
-
-            // 3. قسم العملات الرقمية
-            if (text === '4' || text === '٤' || text.includes('عملات')) {
-                lastSection = 4;
-                return "4️⃣ **العملات الرقمية 💰**\n\nأهلاً بك في قسم العملات الرقمية! مخصص لإثراء معرفتك في Pi Network والأصول الرقمية.\n\n🪙 **المواضيع الرئيسية:**\nأ) **Pi Network:** آخر التحديثات، التعدين، Mainnet.\nب) **البلوكتشين:** شرح مبسط لتقنية سلسلة الكتل.\nج) **المحافظ الرقمية:** الأمان والعقود الذكية.\n\n🎯 **الأسئلة الشائعة:**\nأ) هل Pi Network آمنة؟ (نعم، تعمل بتشفير متقدم).\nب) متى يُفتح Mainnet؟ (العمل جارٍ ضمن مراحل v23).\n\nاختر موضوعاً أو اطرح سؤالك مباشرة ⚡🚀";
-            }
-
-            // أقسام سريعة
-            if (text === '1' || text === '١') { lastSection = 1; return "1️⃣ **أعمال ومشاريع:** دراسات جدوى، خطط عمل، واستراتيجيات تسويق. ماذا نناقش اليوم؟ 🚀"; }
-            if (text === '2' || text === '٢') { lastSection = 2; return "2️⃣ **تطوير الذات:** تنظيم الوقت، تقنية بومودورو، وبناء العادات. أرسل استفسارك 🎯"; }
-            if (text === '3' || text === '٣') { lastSection = 3; return "3️⃣ **تقنية وتطبيقات:** مراجعة الأكواد، واجهات PWA، وVercel. أرسل كودك أو استفسارك 💻"; }
-            if (text === '5' || text === '٥') { lastSection = 5; return "5️⃣ **قسم الترجمة الفورية:** أرسل النص باللغة العربية أو الإنجليزية وسأترجمه لك فوراً ⚡"; }
-
-            if (text.includes('مرحب') || text.includes('أهلاً')) {
-                return "أهلاً بك يا إسماعيل! 🙏 سعيد بتواصلك. اختر القسم (1-7) أو اطرح سؤالك مباشرة 🚀";
-            }
-
             return `💡 **استلمت طلبك بنجاح:**\n"${q}"\n\nأ) اختر القسم المطلوب (1-7).\nب) أو اكتب تفاصيل إضافية لنبدأ العمل عليها مباشرة ⚡🚀`;
         }
 
