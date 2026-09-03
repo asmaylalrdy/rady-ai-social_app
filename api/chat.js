@@ -26,7 +26,6 @@ export default async function handler(req, res) {
 
   const userParts = [];
 
-  // إضافة بيانات الصورة بنوعها الصحيح
   if (imageBase64) {
     userParts.push({
       inlineData: {
@@ -36,11 +35,11 @@ export default async function handler(req, res) {
     });
   }
 
-  userParts.push({ text: `${systemInstruction}\n\nرسالة المستخدم: ${prompt || 'حلل هذه الصورة'}` });
+  userParts.push({ text: `${systemInstruction}\n\nرسالة المستخدم: ${prompt || 'إليك هذه الصورة المرفقة.'}` });
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
