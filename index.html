@@ -15,20 +15,12 @@
         }
         * { box-sizing: border-box; }
         html, body {
-            height: 100%;
-            height: 100dvh;
-            margin: 0; padding: 0;
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            height: 100%; height: 100dvh; margin: 0; padding: 0;
+            overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color); color: var(--text-color);
         }
-        body {
-            display: flex;
-            flex-direction: column;
-        }
+        body { display: flex; flex-direction: column; }
 
-        /* شاشة الترحيب */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -45,7 +37,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.2s;
         }
 
-        /* الهيدر */
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white; padding: 10px 15px;
@@ -62,7 +53,6 @@
             cursor: pointer; font-size: 0.75rem; font-weight: bold;
         }
 
-        /* منطقة المحادثة */
         #chat-container {
             flex: 1; overflow-y: auto; padding: 12px;
             display: flex; flex-direction: column; gap: 10px;
@@ -84,7 +74,6 @@
             max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 6px; display: block;
         }
 
-        /* الأزرار التفاعلية */
         .quick-menu { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .menu-chip {
             background: #eef2ff; color: var(--primary-color);
@@ -92,7 +81,6 @@
             font-size: 0.85rem; font-weight: bold; cursor: pointer;
         }
 
-        /* المعاينة المباشرة للصورة المرفوعة فوق الشريط السفلي */
         #image-preview-container {
             display: none; background: #fff; padding: 6px 12px; border-top: 1px solid #e5e7eb;
             align-items: center; gap: 10px; flex-shrink: 0;
@@ -105,7 +93,6 @@
             width: 22px; height: 22px; font-weight: bold; cursor: pointer; font-size: 12px;
         }
 
-        /* الشريط السفلي الثابت */
         .input-area {
             background: white; padding: 8px 10px; display: flex; gap: 5px;
             border-top: 1px solid #e5e7eb; align-items: center; flex-shrink: 0; width: 100%;
@@ -129,14 +116,12 @@
 </head>
 <body>
 
-    <!-- الشاشة الترحيبية -->
     <div id="splash-screen">
         <h1>مرحباً بك في منصة رضي أي آي<br>Welcome to Rady Social AI</h1>
         <p>منصتك الذكية للاستشارات، الأعمال، الوسائط وتطوير الذات<br>Your AI platform for business, media, and self-development</p>
         <button class="enter-btn" onclick="enterPlatform()">دخول إلى المنصة / Enter</button>
     </div>
 
-    <!-- الهيدر -->
     <header>
         <div class="header-title">
             <h1 id="hdr-title">Rady Social AI | رضي إي آي</h1>
@@ -155,16 +140,14 @@
         </div>
     </div>
 
-    <!-- شريط معاينة الصورة التجهيزي قبل الإرسال -->
     <div id="image-preview-container">
         <img id="image-preview-thumb" src="" alt="المعاينة">
-        <span style="font-size:0.8rem; color:#666;">تمت إضافة الصورة. اكتب المطلوب (عدل، لون، حلل...) ثم اضغط إرسال.</span>
+        <span style="font-size:0.8rem; color:#666;">تمت إضافة الصورة. اكتب المطلوب ثم اضغط إرسال.</span>
         <button class="remove-img-btn" onclick="clearSelectedImage()">✕</button>
     </div>
 
-    <!-- الشريط السفلي -->
     <div class="input-area">
-        <button class="action-btn pi-btn" onclick="payWithPi()" title="Pi">🌟 Pi</button>
+        <button class="action-btn pi-btn" onclick="payWithPi()" title="اشترك عبر Pi">🌟 اشتراك Pi</button>
         <button class="action-btn media-btn" onclick="document.getElementById('media-input').click()" title="ملف">📁</button>
         <input type="file" id="media-input" accept="image/*" onchange="handleMediaUpload(event)">
         <textarea id="user-input" placeholder="اكتب أمرك أو استفسارك هنا..." rows="1"></textarea>
@@ -172,6 +155,9 @@
     </div>
 
     <script>
+        const Pi = window.Pi;
+        Pi.init({ version: "2.0", sandbox: true }); // ضع sandbox: false عند الانتقال للإنتاج الحقيقي
+
         let currentLang = 'ar';
         let currentBase64Image = null;
         let currentImageMime = 'image/jpeg';
@@ -227,11 +213,6 @@
             document.getElementById('btn-refresh').innerText = currentLang === 'ar' ? '🔄 تحديث' : '🔄 Refresh';
             document.getElementById('user-input').placeholder = currentLang === 'ar' ? "اكتب أمرك أو استفسارك هنا..." : "Type your query here...";
             document.getElementById('btn-send').innerText = currentLang === 'ar' ? "إرسال" : "Send";
-            
-            const welcomeTxtEl = document.getElementById('welcome-txt');
-            if (welcomeTxtEl) {
-                welcomeTxtEl.innerText = currentLang === 'ar' ? "مرحباً بك في Rady Social AI 🌍 اختر القسم المطلوب مباشرة:" : "Welcome to Rady Social AI 🌍 Choose a category directly:";
-            }
             renderQuickMenu();
         }
 
@@ -262,8 +243,8 @@
 
         function showAboutInfo() {
             const aboutText = currentLang === 'ar' ? 
-                `ℹ️ **حول منصة Rady Social AI:**\n\nأ) **عن المنصة:** منصة ذكية شاملة متخصصة في الاستشارات، أتمتة الأعمال، تطوير الذات، والوسائط الرقمية.\n\nب) **المطور والمدير:** إسماعيل أحمد إسماعيل (Ismail Ahmed Ismail).\n\nج) **التواصل والدعم:** asmaylalrdy744@gmail.com` :
-                `ℹ️ **About Rady Social AI:**\n\na) **Platform:** An all-in-one AI platform for business consulting, self-development, media, and tech solutions.\n\nb) **Developer:** Ismail Ahmed Ismail.\n\nc) **Contact & Support:** asmaylalrdy744@gmail.com`;
+                `ℹ️ **حول منصة Rady Social AI:**\n\nأ) **عن المنصة:** منصة ذكية شاملة متخصصة في الاستشارات، أتمتة الأعمال، تطوير الذات، والوسائط الرقمية.\n\nب) **المطور والمدير:** إسماعيل أحمد إسماعيل.\n\nج) **التواصل والدعم:** asmaylalrdy744@gmail.com` :
+                `ℹ️ **About Rady Social AI:**\n\na) **Platform:** An all-in-one AI platform for business consulting, self-development, and tech solutions.\n\nb) **Developer:** Ismail Ahmed Ismail.\n\nc) **Contact & Support:** asmaylalrdy744@gmail.com`;
             appendMessage(aboutText, 'ai');
         }
 
@@ -294,8 +275,6 @@
                 reader.onload = function(e) {
                     currentImageSrc = e.target.result;
                     currentBase64Image = e.target.result.split(',')[1];
-                    
-                    // إظهار مصغر الصورة في شريط المعاينة
                     document.getElementById('image-preview-thumb').src = currentImageSrc;
                     document.getElementById('image-preview-container').style.display = 'flex';
                 };
@@ -318,7 +297,6 @@
             const sendText = text;
             const sendingImg = currentImageSrc;
 
-            // إدراج الرسالة وبداخلها معاينة الصورة الحقيقية
             appendMessage(sendText, 'user', sendingImg);
 
             const payload = { 
@@ -351,8 +329,32 @@
             }
         }
 
+        // تفعيل عملية الدفع الحقيقية بـ Pi
         function payWithPi() {
-            appendMessage("🌟 تم تفعيل المحاكاة بنجاح!", 'ai');
+            const paymentData = {
+                amount: 1, // مبلغ الاشتراك بـ Pi
+                memo: "اشتراك في باقة Rady Social AI VIP",
+                metadata: { type: "subscription" }
+            };
+
+            const callbacks = {
+                onReadyForServerApproval: function(paymentId) {
+                    console.log("جاهز لموافقة السيرفر:", paymentId);
+                },
+                onReadyForServerCompletion: function(paymentId, txid) {
+                    console.log("اكتمل الدفع بنجاح:", txid);
+                    appendMessage("🎉 تم الاشتراك بنجاح عبر عملة Pi! تم فتح جميع الميزات وتجاوز قيود الاستخدام.", 'ai');
+                },
+                onCancel: function(paymentId) {
+                    appendMessage("⚠️ تم إلغاء عملية الدفع.", 'ai');
+                },
+                onError: function(error, payment) {
+                    console.error(error);
+                    appendMessage("⚠️ حدث خطأ أثناء معالجة الدفع بـ Pi.", 'ai');
+                }
+            };
+
+            Pi.createPayment(paymentData, callbacks);
         }
 
         renderQuickMenu();
