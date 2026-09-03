@@ -14,16 +14,21 @@
             --text-color: #1f2937;
         }
         * { box-sizing: border-box; }
-        body {
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            margin: 0; padding: 0;
+            overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0; padding: 0;
-            display: flex; flex-direction: column;
-            height: 100vh; overflow: hidden;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
         }
 
-        /* شاشة الترحيب الأولى */
+        /* شاشة الترحيب */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -39,9 +44,8 @@
             font-size: 1.1rem; font-weight: bold; cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.2s;
         }
-        .enter-btn:active { transform: scale(0.95); }
 
-        /* الواجهة الرئيسية */
+        /* الهيدر بدون زر دخول */
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white; padding: 10px 15px;
@@ -58,6 +62,7 @@
             cursor: pointer; font-size: 0.75rem; font-weight: bold;
         }
 
+        /* منطقة المحادثة */
         #chat-container {
             flex: 1; overflow-y: auto; padding: 12px;
             display: flex; flex-direction: column; gap: 10px;
@@ -76,34 +81,33 @@
             align-self: flex-end; white-space: pre-wrap;
         }
 
-        /* أزرار الأقسام التفاعلية */
-        .quick-menu {
-            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
-        }
+        /* الأزرار التفاعلية */
+        .quick-menu { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .menu-chip {
             background: #eef2ff; color: var(--primary-color);
             border: 1px solid #c7d2fe; padding: 8px 12px; border-radius: 18px;
-            font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s;
+            font-size: 0.85rem; font-weight: bold; cursor: pointer;
         }
-        .menu-chip:active { background: var(--primary-color); color: white; }
 
+        /* الشريط السفلي ثابت ومحمي */
         .input-area {
             background: white; padding: 8px 10px; display: flex; gap: 5px;
-            border-top: 1px solid #e5e7eb; align-items: flex-end; flex-shrink: 0; width: 100%;
+            border-top: 1px solid #e5e7eb; align-items: center; flex-shrink: 0; width: 100%;
+            position: relative; z-index: 10;
         }
         textarea {
             flex: 1; padding: 8px 12px; border: 1px solid #d1d5db;
             border-radius: 18px; outline: none; font-size: 0.9rem;
-            font-family: inherit; resize: none; max-height: 120px; min-height: 38px; line-height: 1.4;
+            font-family: inherit; resize: none; max-height: 100px; min-height: 38px; line-height: 1.4;
         }
         button.action-btn {
-            border: none; padding: 9px 10px; border-radius: 18px;
-            cursor: pointer; font-weight: bold; font-size: 0.75rem; color: white;
+            border: none; padding: 8px 12px; border-radius: 18px;
+            cursor: pointer; font-weight: bold; font-size: 0.8rem; color: white;
             white-space: nowrap; height: 38px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
         .pi-btn { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .media-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
-        .send-btn { background-color: var(--primary-color); padding: 0 14px; }
+        .send-btn { background-color: var(--primary-color); }
         input[type="file"] { display: none; }
     </style>
 </head>
@@ -111,19 +115,18 @@
 
     <!-- الشاشة الترحيبية -->
     <div id="splash-screen">
-        <h1 id="splash-title">مرحباً بك في منصة رضي أي آي<br>Welcome to Rady Social AI</h1>
-        <p id="splash-sub">منصتك الذكية للاستشارات، الأعمال، الوسائط وتطوير الذات<br>Your AI platform for business, media, and self-development</p>
-        <button class="enter-btn" onclick="enterPlatform()" id="splash-btn">دخول إلى المنصة / Enter</button>
+        <h1>مرحباً بك في منصة رضي أي آي<br>Welcome to Rady Social AI</h1>
+        <p>منصتك الذكية للاستشارات، الأعمال، الوسائط وتطوير الذات<br>Your AI platform for business, media, and self-development</p>
+        <button class="enter-btn" onclick="enterPlatform()">دخول إلى المنصة / Enter</button>
     </div>
 
-    <!-- الواجهة الرئيسية -->
+    <!-- الهيدر المحدث (تمت إزالة زر الدخول) -->
     <header>
         <div class="header-title">
             <h1 id="hdr-title">Rady Social AI | رضي إي آي</h1>
             <p id="hdr-sub">منصتك الذكية للاستشارات والأعمال وتطوير الذات</p>
         </div>
         <div class="top-actions">
-            <button class="top-btn" id="btn-login" onclick="showLoginOptions()">👤 دخول</button>
             <button class="top-btn" id="btn-refresh" onclick="window.location.reload(true)">🔄 تحديث</button>
             <button class="top-btn" onclick="toggleLanguage()" id="lang-toggle-btn">EN</button>
         </div>
@@ -132,28 +135,28 @@
     <div id="chat-container">
         <div class="message ai" id="welcome-msg">
             <span id="welcome-txt">مرحباً بك في Rady Social AI 🌍 اختر القسم المطلوب مباشرة:</span>
-            <div class="quick-menu" id="quick-menu-container">
-                <!-- سيتم توليد الأزرار تلقائياً باللغتين -->
-            </div>
+            <div class="quick-menu" id="quick-menu-container"></div>
         </div>
     </div>
 
+    <!-- الشريط السفلي -->
     <div class="input-area">
         <button class="action-btn pi-btn" onclick="payWithPi()" title="Pi">🌟 Pi</button>
         <button class="action-btn media-btn" onclick="document.getElementById('media-input').click()" title="ملف">📁</button>
-        <input type="file" id="media-input" onchange="handleMediaUpload(event)">
+        <input type="file" id="media-input" accept="image/*" onchange="handleMediaUpload(event)">
         <textarea id="user-input" placeholder="اكتب أمرك أو استفسارك هنا..." rows="1"></textarea>
         <button class="action-btn send-btn" id="btn-send" onclick="sendMessage()">إرسال</button>
     </div>
 
     <script>
         let currentLang = 'ar';
+        let currentBase64Image = null;
 
         const menuData = {
             ar: [
                 { label: "💼 أعمال ومشاريع", prompt: "أعمال ومشاريع" },
                 { label: "🌱 تطوير الذات", prompt: "تطوير الذات" },
-                { label: "🎨 الوسائط والصور", prompt: "الوسائط والصور (إنشاء، تعديل، وتحليل)" },
+                { label: "🎨 الوسائط والصور", prompt: "الوسائط والصور" },
                 { label: "💻 تقنية وتطبيقات", prompt: "تقنية وتطبيقات" },
                 { label: "🪙 العملات الرقمية", prompt: "العملات الرقمية" },
                 { label: "🌐 ترجمة عربي ↔ EN", prompt: "ترجمة" },
@@ -163,7 +166,7 @@
             en: [
                 { label: "💼 Business & Projects", prompt: "Business and Projects" },
                 { label: "🌱 Self Development", prompt: "Self Development" },
-                { label: "🎨 Media & Vision", prompt: "Media and Vision (Generation, Editing, Analysis)" },
+                { label: "🎨 Media & Vision", prompt: "Media and Vision" },
                 { label: "💻 Tech & Apps", prompt: "Technology and Applications" },
                 { label: "🪙 Crypto & Web3", prompt: "Cryptocurrency" },
                 { label: "🌐 Translate AR ↔ EN", prompt: "Translation" },
@@ -179,8 +182,7 @@
         function renderQuickMenu() {
             const container = document.getElementById('quick-menu-container');
             container.innerHTML = '';
-            const items = menuData[currentLang];
-            items.forEach(item => {
+            menuData[currentLang].forEach(item => {
                 const btn = document.createElement('button');
                 btn.className = 'menu-chip';
                 btn.innerText = item.label;
@@ -193,25 +195,22 @@
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
             document.getElementById('html-root').setAttribute('lang', currentLang);
             document.getElementById('html-root').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
-            
             document.getElementById('lang-toggle-btn').innerText = currentLang === 'ar' ? 'EN' : 'AR';
             document.getElementById('hdr-title').innerText = currentLang === 'ar' ? 'Rady Social AI | رضي إي آي' : 'Rady Social AI';
             document.getElementById('hdr-sub').innerText = currentLang === 'ar' ? 'منصتك الذكية للاستشارات والأعمال وتطوير الذات' : 'Your Smart Platform for Business & Development';
-            document.getElementById('btn-login').innerText = currentLang === 'ar' ? '👤 دخول' : '👤 Login';
             document.getElementById('btn-refresh').innerText = currentLang === 'ar' ? '🔄 تحديث' : '🔄 Refresh';
             document.getElementById('user-input').placeholder = currentLang === 'ar' ? "اكتب أمرك أو استفسارك هنا..." : "Type your query here...";
             document.getElementById('btn-send').innerText = currentLang === 'ar' ? "إرسال" : "Send";
             document.getElementById('welcome-txt').innerText = currentLang === 'ar' ? "مرحباً بك في Rady Social AI 🌍 اختر القسم المطلوب مباشرة:" : "Welcome to Rady Social AI 🌍 Choose a category directly:";
-            
             renderQuickMenu();
         }
 
-        function selectCategory(categoryPrompt) {
-            if (categoryPrompt === "حول المنصة" || categoryPrompt === "About Platform") {
+        function selectCategory(prompt) {
+            if (prompt === "حول المنصة" || prompt === "About Platform") {
                 showAboutInfo();
                 return;
             }
-            document.getElementById('user-input').value = categoryPrompt;
+            document.getElementById('user-input').value = prompt;
             sendMessage();
         }
 
@@ -219,7 +218,6 @@
             const aboutText = currentLang === 'ar' ? 
                 `ℹ️ **حول منصة Rady Social AI:**\n\nأ) **عن المنصة:** منصة ذكية شاملة متخصصة في الاستشارات، أتمتة الأعمال، تطوير الذات، والوسائط الرقمية.\n\nب) **المطور والمدير:** إسماعيل أحمد إسماعيل (Ismail Ahmed Ismail).\n\nج) **التواصل والدعم:** asmaylalrdy744@gmail.com` :
                 `ℹ️ **About Rady Social AI:**\n\na) **Platform:** An all-in-one AI platform for business consulting, self-development, media, and tech solutions.\n\nb) **Developer:** Ismail Ahmed Ismail.\n\nc) **Contact & Support:** asmaylalrdy744@gmail.com`;
-            
             appendMessage(aboutText, 'ai');
         }
 
@@ -233,79 +231,58 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        function handleMediaUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentBase64Image = e.target.result.split(',')[1];
+                    appendMessage(`📁 تم اختيار الصورة: ${file.name}\nقم بكتابة "حلل الصورة" أو أي سؤال واضغط إرسال.`, 'user');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         async function sendMessage() {
             const input = document.getElementById('user-input');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text && !currentBase64Image) return;
 
-            appendMessage(text, 'user');
+            const sendText = text || "حلل هذه الصورة المرفقة بالتفصيل.";
+            appendMessage(sendText, 'user');
             input.value = '';
 
-            const loadingTxt = currentLang === 'ar' ? "جاري التفكير والإجابة... ⏳" : "Thinking... ⏳";
+            const loadingTxt = currentLang === 'ar' ? "جاري التفكير والتحليل... ⏳" : "Thinking... ⏳";
             appendMessage(loadingTxt, 'ai');
             const container = document.getElementById('chat-container');
             const loadingMsg = container.lastElementChild;
+
+            const payload = { prompt: sendText };
+            if (currentBase64Image) {
+                payload.imageBase64 = currentBase64Image;
+                currentBase64Image = null; // إعادة تعيين بعد الإرسال
+            }
 
             try {
                 const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: text })
+                    body: JSON.stringify(payload)
                 });
 
                 const data = await res.json();
                 loadingMsg.remove();
-
-                const aiResponse = data.reply || data.text;
-
-                if (aiResponse) {
-                    appendMessage(aiResponse, 'ai');
-                } else {
-                    let fallback = getFallbackReply(text);
-                    appendMessage(fallback, 'ai');
-                }
+                appendMessage(data.reply || data.text, 'ai');
             } catch (err) {
                 loadingMsg.remove();
-                let fallback = getFallbackReply(text);
-                appendMessage(fallback, 'ai');
-            }
-        }
-
-        function getFallbackReply(q) {
-            return `💡 **Rady Social AI:**\n"${q}"\n\nأ) تم استلام طلبك بنجاح.\nب) يرجى اختيار أحد الأقسام التفاعلية بالشرائح أعلاه للمتابعة.`;
-        }
-
-        function handleMediaUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                appendMessage(`📁 تم رفع الملف بنجاح: ${file.name}`, 'user');
-                setTimeout(() => appendMessage(`✅ تم استلام الملف وجاهز للتحليل والعمل عليه في قسم الوسائط!`, 'ai'), 400);
+                appendMessage("⚠️ حدث خطأ في الاتصال بالسيرفر. يرجى المحاولة لاحقاً.", 'ai');
             }
         }
 
         function payWithPi() {
-            if (typeof Pi !== 'undefined') {
-                try {
-                    Pi.createPayment({ amount: 1, memo: "Rady Social AI" }, {
-                        onReadyForServerApproval: () => appendMessage("⚡ جاري المعالجة...", 'ai'),
-                        onReadyForServerCompletion: () => appendMessage("🎉 تم الدفع بنجاح!", 'ai'),
-                        onCancel: () => appendMessage("⚠️ تم الإلغاء.", 'ai'),
-                        onError: () => appendMessage("🌟 تم تفعيل المحاكاة بنجاح!", 'ai')
-                    });
-                } catch(e) { appendMessage("🌟 تم تفعيل المحاكاة بنجاح!", 'ai'); }
-            } else {
-                appendMessage("🌟 تم تفعيل المحاكاة بنجاح!", 'ai');
-            }
+            appendMessage("🌟 تم تفعيل المحاكاة بنجاح!", 'ai');
         }
 
-        function showLoginOptions() {
-            const loginTxt = currentLang === 'ar' ? 
-                "👤 **خيارات التسجيل:**\nأ) الدخول عبر حساب Pi Browser.\nب) الدخول كزائر." :
-                "👤 **Login Options:**\na) Login via Pi Browser.\nb) Continue as Guest.";
-            appendMessage(loginTxt, 'ai');
-        }
-
-        // تشغيل الأزرار التفاعلية عند التحميل الأول
         renderQuickMenu();
     </script>
 </body>
