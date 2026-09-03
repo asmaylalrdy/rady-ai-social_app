@@ -51,9 +51,15 @@ export default async function handler(req, res) {
 
     if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
       return res.status(200).json({ reply: data.candidates[0].content.parts[0].text });
+    } else if (data.error) {
+      if (data.error.code === 429 || data.error.message?.includes('quota')) {
+        return res.status(200).json({ 
+          reply: '⏳ لقد استهلكت حد الاستخدام المجاني اليومي. يرجى الانتظار 12 ساعة لتجديد الرصيد أو اضغط على زر "🌟 اشتراك Pi" لفتح الاستخدام اللامحدود فوراً!' 
+        });
+      }
+      return res.status(200).json({ reply: `⚠️ ${data.error.message}` });
     } else {
-      const errorDetail = data.error?.message || 'تعذر معالجة الطلب حالياً، يرجى المحاولة لاحقاً.';
-      return res.status(200).json({ reply: `⚠️ ${errorDetail}` });
+      return res.status(200).json({ reply: 'تعذر معالجة الطلب حالياً، يرجى المحاولة لاحقاً.' });
     }
   } catch (error) {
     return res.status(500).json({ reply: `⚠️ خطأ في الاتصال: ${error.message}` });
