@@ -3,60 +3,62 @@ export default async function handler(req, res) {
     return res.status(405).json({ reply: 'عذراً، الطلب يجب أن يكون من نوع POST' });
   }
 
-  const { prompt } = req.body;
+  const { prompt, imageBase64 } = req.body;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
     return res.status(500).json({ reply: 'خطأ: مفتاح GEMINI_API_KEY غير معرف في Vercel' });
   }
 
-  // التوجيه الذكي ومزامنة الأرقام مع القائمة الترحيبية
   const systemInstruction = `
-أنت المساعد الذكي الرسمي لـ "Rady Social AI".
-إذا أدخل المستخدم رقماً مجرداً (1 إلى 7)، يجب أن ترتبط إجابتك مباشرة بالأقسام التالية:
-1 = أعمال ومشاريع (تقديم استشارات للتخطيط، دراسات الجدوى، الهوية التجارية، وتطوير الأداء).
-2 = تطوير الذات (مهارات النجاح، تنظيم الوقت، التحفيز، وإدارة الأهداف).
-3 = تقنية وتطبيقات (تطوير البرمجيات، الذكاء الاصطناعي، الحلول التقنية، وWeb3).
-4 = العملات الرقمية (تحليل السوق، البلوكتشين، والتداول والوعي المالي).
-5 = ترجمة عربي ↔ إنجليزي (تقديم ترجمة احترافية وتدقيق نصوص).
-6 = الإعدادات (إرشادات تخصيص الحساب وتفضيلات الاستخدام).
-7 = حول المنصة (تعريف شامل بـ Rady Social AI، رؤيتها، وميزاتها).
+أنت المساعد الذكي الرسمي لـ "Rady Social AI" المطور بواسطة (إسماعيل أحمد إسماعيل / Ismail Ahmed Ismail).
+إليك خريطة أقسام المنصة للإجابة بدقة:
+- أعمال ومشاريع: دراسات جدوى، خطط عمل، تسويق.
+- تطوير الذات: بناء مهارات، إدارة الوقت، تحقيق الأهداف.
+- الوسائط والصور: تحليل الصور، إنشاء نصوص التصاميم، الهندسة البصرية.
+- تقنية وتطبيقات: برمجة، ذكاء اصطناعي، حلول Web3.
+- العملات الرقمية: تحليل أسعار، بلوكتشين، الوعي المالي.
+- ترجمة: ترجمة دقيقة ومحترفة.
+- حول المنصة: تدار بواسطة إسماعيل أحمد إسماعيل، بريد التواصل: asmaylalrdy744@gmail.com.
 
-نسق إجابتك دائماً بالنقاط المحددة (أ، ب، ج) مع استخدام نبرة احترافية وتفاعلية.
+اجعل إجاباتك دائماً تفاعلية، مرتبة في نقاط (أ، ب، ج)، وموجزة بأسلوب احترافي.
 `;
+
+  // تجهيز محتوى الرسالة (صورة + نص، أو نص فقط)
+  const parts = [];
+  
+  if (imageBase64) {
+    parts.push({
+      inlineData: {
+        mimeType: "image/jpeg",
+        data: imageBase64
+      }
+    });
+  }
+
+  parts.push({
+    text: `${systemInstruction}\n\nرسالة المستخدم: ${prompt || 'حلل هذه الصورة'}`
+  });
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `${systemInstruction}\n\nرسالة المستخدم: ${prompt}`
-                }
-              ]
-            }
-          ]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts }] })
       }
     );
 
     const data = await response.json();
 
     if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-      const aiReply = data.candidates[0].content.parts[0].text;
-      return res.status(200).json({ reply: aiReply });
+      return res.status(200).json({ reply: data.candidates[0].content.parts[0].text });
     } else {
-      const errorDetail = data.error?.message || 'لم يتم الحصول على إجابة من النموذج';
-      return res.status(200).json({ reply: `⚠️ خطأ من الذكاء الاصطناعي: ${errorDetail}` });
+      const errorDetail = data.error?.message || 'النموذج يعاني من ضغط حالياً، يرجى المحاولة بعد لحظات.';
+      return res.status(200).json({ reply: `⚠️ ${errorDetail}` });
     }
   } catch (error) {
-    return res.status(500).json({ reply: `⚠️ خطأ في الاتصال بالخادم: ${error.message}` });
+    return res.status(500).json({ reply: `⚠️ خطأ في الاتصال: ${error.message}` });
   }
 }
