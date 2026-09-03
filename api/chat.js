@@ -24,29 +24,30 @@ export default async function handler(req, res) {
 اجعل إجاباتك دائماً تفاعلية، مرتبة في نقاط (أ، ب، ج)، وموجزة بأسلوب احترافي.
 `;
 
-  const parts = [];
-  
+  const contents = [];
+
+  // إعداد المحتوى ونص النظام
+  const userParts = [];
   if (imageBase64) {
-    parts.push({
+    userParts.push({
       inlineData: {
         mimeType: "image/jpeg",
         data: imageBase64
       }
     });
   }
+  userParts.push({ text: `${systemInstruction}\n\nرسالة المستخدم: ${prompt || 'حلل هذه الصورة'}` });
 
-  parts.push({
-    text: `${systemInstruction}\n\nرسالة المستخدم: ${prompt || 'حلل هذه الصورة'}`
-  });
+  contents.push({ role: 'user', parts: userParts });
 
   try {
-    // التعديل هنا: استخدام gemini-2.0-flash عبر v1 المعتمد
+    // الاستدعاء المباشر لنموذج gemini-3.6-flash
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts }] })
+        body: JSON.stringify({ contents })
       }
     );
 
