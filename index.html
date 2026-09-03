@@ -155,8 +155,16 @@
     </div>
 
     <script>
-        const Pi = window.Pi;
-        Pi.init({ version: "2.0", sandbox: true }); // ضع sandbox: false عند الانتقال للإنتاج الحقيقي
+        let piUser = null;
+
+        // تهيئة Pi Network SDK عند التحميل
+        if (window.Pi) {
+            try {
+                window.Pi.init({ version: "2.0", sandbox: true });
+            } catch (e) {
+                console.error("Pi SDK Init Error:", e);
+            }
+        }
 
         let currentLang = 'ar';
         let currentBase64Image = null;
@@ -329,32 +337,55 @@
             }
         }
 
-        // تفعيل عملية الدفع الحقيقية بـ Pi
-        function payWithPi() {
-            const paymentData = {
-                amount: 1, // مبلغ الاشتراك بـ Pi
-                memo: "اشتراك في باقة Rady Social AI VIP",
-                metadata: { type: "subscription" }
-            };
+        // دالة الدفع المعالجة بأسلوب متوافق مع Pi Browser
+        async function payWithPi() {
+            if (!window.Pi) {
+                appendMessage("⚠️ يجب فتح المنصة من داخل تطبيق Pi Browser لتنفيذ عملية الدفع بـ Pi.", 'ai');
+                return;
+            }
 
-            const callbacks = {
-                onReadyForServerApproval: function(paymentId) {
-                    console.log("جاهز لموافقة السيرفر:", paymentId);
-                },
-                onReadyForServerCompletion: function(paymentId, txid) {
-                    console.log("اكتمل الدفع بنجاح:", txid);
-                    appendMessage("🎉 تم الاشتراك بنجاح عبر عملة Pi! تم فتح جميع الميزات وتجاوز قيود الاستخدام.", 'ai');
-                },
-                onCancel: function(paymentId) {
-                    appendMessage("⚠️ تم إلغاء عملية الدفع.", 'ai');
-                },
-                onError: function(error, payment) {
-                    console.error(error);
-                    appendMessage("⚠️ حدث خطأ أثناء معالجة الدفع بـ Pi.", 'ai');
-                }
-            };
+            appendMessage("⏳ جاري الاتصال بمحفظة Pi...", 'ai');
 
-            Pi.createPayment(paymentData, callbacks);
+            try {
+                // أولاً: تسجيل الدخول والموافقات المطلوبة
+                const scopes = ['username', 'payments'];
+                const authResult = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
+                piUser = authResult.user;
+
+                // ثانياً: بدء طلب الدفع
+                const paymentData = {
+                    amount: 1,
+                    memo: "اشتراك باقة Rady Social AI VIP",
+                    metadata: { type: "subscription", username: piUser.username }
+                };
+
+                const callbacks = {
+                    onReadyForServerApproval: function(paymentId) {
+                        console.log("جاهز لموافقة السيرفر:", paymentId);
+                    },
+                    onReadyForServerCompletion: function(paymentId, txid) {
+                        console.log("اكتمل الدفع:", txid);
+                        appendMessage("🎉 تم الدفع بنجاح! تم تفعيل الاشتراك وتخطي الفقرة 10 في Developer Portal.", 'ai');
+                    },
+                    onCancel: function(paymentId) {
+                        appendMessage("⚠️ تم إلغاء عملية الدفع.", 'ai');
+                    },
+                    onError: function(error, payment) {
+                        console.error(error);
+                        appendMessage("⚠️ حدث خطأ في معالجة بوابات الدفع بـ Pi.", 'ai');
+                    }
+                };
+
+                window.Pi.createPayment(paymentData, callbacks);
+
+            } catch (err) {
+                console.error("Auth Error:", err);
+                appendMessage("⚠️ فشل الاتصال بـ Pi Network: " + (err.message || "يرجى المحاولة من داخل Pi Browser"), 'ai');
+            }
+        }
+
+        function onIncompletePaymentFound(payment) {
+            console.log("Incomplete payment found:", payment);
         }
 
         renderQuickMenu();
