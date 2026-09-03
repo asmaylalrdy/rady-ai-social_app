@@ -45,7 +45,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.2s;
         }
 
-        /* الهيدر بدون زر دخول */
+        /* الهيدر */
         header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white; padding: 10px 15px;
@@ -120,7 +120,7 @@
         <button class="enter-btn" onclick="enterPlatform()">دخول إلى المنصة / Enter</button>
     </div>
 
-    <!-- الهيدر المحدث -->
+    <!-- الهيدر -->
     <header>
         <div class="header-title">
             <h1 id="hdr-title">Rady Social AI | رضي إي آي</h1>
@@ -151,6 +151,7 @@
     <script>
         let currentLang = 'ar';
         let currentBase64Image = null;
+        let currentImageMime = 'image/jpeg';
 
         const menuData = {
             ar: [
@@ -224,6 +225,7 @@
             `;
             renderQuickMenu();
             currentBase64Image = null;
+            document.getElementById('media-input').value = '';
         }
 
         function selectCategory(prompt) {
@@ -255,10 +257,11 @@
         function handleMediaUpload(event) {
             const file = event.target.files[0];
             if (file) {
+                currentImageMime = file.type || 'image/jpeg';
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     currentBase64Image = e.target.result.split(',')[1];
-                    appendMessage(`📁 تم اختيار الصورة: ${file.name}\nقم بكتابة "حلل الصورة" أو أي سؤال واضغط إرسال.`, 'user');
+                    appendMessage(`📸 تم اختيار الصورة: ${file.name}\nقم بكتابة استفسارك أو اضغط "إرسال" مباشرة للتحليل.`, 'user');
                 };
                 reader.readAsDataURL(file);
             }
@@ -278,11 +281,14 @@
             const container = document.getElementById('chat-container');
             const loadingMsg = container.lastElementChild;
 
-            const payload = { prompt: sendText };
-            if (currentBase64Image) {
-                payload.imageBase64 = currentBase64Image;
-                currentBase64Image = null;
-            }
+            const payload = { 
+                prompt: sendText,
+                imageBase64: currentBase64Image,
+                mimeType: currentImageMime
+            };
+
+            currentBase64Image = null;
+            document.getElementById('media-input').value = '';
 
             try {
                 const res = await fetch('/api/chat', {
