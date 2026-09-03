@@ -157,7 +157,7 @@
     <script>
         let piUser = null;
 
-        // تهيئة Pi Network SDK عند التحميل
+        // تهيئة Pi Network SDK
         if (window.Pi) {
             try {
                 window.Pi.init({ version: "2.0", sandbox: true });
@@ -337,7 +337,7 @@
             }
         }
 
-        // دالة الدفع المعالجة بأسلوب متوافق مع Pi Browser
+        // دالة الدفع التفاعلية المربوطة بالسيرفر للموافقة التلقائية
         async function payWithPi() {
             if (!window.Pi) {
                 appendMessage("⚠️ يجب فتح المنصة من داخل تطبيق Pi Browser لتنفيذ عملية الدفع بـ Pi.", 'ai');
@@ -347,12 +347,10 @@
             appendMessage("⏳ جاري الاتصال بمحفظة Pi...", 'ai');
 
             try {
-                // أولاً: تسجيل الدخول والموافقات المطلوبة
                 const scopes = ['username', 'payments'];
                 const authResult = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
                 piUser = authResult.user;
 
-                // ثانياً: بدء طلب الدفع
                 const paymentData = {
                     amount: 1,
                     memo: "اشتراك باقة Rady Social AI VIP",
@@ -360,19 +358,49 @@
                 };
 
                 const callbacks = {
-                    onReadyForServerApproval: function(paymentId) {
-                        console.log("جاهز لموافقة السيرفر:", paymentId);
+                    onReadyForServerApproval: async function(paymentId) {
+                        console.log("إرسال طلب الموافقة للسيرفر...", paymentId);
+                        try {
+                            const res = await fetch('/api/pi/approve', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ paymentId })
+                            });
+                            const data = await res.json();
+                            if (!res.ok) throw new Error(data.error || 'فشلت موافقة السيرفر');
+                            console.log("تمت موافقة السيرفر بنجاح");
+                        } catch (err) {
+                            console.error("خطأ في موافقة السيرفر:", err);
+                            appendMessage("⚠️ فشلت عملية موافقة السيرفر على الدفع.", 'ai');
+                        }
                     },
-                    onReadyForServerCompletion: function(paymentId, txid) {
-                        console.log("اكتمل الدفع:", txid);
-                        appendMessage("🎉 تم الدفع بنجاح! تم تفعيل الاشتراك وتخطي الفقرة 10 في Developer Portal.", 'ai');
+
+                    onReadyForServerCompletion: async function(paymentId, txid) {
+                        console.log("إرسال طلب إكمال الدفع للسيرفر...", txid);
+                        try {
+                            const res = await fetch('/api/pi/complete', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ paymentId, txid })
+                            });
+                            const data = await res.json();
+                            if (res.ok) {
+                                appendMessage("🎉 تم الدفع وتفعيل الاشتراك بنجاح!", 'ai');
+                            } else {
+                                throw new Error(data.error || 'فشل إكمال الدفع');
+                            }
+                        } catch (err) {
+                            console.error("خطأ في إكمال الدفع:", err);
+                            appendMessage("⚠️ حدث خطأ أثناء إكمال التسجيل مع السيرفر.", 'ai');
+                        }
                     },
+
                     onCancel: function(paymentId) {
                         appendMessage("⚠️ تم إلغاء عملية الدفع.", 'ai');
                     },
                     onError: function(error, payment) {
-                        console.error(error);
-                        appendMessage("⚠️ حدث خطأ في معالجة بوابات الدفع بـ Pi.", 'ai');
+                        console.error("خطأ Pi:", error);
+                        appendMessage("⚠️ حدث خطأ في بوابات الدفع بـ Pi.", 'ai');
                     }
                 };
 
