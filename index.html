@@ -89,7 +89,7 @@
             font-size: 0.85rem; font-weight: bold; cursor: pointer;
         }
 
-        /* الشريط السفلي ثابت ومحمي */
+        /* الشريط السفلي الثابت */
         .input-area {
             background: white; padding: 8px 10px; display: flex; gap: 5px;
             border-top: 1px solid #e5e7eb; align-items: center; flex-shrink: 0; width: 100%;
@@ -120,14 +120,14 @@
         <button class="enter-btn" onclick="enterPlatform()">دخول إلى المنصة / Enter</button>
     </div>
 
-    <!-- الهيدر المحدث (تمت إزالة زر الدخول) -->
+    <!-- الهيدر المحدث -->
     <header>
         <div class="header-title">
             <h1 id="hdr-title">Rady Social AI | رضي إي آي</h1>
             <p id="hdr-sub">منصتك الذكية للاستشارات والأعمال وتطوير الذات</p>
         </div>
         <div class="top-actions">
-            <button class="top-btn" id="btn-refresh" onclick="window.location.reload(true)">🔄 تحديث</button>
+            <button class="top-btn" id="btn-refresh" onclick="resetChat()">🔄 تحديث</button>
             <button class="top-btn" onclick="toggleLanguage()" id="lang-toggle-btn">EN</button>
         </div>
     </header>
@@ -181,6 +181,7 @@
 
         function renderQuickMenu() {
             const container = document.getElementById('quick-menu-container');
+            if (!container) return;
             container.innerHTML = '';
             menuData[currentLang].forEach(item => {
                 const btn = document.createElement('button');
@@ -201,8 +202,28 @@
             document.getElementById('btn-refresh').innerText = currentLang === 'ar' ? '🔄 تحديث' : '🔄 Refresh';
             document.getElementById('user-input').placeholder = currentLang === 'ar' ? "اكتب أمرك أو استفسارك هنا..." : "Type your query here...";
             document.getElementById('btn-send').innerText = currentLang === 'ar' ? "إرسال" : "Send";
-            document.getElementById('welcome-txt').innerText = currentLang === 'ar' ? "مرحباً بك في Rady Social AI 🌍 اختر القسم المطلوب مباشرة:" : "Welcome to Rady Social AI 🌍 Choose a category directly:";
+            
+            const welcomeTxtEl = document.getElementById('welcome-txt');
+            if (welcomeTxtEl) {
+                welcomeTxtEl.innerText = currentLang === 'ar' ? "مرحباً بك في Rady Social AI 🌍 اختر القسم المطلوب مباشرة:" : "Welcome to Rady Social AI 🌍 Choose a category directly:";
+            }
             renderQuickMenu();
+        }
+
+        function resetChat() {
+            const container = document.getElementById('chat-container');
+            const welcomeTxt = currentLang === 'ar' ? 
+                "مرحباً بك في Rady Social AI 🌍 اختر القسم المطلوب مباشرة:" : 
+                "Welcome to Rady Social AI 🌍 Choose a category directly:";
+
+            container.innerHTML = `
+                <div class="message ai" id="welcome-msg">
+                    <span id="welcome-txt">${welcomeTxt}</span>
+                    <div class="quick-menu" id="quick-menu-container"></div>
+                </div>
+            `;
+            renderQuickMenu();
+            currentBase64Image = null;
         }
 
         function selectCategory(prompt) {
@@ -260,7 +281,7 @@
             const payload = { prompt: sendText };
             if (currentBase64Image) {
                 payload.imageBase64 = currentBase64Image;
-                currentBase64Image = null; // إعادة تعيين بعد الإرسال
+                currentBase64Image = null;
             }
 
             try {
