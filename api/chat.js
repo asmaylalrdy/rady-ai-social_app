@@ -24,7 +24,6 @@ export default async function handler(req, res) {
 اجعل إجاباتك دائماً تفاعلية، مرتبة في نقاط (أ، ب، ج)، وموجزة بأسلوب احترافي.
 `;
 
-  // تجهيز محتوى الرسالة (صورة + نص، أو نص فقط)
   const parts = [];
   
   if (imageBase64) {
@@ -55,7 +54,7 @@ export default async function handler(req, res) {
     if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
       return res.status(200).json({ reply: data.candidates[0].content.parts[0].text });
     } else {
-      const errorDetail = data.error?.message || 'النموذج يعاني من ضغط حالياً، يرجى المحاولة بعد لحظات.';
+      const errorDetail = data.error?.message || 'تعذر معالجة الطلب حالياً، يرجى المحاولة لاحقاً.';
       return res.status(200).json({ reply: `⚠️ ${errorDetail}` });
     }
   } catch (error) {
