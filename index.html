@@ -80,6 +80,9 @@
             background-color: var(--primary-color); color: white;
             align-self: flex-end; white-space: pre-wrap;
         }
+        .message-img {
+            max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 6px; display: block;
+        }
 
         /* الأزرار التفاعلية */
         .quick-menu { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -87,6 +90,19 @@
             background: #eef2ff; color: var(--primary-color);
             border: 1px solid #c7d2fe; padding: 8px 12px; border-radius: 18px;
             font-size: 0.85rem; font-weight: bold; cursor: pointer;
+        }
+
+        /* المعاينة المباشرة للصورة المرفوعة فوق الشريط السفلي */
+        #image-preview-container {
+            display: none; background: #fff; padding: 6px 12px; border-top: 1px solid #e5e7eb;
+            align-items: center; gap: 10px; flex-shrink: 0;
+        }
+        #image-preview-thumb {
+            width: 45px; height: 45px; border-radius: 6px; object-fit: cover; border: 1px solid #ddd;
+        }
+        .remove-img-btn {
+            background: #ef4444; color: white; border: none; border-radius: 50%;
+            width: 22px; height: 22px; font-weight: bold; cursor: pointer; font-size: 12px;
         }
 
         /* الشريط السفلي الثابت */
@@ -139,6 +155,13 @@
         </div>
     </div>
 
+    <!-- شريط معاينة الصورة التجهيزي قبل الإرسال -->
+    <div id="image-preview-container">
+        <img id="image-preview-thumb" src="" alt="المعاينة">
+        <span style="font-size:0.8rem; color:#666;">تمت إضافة الصورة. اكتب المطلوب (عدل، لون، حلل...) ثم اضغط إرسال.</span>
+        <button class="remove-img-btn" onclick="clearSelectedImage()">✕</button>
+    </div>
+
     <!-- الشريط السفلي -->
     <div class="input-area">
         <button class="action-btn pi-btn" onclick="payWithPi()" title="Pi">🌟 Pi</button>
@@ -152,6 +175,7 @@
         let currentLang = 'ar';
         let currentBase64Image = null;
         let currentImageMime = 'image/jpeg';
+        let currentImageSrc = null;
 
         const menuData = {
             ar: [
@@ -224,8 +248,7 @@
                 </div>
             `;
             renderQuickMenu();
-            currentBase64Image = null;
-            document.getElementById('media-input').value = '';
+            clearSelectedImage();
         }
 
         function selectCategory(prompt) {
@@ -244,12 +267,21 @@
             appendMessage(aboutText, 'ai');
         }
 
-        function appendMessage(text, sender) {
+        function appendMessage(text, sender, imageSrc = null) {
             const container = document.getElementById('chat-container');
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${sender}`;
-            let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
-            msgDiv.innerHTML = formattedText;
+
+            let htmlContent = '';
+            if (imageSrc) {
+                htmlContent += `<img src="${imageSrc}" class="message-img" alt="Uploaded image"><br>`;
+            }
+            if (text) {
+                let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+                htmlContent += formattedText;
+            }
+
+            msgDiv.innerHTML = htmlContent;
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
         }
@@ -260,11 +292,22 @@
                 currentImageMime = file.type || 'image/jpeg';
                 const reader = new FileReader();
                 reader.onload = function(e) {
+                    currentImageSrc = e.target.result;
                     currentBase64Image = e.target.result.split(',')[1];
-                    appendMessage(`📸 تم اختيار الصورة: ${file.name}\nقم بكتابة استفسارك أو اضغط "إرسال" مباشرة للتحليل.`, 'user');
+                    
+                    // إظهار مصغر الصورة في شريط المعاينة
+                    document.getElementById('image-preview-thumb').src = currentImageSrc;
+                    document.getElementById('image-preview-container').style.display = 'flex';
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        function clearSelectedImage() {
+            currentBase64Image = null;
+            currentImageSrc = null;
+            document.getElementById('media-input').value = '';
+            document.getElementById('image-preview-container').style.display = 'none';
         }
 
         async function sendMessage() {
@@ -272,14 +315,11 @@
             const text = input.value.trim();
             if (!text && !currentBase64Image) return;
 
-            const sendText = text || "حلل هذه الصورة المرفقة بالتفصيل.";
-            appendMessage(sendText, 'user');
-            input.value = '';
+            const sendText = text;
+            const sendingImg = currentImageSrc;
 
-            const loadingTxt = currentLang === 'ar' ? "جاري التفكير والتحليل... ⏳" : "Thinking... ⏳";
-            appendMessage(loadingTxt, 'ai');
-            const container = document.getElementById('chat-container');
-            const loadingMsg = container.lastElementChild;
+            // إدراج الرسالة وبداخلها معاينة الصورة الحقيقية
+            appendMessage(sendText, 'user', sendingImg);
 
             const payload = { 
                 prompt: sendText,
@@ -287,8 +327,13 @@
                 mimeType: currentImageMime
             };
 
-            currentBase64Image = null;
-            document.getElementById('media-input').value = '';
+            input.value = '';
+            clearSelectedImage();
+
+            const loadingTxt = currentLang === 'ar' ? "جاري التفكير والمعالجة... ⏳" : "Thinking... ⏳";
+            appendMessage(loadingTxt, 'ai');
+            const container = document.getElementById('chat-container');
+            const loadingMsg = container.lastElementChild;
 
             try {
                 const res = await fetch('/api/chat', {
