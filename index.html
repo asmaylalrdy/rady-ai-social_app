@@ -186,22 +186,22 @@
             ar: [
                 { label: "💼 أعمال ومشاريع", prompt: "أعمال ومشاريع" },
                 { label: "🌱 تطوير الذات", prompt: "تطوير الذات" },
+                { label: "🛠️ تعليم مهارات", prompt: "تعليم مهارات" },
                 { label: "🎨 الوسائط والصور", prompt: "الوسائط والصور" },
                 { label: "💻 تقنية وتطبيقات", prompt: "تقنية وتطبيقات" },
                 { label: "🪙 العملات الرقمية", prompt: "العملات الرقمية" },
                 { label: "🌐 ترجمة عربي ↔ EN", prompt: "ترجمة" },
-                { label: "📢 مشاركة المنصة", prompt: "مشاركة المنصة" },
                 { label: "⚙️ الإعدادات", prompt: "الإعدادات" },
                 { label: "ℹ️ حول المنصة", prompt: "حول المنصة" }
             ],
             en: [
                 { label: "💼 Business & Projects", prompt: "Business and Projects" },
                 { label: "🌱 Self Development", prompt: "Self Development" },
+                { label: "🛠️ Practical Skills", prompt: "Practical Skills" },
                 { label: "🎨 Media & Vision", prompt: "Media and Vision" },
                 { label: "💻 Tech & Apps", prompt: "Technology and Applications" },
                 { label: "🪙 Crypto & Web3", prompt: "Cryptocurrency" },
                 { label: "🌐 Translate AR ↔ EN", prompt: "Translation" },
-                { label: "📢 Share Platform", prompt: "Share Platform" },
                 { label: "⚙️ Settings", prompt: "Settings" },
                 { label: "ℹ️ About Platform", prompt: "About Platform" }
             ]
@@ -267,10 +267,6 @@
         function selectCategory(prompt) {
             if (prompt === "حول المنصة" || prompt === "About Platform") {
                 showAboutInfo();
-                return;
-            }
-            if (prompt === "مشاركة المنصة" || prompt === "Share Platform") {
-                sharePlatform();
                 return;
             }
             document.getElementById('user-input').value = prompt;
