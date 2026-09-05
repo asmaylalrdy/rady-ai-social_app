@@ -66,6 +66,7 @@
         .message {
             max-width: 85%; padding: 12px 16px; border-radius: 14px;
             font-size: 0.95rem; line-height: 1.6; word-wrap: break-word;
+            position: relative;
         }
         .message.ai {
             background-color: var(--chat-bg); align-self: flex-start;
@@ -77,6 +78,11 @@
         }
         .message-img {
             max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 6px; display: block;
+        }
+        .share-btn {
+            display: inline-block; margin-top: 6px; background: #f3f4f6; color: #4b5563;
+            border: 1px solid #d1d5db; border-radius: 10px; padding: 2px 8px;
+            font-size: 0.75rem; cursor: pointer; font-weight: bold;
         }
 
         .quick-menu { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
@@ -140,7 +146,7 @@
 
     <div id="chat-container">
         <div class="message ai" id="welcome-msg">
-            <span id="welcome-txt">مرحباً بك في Rady Social AI 🌍 اختر القسم المطلوب مباشرة:</span>
+            <span id="welcome-txt">مرحباً بك في Rady Social AI 🌍<br>أنا مساعدك الذكي الشامل، جاهز لمساعدتك في كل ما تحتاجه! اختر من القوائم أدناه، أو اكتب استفسارك وطلبك مباشرة لنبدأ فوراً:</span>
             <div class="quick-menu" id="quick-menu-container"></div>
         </div>
     </div>
@@ -162,7 +168,6 @@
     <script>
         let piUser = null;
 
-        // تهيئة Pi Network SDK
         if (window.Pi) {
             try {
                 window.Pi.init({ version: "2.0", sandbox: true });
@@ -171,7 +176,7 @@
             }
         }
 
-        let currentLang = 'ar';
+        let currentLang = localStorage.getItem('rady_lang') || 'ar';
         let currentBase64Image = null;
         let currentImageMime = 'image/jpeg';
         let currentImageSrc = null;
@@ -218,6 +223,8 @@
 
         function toggleLanguage() {
             currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('rady_lang', currentLang);
+            
             document.getElementById('html-root').setAttribute('lang', currentLang);
             document.getElementById('html-root').setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
             document.getElementById('lang-toggle-btn').innerText = currentLang === 'ar' ? 'EN' : 'AR';
@@ -226,14 +233,21 @@
             document.getElementById('btn-refresh').innerText = currentLang === 'ar' ? '🔄 تحديث' : '🔄 Refresh';
             document.getElementById('user-input').placeholder = currentLang === 'ar' ? "اكتب أمرك أو استفسارك هنا..." : "Type your query here...";
             document.getElementById('btn-send').innerText = currentLang === 'ar' ? "إرسال" : "Send";
+            
+            const welcomeSpan = document.getElementById('welcome-txt');
+            if (welcomeSpan) {
+                welcomeSpan.innerHTML = currentLang === 'ar' ? 
+                    "مرحباً بك في Rady Social AI 🌍<br>أنا مساعدك الذكي الشامل، جاهز لمساعدتك في كل ما تحتاجه! اختر من القوائم أدناه، أو اكتب استفسارك وطلبك مباشرة لنبدأ فوراً:" :
+                    "Welcome to Rady Social AI 🌍<br>I am your all-in-one AI assistant, ready to help with anything you need! Choose from the menu below or type any custom request directly:";
+            }
             renderQuickMenu();
         }
 
         function resetChat() {
             const container = document.getElementById('chat-container');
             const welcomeTxt = currentLang === 'ar' ? 
-                "مرحباً بك في Rady Social AI 🌍 اختر القسم المطلوب مباشرة:" : 
-                "Welcome to Rady Social AI 🌍 Choose a category directly:";
+                "مرحباً بك في Rady Social AI 🌍<br>أنا مساعدك الذكي الشامل، جاهز لمساعدتك في كل ما تحتاجه! اختر من القوائم أدناه، أو اكتب استفسارك وطلبك مباشرة لنبدأ فوراً:" : 
+                "Welcome to Rady Social AI 🌍<br>I am your all-in-one AI assistant, ready to help with anything you need! Choose from the menu below or type any custom request directly:";
 
             container.innerHTML = `
                 <div class="message ai" id="welcome-msg">
@@ -243,6 +257,7 @@
             `;
             renderQuickMenu();
             clearSelectedImage();
+            localStorage.removeItem('rady_chat_history');
         }
 
         function selectCategory(prompt) {
@@ -275,9 +290,25 @@
                 htmlContent += formattedText;
             }
 
+            if (sender === 'ai' && text && !text.includes('جاري التفكير')) {
+                htmlContent += `<br><button class="share-btn" onclick="shareContent(\`${text.replace(/`/g, "'")}\`)">🔗 مشاركة / Share</button>`;
+            }
+
             msgDiv.innerHTML = htmlContent;
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
+        }
+
+        function shareContent(text) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Rady Social AI',
+                    text: text
+                }).catch(err => console.log('Share canceled', err));
+            } else {
+                navigator.clipboard.writeText(text);
+                alert(currentLang === 'ar' ? "تم نسخ النص للحافظة!" : "Text copied to clipboard!");
+            }
         }
 
         function handleMediaUpload(event) {
@@ -321,7 +352,7 @@
             input.value = '';
             clearSelectedImage();
 
-            const loadingTxt = currentLang === 'ar' ? "جاري التفكير والمعالجة... ⏳" : "Thinking... ⏳";
+            const loadingTxt = currentLang === 'ar' ? "جاري التفكير وإعداد الإجابة... ⏳" : "Thinking and preparing response... ⏳";
             appendMessage(loadingTxt, 'ai');
             const container = document.getElementById('chat-container');
             const loadingMsg = container.lastElementChild;
@@ -342,7 +373,6 @@
             }
         }
 
-        // دالة الدفع التفاعلية المربوطة بالسيرفر للموافقة التلقائية
         async function payWithPi() {
             if (!window.Pi) {
                 appendMessage("⚠️ يجب فتح المنصة من داخل تطبيق Pi Browser لتنفيذ عملية الدفع بـ Pi.", 'ai');
@@ -364,7 +394,6 @@
 
                 const callbacks = {
                     onReadyForServerApproval: async function(paymentId) {
-                        console.log("إرسال طلب الموافقة للسيرفر...", paymentId);
                         try {
                             const res = await fetch('/api/pi/approve', {
                                 method: 'POST',
@@ -373,7 +402,6 @@
                             });
                             const data = await res.json();
                             if (!res.ok) throw new Error(data.error || 'فشلت موافقة السيرفر');
-                            console.log("تمت موافقة السيرفر بنجاح");
                         } catch (err) {
                             console.error("خطأ في موافقة السيرفر:", err);
                             appendMessage("⚠️ فشلت عملية موافقة السيرفر على الدفع.", 'ai');
@@ -381,7 +409,6 @@
                     },
 
                     onReadyForServerCompletion: async function(paymentId, txid) {
-                        console.log("إرسال طلب إكمال الدفع للسيرفر...", txid);
                         try {
                             const res = await fetch('/api/pi/complete', {
                                 method: 'POST',
@@ -421,7 +448,11 @@
             console.log("Incomplete payment found:", payment);
         }
 
-        renderQuickMenu();
+        if (currentLang !== 'ar') {
+            toggleLanguage();
+        } else {
+            renderQuickMenu();
+        }
     </script>
 </body>
 </html>
