@@ -124,6 +124,45 @@
         .media-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
         .send-btn { background-color: var(--primary-color); }
         input[type="file"] { display: none; }
+
+        /* نافذة المشاركة المخصصة */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; justify-content: center;
+            align-items: center; z-index: 2000; padding: 15px;
+        }
+        .modal-card {
+            background: white; border-radius: 16px; padding: 20px; width: 100%;
+            max-width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: popIn 0.2s ease-out;
+        }
+        @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: var(--text-color); }
+        .social-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .social-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px; border-radius: 10px; border: none; color: white;
+            font-weight: bold; font-size: 0.85rem; cursor: pointer; text-decoration: none;
+        }
+        .btn-wa { background-color: #25D366; }
+        .btn-tg { background-color: #0088cc; }
+        .btn-fb { background-color: #1877F2; }
+        .btn-x { background-color: #000000; }
+        .btn-copy { background-color: #6b7280; grid-column: span 2; }
+        .btn-close-modal {
+            background: transparent; border: 1px solid #d1d5db; color: #4b5563;
+            width: 100%; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
+
+        /* الإشعار المخصص (Toast) */
+        #toast {
+            position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%);
+            background-color: #1f2937; color: white; padding: 10px 20px;
+            border-radius: 20px; font-size: 0.85rem; font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease; z-index: 3000;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(-5px); }
     </style>
 </head>
 <body>
@@ -167,6 +206,24 @@
         <button class="action-btn send-btn" id="btn-send" onclick="sendMessage()">إرسال</button>
     </div>
 
+    <!-- نافذة المشاركة عبر شبكات التواصل الاجتماعي -->
+    <div class="modal-overlay" id="share-modal">
+        <div class="modal-card">
+            <div class="modal-title" id="modal-title-txt">اختر منصة لمشاركة الرابط 📢</div>
+            <div class="social-grid">
+                <a id="share-wa" class="social-btn btn-wa" target="_blank">واتساب</a>
+                <a id="share-tg" class="social-btn btn-tg" target="_blank">تلغرام</a>
+                <a id="share-fb" class="social-btn btn-fb" target="_blank">فيسبوك</a>
+                <a id="share-x" class="social-btn btn-x" target="_blank">منصة X</a>
+                <button class="social-btn btn-copy" onclick="copyPlatformLink()">📋 نسخ رابط المنصة</button>
+            </div>
+            <button class="btn-close-modal" onclick="closeShareModal()" id="btn-close-modal-txt">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- إشعار توست العائم -->
+    <div id="toast"></div>
+
     <script>
         let piUser = null;
 
@@ -208,6 +265,13 @@
             ]
         };
 
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
         function enterPlatform() {
             document.getElementById('splash-screen').style.display = 'none';
         }
@@ -238,7 +302,9 @@
             document.getElementById('btn-refresh').innerText = currentLang === 'ar' ? '🔄 تحديث' : '🔄 Refresh';
             document.getElementById('user-input').placeholder = currentLang === 'ar' ? "اكتب أمرك أو استفسارك هنا..." : "Type your query here...";
             document.getElementById('btn-send').innerText = currentLang === 'ar' ? "إرسال" : "Send";
-            
+            document.getElementById('modal-title-txt').innerText = currentLang === 'ar' ? "اختر منصة لمشاركة الرابط 📢" : "Choose a platform to share 📢";
+            document.getElementById('btn-close-modal-txt').innerText = currentLang === 'ar' ? "إغلاق" : "Close";
+
             const welcomeSpan = document.getElementById('welcome-txt');
             if (welcomeSpan) {
                 welcomeSpan.innerHTML = currentLang === 'ar' ? 
@@ -263,6 +329,7 @@
             renderQuickMenu();
             clearSelectedImage();
             localStorage.removeItem('rady_chat_history');
+            showToast(currentLang === 'ar' ? "تمت إعادة تعيين الدردشة بنجاح" : "Chat reset successfully");
         }
 
         function selectCategory(prompt) {
@@ -283,22 +350,45 @@
                 url: window.location.href
             };
 
-            if (navigator.share) {
+            // إن كان المتصفح يدعم مشاركة النظام فتحها فوراً
+            if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
                 try {
                     await navigator.share(shareData);
+                    return;
                 } catch (err) {
-                    console.log('تم إلغاء المشاركة أو عدم الدعم:', err);
-                }
-            } else {
-                try {
-                    await navigator.clipboard.writeText(window.location.href);
-                    alert(currentLang === 'ar' 
-                        ? "تم نسخ رابط المنصة بنجاح! يمكنك مشاركته الآن على وسائل التواصل." 
-                        : "Platform link copied to clipboard!");
-                } catch (err) {
-                    alert(window.location.href);
+                    console.log('تم إغلاق المشاركة من قبل المستخدم');
+                    return;
                 }
             }
+
+            // خيار بديل مخصص: فتح نافذة الوسائط المباشرة للمستخدم
+            openShareModal(shareData.text, shareData.url);
+        }
+
+        function openShareModal(text, url) {
+            const encodedUrl = encodeURIComponent(url);
+            const encodedText = encodeURIComponent(text + "\n" + url);
+
+            document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${encodedText}`;
+            document.getElementById('share-tg').href = `https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(text)}`;
+            document.getElementById('share-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+            document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${encodedText}`;
+
+            document.getElementById('share-modal').style.display = 'flex';
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').style.display = 'none';
+        }
+
+        async function copyPlatformLink() {
+            try {
+                await navigator.clipboard.writeText(window.location.href);
+                showToast(currentLang === 'ar' ? "تم نسخ رابط المنصة بنجاح! 📋" : "Link copied to clipboard! 📋");
+            } catch (err) {
+                showToast(window.location.href);
+            }
+            closeShareModal();
         }
 
         function showAboutInfo() {
@@ -329,7 +419,6 @@
                 shareBtn.className = 'share-btn';
                 shareBtn.innerText = currentLang === 'ar' ? '🔗 مشاركة / Share' : '🔗 Share';
                 
-                // ربط حدث الضغط بشكل آمن ومستقل لتفادي أخطاء الأسطر والتنصيص
                 shareBtn.onclick = function() {
                     shareContent(text);
                 };
@@ -353,16 +442,17 @@
             if (navigator.share) {
                 try {
                     await navigator.share(shareData);
+                    return;
                 } catch (err) {
-                    console.log('تم إلغاء المشاركة:', err);
+                    console.log('تم إغلاق المشاركة');
                 }
-            } else {
-                try {
-                    await navigator.clipboard.writeText(cleanText);
-                    alert(currentLang === 'ar' ? "تم نسخ نص الرد بنجاح!" : "Text copied to clipboard!");
-                } catch (e) {
-                    alert(cleanText);
-                }
+            }
+            
+            try {
+                await navigator.clipboard.writeText(cleanText);
+                showToast(currentLang === 'ar' ? "تم نسخ نص الرد بنجاح! 📋" : "Text copied to clipboard! 📋");
+            } catch (e) {
+                showToast(cleanText);
             }
         }
 
