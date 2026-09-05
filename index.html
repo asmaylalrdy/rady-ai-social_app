@@ -80,10 +80,11 @@
             max-width: 100%; max-height: 200px; border-radius: 8px; margin-bottom: 6px; display: block;
         }
         .share-btn {
-            display: inline-block; margin-top: 6px; background: #f3f4f6; color: #4b5563;
-            border: 1px solid #d1d5db; border-radius: 10px; padding: 2px 8px;
-            font-size: 0.75rem; cursor: pointer; font-weight: bold;
+            display: inline-block; margin-top: 8px; background: #f3f4f6; color: #4b5563;
+            border: 1px solid #d1d5db; border-radius: 10px; padding: 4px 10px;
+            font-size: 0.75rem; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
+        .share-btn:active { background: #e5e7eb; }
 
         .quick-menu { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .menu-chip {
@@ -273,22 +274,30 @@
             sendMessage();
         }
 
-        function sharePlatform() {
+        async function sharePlatform() {
             const shareData = {
                 title: 'Rady Social AI | رضي إي آي',
                 text: currentLang === 'ar' 
-                    ? 'جرب منصة Rady Social AI للذكاء الاصطناعي والاستشارات والأعمال!' 
-                    : 'Check out Rady Social AI platform for AI solutions, business, and tech!',
+                    ? 'جرب منصة Rady Social AI للذكاء الاصطناعي، الاستشارات، وتطوير المهارات!' 
+                    : 'Check out Rady Social AI platform for AI solutions, business, and skills development!',
                 url: window.location.href
             };
 
             if (navigator.share) {
-                navigator.share(shareData).catch(err => console.log('تم إلغاء المشاركة', err));
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('تم إلغاء المشاركة أو عدم الدعم:', err);
+                }
             } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert(currentLang === 'ar' 
-                    ? "تم نسخ رابط المنصة بنجاح! يمكنك مشاركته الآن." 
-                    : "Platform link copied to clipboard!");
+                try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert(currentLang === 'ar' 
+                        ? "تم نسخ رابط المنصة بنجاح! يمكنك مشاركته الآن على وسائل التواصل." 
+                        : "Platform link copied to clipboard!");
+                } catch (err) {
+                    alert(window.location.href);
+                }
             }
         }
 
@@ -313,24 +322,47 @@
                 htmlContent += formattedText;
             }
 
+            msgDiv.innerHTML = htmlContent;
+
             if (sender === 'ai' && text && !text.includes('جاري التفكير')) {
-                htmlContent += `<br><button class="share-btn" onclick="shareContent(\`${text.replace(/`/g, "'")}\`)">🔗 مشاركة / Share</button>`;
+                const shareBtn = document.createElement('button');
+                shareBtn.className = 'share-btn';
+                shareBtn.innerText = currentLang === 'ar' ? '🔗 مشاركة / Share' : '🔗 Share';
+                
+                // ربط حدث الضغط بشكل آمن ومستقل لتفادي أخطاء الأسطر والتنصيص
+                shareBtn.onclick = function() {
+                    shareContent(text);
+                };
+                
+                msgDiv.appendChild(document.createElement('br'));
+                msgDiv.appendChild(shareBtn);
             }
 
-            msgDiv.innerHTML = htmlContent;
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
         }
 
-        function shareContent(text) {
+        async function shareContent(text) {
+            const cleanText = text.replace(/<br\s*\/?>/gi, '\n').replace(/<\/?[^>]+(>|$)/g, '');
+            const shareData = {
+                title: 'Rady Social AI',
+                text: cleanText,
+                url: window.location.href
+            };
+
             if (navigator.share) {
-                navigator.share({
-                    title: 'Rady Social AI',
-                    text: text
-                }).catch(err => console.log('Share canceled', err));
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('تم إلغاء المشاركة:', err);
+                }
             } else {
-                navigator.clipboard.writeText(text);
-                alert(currentLang === 'ar' ? "تم نسخ النص للحافظة!" : "Text copied to clipboard!");
+                try {
+                    await navigator.clipboard.writeText(cleanText);
+                    alert(currentLang === 'ar' ? "تم نسخ نص الرد بنجاح!" : "Text copied to clipboard!");
+                } catch (e) {
+                    alert(cleanText);
+                }
             }
         }
 
