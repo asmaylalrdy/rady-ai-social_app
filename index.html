@@ -139,6 +139,7 @@
             <p id="hdr-sub">منصتك الذكية للاستشارات والأعمال وتطوير الذات</p>
         </div>
         <div class="top-actions">
+            <button class="top-btn" id="btn-share-app" onclick="sharePlatform()">📢 مشاركة</button>
             <button class="top-btn" id="btn-refresh" onclick="resetChat()">🔄 تحديث</button>
             <button class="top-btn" onclick="toggleLanguage()" id="lang-toggle-btn">EN</button>
         </div>
@@ -189,6 +190,7 @@
                 { label: "💻 تقنية وتطبيقات", prompt: "تقنية وتطبيقات" },
                 { label: "🪙 العملات الرقمية", prompt: "العملات الرقمية" },
                 { label: "🌐 ترجمة عربي ↔ EN", prompt: "ترجمة" },
+                { label: "📢 مشاركة المنصة", prompt: "مشاركة المنصة" },
                 { label: "⚙️ الإعدادات", prompt: "الإعدادات" },
                 { label: "ℹ️ حول المنصة", prompt: "حول المنصة" }
             ],
@@ -199,6 +201,7 @@
                 { label: "💻 Tech & Apps", prompt: "Technology and Applications" },
                 { label: "🪙 Crypto & Web3", prompt: "Cryptocurrency" },
                 { label: "🌐 Translate AR ↔ EN", prompt: "Translation" },
+                { label: "📢 Share Platform", prompt: "Share Platform" },
                 { label: "⚙️ Settings", prompt: "Settings" },
                 { label: "ℹ️ About Platform", prompt: "About Platform" }
             ]
@@ -230,6 +233,7 @@
             document.getElementById('lang-toggle-btn').innerText = currentLang === 'ar' ? 'EN' : 'AR';
             document.getElementById('hdr-title').innerText = currentLang === 'ar' ? 'Rady Social AI | رضي إي آي' : 'Rady Social AI';
             document.getElementById('hdr-sub').innerText = currentLang === 'ar' ? 'منصتك الذكية للاستشارات والأعمال وتطوير الذات' : 'Your Smart Platform for Business & Development';
+            document.getElementById('btn-share-app').innerText = currentLang === 'ar' ? '📢 مشاركة' : '📢 Share';
             document.getElementById('btn-refresh').innerText = currentLang === 'ar' ? '🔄 تحديث' : '🔄 Refresh';
             document.getElementById('user-input').placeholder = currentLang === 'ar' ? "اكتب أمرك أو استفسارك هنا..." : "Type your query here...";
             document.getElementById('btn-send').innerText = currentLang === 'ar' ? "إرسال" : "Send";
@@ -265,8 +269,31 @@
                 showAboutInfo();
                 return;
             }
+            if (prompt === "مشاركة المنصة" || prompt === "Share Platform") {
+                sharePlatform();
+                return;
+            }
             document.getElementById('user-input').value = prompt;
             sendMessage();
+        }
+
+        function sharePlatform() {
+            const shareData = {
+                title: 'Rady Social AI | رضي إي آي',
+                text: currentLang === 'ar' 
+                    ? 'جرب منصة Rady Social AI للذكاء الاصطناعي والاستشارات والأعمال!' 
+                    : 'Check out Rady Social AI platform for AI solutions, business, and tech!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).catch(err => console.log('تم إلغاء المشاركة', err));
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert(currentLang === 'ar' 
+                    ? "تم نسخ رابط المنصة بنجاح! يمكنك مشاركته الآن." 
+                    : "Platform link copied to clipboard!");
+            }
         }
 
         function showAboutInfo() {
