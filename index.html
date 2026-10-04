@@ -121,11 +121,12 @@
             white-space: nowrap; height: 38px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
         .pi-btn { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .call-btn { background: linear-gradient(135deg, #10b981, #059669); }
         .media-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
         .send-btn { background-color: var(--primary-color); }
         input[type="file"] { display: none; }
 
-        /* نافذة المشاركة المخصصة */
+        /* نافذة المشاركة والمكالمة الصوتية */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); display: none; justify-content: center;
@@ -151,7 +152,18 @@
         .btn-copy { background-color: #6b7280; grid-column: span 2; }
         .btn-close-modal {
             background: transparent; border: 1px solid #d1d5db; color: #4b5563;
-            width: 100%; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer;
+            width: 100%; padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px;
+        }
+
+        /* تنسيقات مدخلات المكالمة */
+        .call-input-group { text-align: right; margin-bottom: 12px; }
+        .call-input-group label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; color: #374151; }
+        .call-input-group input, .call-input-group textarea {
+            width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.85rem; outline: none;
+        }
+        .btn-start-call {
+            background: linear-gradient(135deg, #10b981, #059669); color: white; border: none;
+            width: 100%; padding: 10px; border-radius: 10px; font-weight: bold; font-size: 0.9rem; cursor: pointer;
         }
 
         /* الإشعار المخصص (Toast) */
@@ -200,6 +212,7 @@
 
     <div class="input-area">
         <button class="action-btn pi-btn" onclick="payWithPi()" title="اشترك عبر Pi">🌟 اشتراك Pi</button>
+        <button class="action-btn call-btn" id="btn-vapi-call" onclick="openCallModal()" title="إجراء مكالمة صوتية">📞 مكالمة</button>
         <button class="action-btn media-btn" onclick="document.getElementById('media-input').click()" title="ملف">📁</button>
         <input type="file" id="media-input" accept="image/*" onchange="handleMediaUpload(event)">
         <textarea id="user-input" placeholder="اكتب أمرك أو استفسارك هنا..." rows="1"></textarea>
@@ -218,6 +231,31 @@
                 <button class="social-btn btn-copy" onclick="copyPlatformLink()">📋 نسخ رابط المنصة</button>
             </div>
             <button class="btn-close-modal" onclick="closeShareModal()" id="btn-close-modal-txt">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- نافذة الاتصال الصوتي عبر Vapi الذكي -->
+    <div class="modal-overlay" id="call-modal">
+        <div class="modal-card">
+            <div class="modal-title" id="call-modal-title">إجراء مكالمة هاتفية بالذكاء الاصطناعي 📞</div>
+            
+            <div class="call-input-group">
+                <label id="lbl-call-name">اسم المستلم:</label>
+                <input type="text" id="call-name" placeholder="مثال: إسماعيل">
+            </div>
+
+            <div class="call-input-group">
+                <label id="lbl-call-phone">رقم الهاتف (مع الرمز الدولي):</label>
+                <input type="tel" id="call-phone" placeholder="+249XXXXXXXXX">
+            </div>
+
+            <div class="call-input-group">
+                <label id="lbl-call-task">هدف المكالمة / التوجيهات:</label>
+                <textarea id="call-task" rows="2" placeholder="مثال: الاتصال للترحيب وتأكيد الموعد..."></textarea>
+            </div>
+
+            <button class="btn-start-call" id="btn-exec-call" onclick="triggerVapiCall()">بدء الاتصال الان 🚀</button>
+            <button class="btn-close-modal" onclick="closeCallModal()" id="btn-close-call-txt">إلغاء</button>
         </div>
     </div>
 
@@ -250,7 +288,7 @@
                 { label: "🪙 العملات الرقمية", prompt: "العملات الرقمية" },
                 { label: "🌐 ترجمة عربي ↔ EN", prompt: "ترجمة" },
                 { label: "⚙️ الإعدادات", prompt: "الإعدادات" },
-                { label: "ℹ️ حول المنصة", prompt: "حول المنصة" }
+                { label: "ℹ️️ حول المنصة", prompt: "حول المنصة" }
             ],
             en: [
                 { label: "💼 Business & Projects", prompt: "Business and Projects" },
@@ -300,10 +338,19 @@
             document.getElementById('hdr-sub').innerText = currentLang === 'ar' ? 'منصتك الذكية للاستشارات والأعمال وتطوير الذات' : 'Your Smart Platform for Business & Development';
             document.getElementById('btn-share-app').innerText = currentLang === 'ar' ? '📢 مشاركة' : '📢 Share';
             document.getElementById('btn-refresh').innerText = currentLang === 'ar' ? '🔄 تحديث' : '🔄 Refresh';
+            document.getElementById('btn-vapi-call').innerText = currentLang === 'ar' ? '📞 مكالمة' : '📞 Call';
             document.getElementById('user-input').placeholder = currentLang === 'ar' ? "اكتب أمرك أو استفسارك هنا..." : "Type your query here...";
             document.getElementById('btn-send').innerText = currentLang === 'ar' ? "إرسال" : "Send";
             document.getElementById('modal-title-txt').innerText = currentLang === 'ar' ? "اختر منصة لمشاركة الرابط 📢" : "Choose a platform to share 📢";
             document.getElementById('btn-close-modal-txt').innerText = currentLang === 'ar' ? "إغلاق" : "Close";
+
+            // نصوص نافذة الاتصال الصوتية
+            document.getElementById('call-modal-title').innerText = currentLang === 'ar' ? "إجراء مكالمة هاتفية بالذكاء الاصطناعي 📞" : "AI Voice Call Agent 📞";
+            document.getElementById('lbl-call-name').innerText = currentLang === 'ar' ? "اسم المستلم:" : "Recipient Name:";
+            document.getElementById('lbl-call-phone').innerText = currentLang === 'ar' ? "رقم الهاتف (مع الرمز الدولي):" : "Phone Number (with country code):";
+            document.getElementById('lbl-call-task').innerText = currentLang === 'ar' ? "هدف المكالمة / التوجيهات:" : "Call Goal / Instructions:";
+            document.getElementById('btn-exec-call').innerText = currentLang === 'ar' ? "بدء الاتصال الان 🚀" : "Start Call Now 🚀";
+            document.getElementById('btn-close-call-txt').innerText = currentLang === 'ar' ? "إلغاء" : "Cancel";
 
             const welcomeSpan = document.getElementById('welcome-txt');
             if (welcomeSpan) {
@@ -350,7 +397,6 @@
                 url: window.location.href
             };
 
-            // إن كان المتصفح يدعم مشاركة النظام فتحها فوراً
             if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
                 try {
                     await navigator.share(shareData);
@@ -361,7 +407,6 @@
                 }
             }
 
-            // خيار بديل مخصص: فتح نافذة الوسائط المباشرة للمستخدم
             openShareModal(shareData.text, shareData.url);
         }
 
@@ -379,6 +424,51 @@
 
         function closeShareModal() {
             document.getElementById('share-modal').style.display = 'none';
+        }
+
+        /* دالة فتح وإغلاق نافذة الاتصال الصوتية */
+        function openCallModal() {
+            document.getElementById('call-modal').style.display = 'flex';
+        }
+
+        function closeCallModal() {
+            document.getElementById('call-modal').style.display = 'none';
+        }
+
+        /* دالة تنفيذ المكالمة الصوتية عن طريق Vapi API */
+        async function triggerVapiCall() {
+            const name = document.getElementById('call-name').value.trim();
+            const phone = document.getElementById('call-phone').value.trim();
+            const task = document.getElementById('call-task').value.trim();
+
+            if (!phone) {
+                showToast(currentLang === 'ar' ? "يرجى إدخال رقم الهاتف مع الرمز الدولي" : "Please enter phone number with country code");
+                return;
+            }
+
+            closeCallModal();
+            const startNotice = currentLang === 'ar' 
+                ? `📞 جاري الاتصال المباشر بـ (${name || 'المستلم'}) على الرقم: ${phone}...`
+                : `📞 Initiating call to (${name || 'Recipient'}) at: ${phone}...`;
+            
+            appendMessage(startNotice, 'ai');
+
+            try {
+                const res = await fetch('/api/make-call', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, task })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    appendMessage(currentLang === 'ar' ? "✅ تم جاري تنفيذ الاتصال الآن! سيصلك اتصال هاتفي خلال لحظات." : "✅ Call dispatched successfully! Expect a phone call shortly.", 'ai');
+                } else {
+                    appendMessage(`⚠️ ${data.error || (currentLang === 'ar' ? "فشل إجراء المكالمة" : "Failed to initiate call")}`, 'ai');
+                }
+            } catch (err) {
+                appendMessage(currentLang === 'ar' ? "⚠️ حدث خطأ أثناء الاتصال بسيرفر المكالمات." : "⚠️️ Server connection error.", 'ai');
+            }
         }
 
         async function copyPlatformLink() {
@@ -573,7 +663,7 @@
                     },
 
                     onCancel: function(paymentId) {
-                        appendMessage("⚠️ تم إلغاء عملية الدفع.", 'ai');
+                        appendMessage("⚠️️ تم إلغاء عملية الدفع.", 'ai');
                     },
                     onError: function(error, payment) {
                         console.error("خطأ Pi:", error);
